@@ -1,0 +1,35 @@
+/* Kartu info kontak (beranda) + pratinjau di admin */
+.kt-wrap{background:linear-gradient(145deg,#0b1b3a 0%,#173a8f 58%,#2563eb 100%);color:#fff;border-radius:24px;padding:1.9rem;box-shadow:0 26px 50px -30px rgba(11,27,58,.9);position:relative;overflow:hidden}
+.kt-wrap::after{content:"";position:absolute;width:260px;height:260px;right:-90px;top:-100px;border-radius:50%;background:radial-gradient(circle,rgba(129,140,248,.45),transparent 70%);pointer-events:none}
+.kt-wrap h2{font-size:1.7rem;font-weight:700;color:#fff;margin:0 0 1.2rem;position:relative}
+.kt-list{display:grid;gap:11px;position:relative;z-index:1}
+.kt-item{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:#fff!important;text-decoration:none!important;transition:background .2s,transform .2s,border-color .2s}
+.kt-item:hover{background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.3);transform:translateY(-2px)}
+.kt-logo{width:48px;height:48px;border-radius:14px;background:#fff;display:grid;place-items:center;flex:none;box-shadow:0 10px 18px -12px rgba(0,0,0,.6)}
+.kt-text{min-width:0;flex:1;display:flex;flex-direction:column;line-height:1.35}
+.kt-text small{font-size:.74rem;color:rgba(255,255,255,.7);font-weight:500}
+.kt-text b{font-size:.9rem;font-weight:500;overflow-wrap:break-word;word-break:normal}
+.kt-go{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:.72rem;background:rgba(255,255,255,.16);transition:background .2s,color .2s}
+.kt-item:hover .kt-go{background:#fff;color:#1e3a8a}
+.kt-jam{position:relative;z-index:1;margin-top:14px;display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.12);border-radius:999px;padding:7px 15px;font-size:.8rem;font-weight:500}
+.kt-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.kt-dot.on{background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,.25)}
+.kt-dot.off{background:#fbbf24;box-shadow:0 0 0 4px rgba(251,191,36,.22)}
+
+/* formulir + balasan otomatis */
+.kt-note{font-size:.78rem;color:#64748b;margin:10px 0 0;text-align:center}
+.kt-note i{color:#25d366;margin-right:5px}
+.kt-reply{margin-top:18px;border-radius:20px;background:#f0f5ff;border:1px solid #dbe6ff;padding:16px;animation:ktIn .45s ease both}
+@keyframes ktIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.kt-reply-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:.78rem;color:#64748b;font-weight:500}
+.kt-reply-head img{width:32px;height:32px;border-radius:50%;background:#fff;padding:2px;object-fit:contain;border:1px solid #dbe6ff}
+.kt-reply-head b{color:#1e3a8a;display:block;font-size:.84rem}
+.kt-bubble{background:#fff;border-radius:4px 18px 18px 18px;padding:13px 16px;font-size:.9rem;line-height:1.65;color:#1e293b;white-space:pre-line;box-shadow:0 8px 20px -16px rgba(30,58,138,.7);overflow-wrap:anywhere}
+.kt-bubble + .kt-bubble{margin-top:8px;background:#fff8e6;color:#7a4b00}
+.kt-reply-foot{margin-top:10px;font-size:.78rem;color:#64748b}
+.kt-reply-foot a{color:#16a34a;font-weight:600}
+
+@media (max-width:575px){
+  .kt-wrap{padding:1.4rem}
+}
+@media (prefers-reduced-motion:reduce){.kt-reply{animation:none}.kt-item{transition:none}}

@@ -13,6 +13,8 @@
   <meta name="theme-color" content="#0f766e" />
   <link rel="apple-touch-icon" href="icon-180.png" />
   <link rel="stylesheet" href="partitur/style.css" />
+  <link rel="stylesheet" href="css/pengaturan.css" />
+  <script src="js/pengaturan.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -79,5 +81,19 @@
   <footer><p>Partitur RNHKBP-PELIKAN · Koleksi PDF untuk belajar dan bermusik</p></footer>
   <script type="module" src="partitur/app.js"></script>
   <script src="js/pwa-init.js"></script>
+  <!-- tema & teks berjalan (diatur dari admin) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+      authDomain: "rnhkbp-pelikan.firebaseapp.com",
+      projectId: "rnhkbp-pelikan",
+      storageBucket: "rnhkbp-pelikan.firebasestorage.app",
+      messagingSenderId: "202813062166",
+      appId: "1:202813062166:web:eb3d963d5965a5e6f48937"
+    });
+    window.PENG.mulai(firebase.firestore());
+  </script>
 </body>
 </html>

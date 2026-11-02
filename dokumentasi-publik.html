@@ -18,6 +18,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="css/publik.css">
+  <link rel="stylesheet" href="css/foto.css">
+  <link rel="stylesheet" href="css/tema.css">
+  <link rel="stylesheet" href="css/pengaturan.css">
+  <script src="js/pengaturan.js"></script>
 </head>
 <body class="pub">
 
@@ -135,10 +139,10 @@
       </div>
       <div class="col-lg-4 mb-4">
         <h5>Info Kontak</h5>
-        <ul>
-          <li><i class="fas fa-map-marker-alt"></i> Jl. Pelikan Raya No. 1</li>
-          <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
-          <li><i class="fas fa-envelope"></i> info@nhkbp-pelikan.org</li>
+        <ul id="footKontak">
+          <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/xH5D7FNRyEXDWFrF8" target="_blank" rel="noopener">Jl. Pelikan 5 No. 2, Medan Denai</a></li>
+          <li><i class="fas fa-phone"></i> <a href="tel:+6281360856654">0813-6085-6654</a></li>
+          <li><i class="fas fa-envelope"></i> <a href="mailto:rnhkbppelikan@gmail.com">rnhkbppelikan@gmail.com</a></li>
           <li><i class="fab fa-instagram"></i> <a href="https://www.instagram.com/nhkbppelikanrealaccount" target="_blank" rel="noopener">@nhkbppelikanrealaccount</a></li>
         </ul>
       </div>
@@ -167,7 +171,7 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const NOIMG = 'data:image/svg+xml,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><rect width='800' height='500' fill='#dbe7ff'/><g fill='#93b4ff'><circle cx='330' cy='210' r='34'/><path d='M200 360l120-130 90 90 70-70 120 110z'/></g><text x='400' y='430' font-family='Arial' font-size='34' text-anchor='middle' fill='#2563eb' opacity='.55'>RNHKBP Pelikan</text></svg>");
 // Foto dari Cloudinary dikecilkan otomatis supaya halaman cepat dimuat
-const opt = (u, w) => (u && u.includes('res.cloudinary.com') && u.includes('/upload/') && !/\/upload\/[a-z]_/.test(u)) ? u.replace('/upload/', '/upload/f_auto,q_auto,w_' + w + '/') : u;
+const opt = (u, w) => (u && u.includes('res.cloudinary.com') && u.includes('/upload/') && !/\/upload\/[a-z]_/.test(u)) ? u.replace('/upload/', '/upload/c_limit,w_' + w + ',f_auto,q_auto/') : u;
 const plain = (html) => new DOMParser().parseFromString((html || '').replace(/<(\/?)(p|h[1-6]|li|ul|ol|div|blockquote|br)\b/gi, ' <$1$2'), 'text/html').body.textContent.replace(/\s+/g, ' ').trim();
 const catClass = (k) => 'cat-' + String(k || 'lainnya').toLowerCase().replace(/[^a-z0-9]+/g, '-');
 const fmtTgl = (v, long) => {
@@ -175,6 +179,15 @@ const fmtTgl = (v, long) => {
   return '';
 };
 const menitBaca = (html) => Math.max(1, Math.ceil(plain(html).split(' ').filter(Boolean).length / 200));
+
+function phErr(i) { i.onerror = null; i.src = NOIMG; const b = i.parentNode && i.parentNode.querySelector('.ph-bd'); if (b) b.remove(); }
+// foto utuh: gambar depan tidak dipotong, sisa bingkai diisi latar buram dari foto yang sama
+const frImgs = (url, alt, w) => {
+  const src = esc(opt(url, w) || '');
+  return src
+    ? `<img class="ph-bd" src="${src}" alt="" aria-hidden="true" loading="lazy" onerror="this.remove()"><img class="ph-main" src="${src}" alt="${esc(alt)}" loading="lazy" onerror="phErr(this)">`
+    : `<img class="ph-main" src="${NOIMG}" alt="">`;
+};
 
 const KATEGORI = [
   ['', 'Semua'], ['Partangiangan', '🙏 Partangiangan'], ['Latihan Koor', '🎵 Latihan Koor'],
@@ -189,8 +202,8 @@ function kartu(a, delay) {
   const tgl = fmtTgl(a.tanggal, false), url = 'detail-artikel-publik.html?id=' + encodeURIComponent(a.id);
   const ex = plain(a.isi).slice(0, 150);
   return `<article class="dk-card" style="animation-delay:${delay}ms">
-    <a class="dk-media" href="${url}" tabindex="-1" aria-hidden="true">
-      <img src="${esc(opt(a.foto, 720) || NOIMG)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${NOIMG}'">
+    <a class="dk-media ph" href="${url}" tabindex="-1" aria-hidden="true">
+      ${frImgs(a.foto, '', 720)}
       <span class="dk-chip ${catClass(a.kategori)}">${esc(a.kategori || 'Umum')}</span>
     </a>
     <div class="dk-body">
@@ -205,7 +218,7 @@ function kartuUtama(a) {
   const tgl = fmtTgl(a.tanggal, true), url = 'detail-artikel-publik.html?id=' + encodeURIComponent(a.id);
   const ex = plain(a.isi).slice(0, 260);
   return `<article class="dk-feature">
-    <a class="dk-media" href="${url}" tabindex="-1" aria-hidden="true"><img src="${esc(opt(a.foto, 1100) || NOIMG)}" alt="" onerror="this.onerror=null;this.src='${NOIMG}'"></a>
+    <a class="dk-media ph" href="${url}" tabindex="-1" aria-hidden="true">${frImgs(a.foto, '', 1100)}</a>
     <div class="dk-body">
       <span class="dk-new"><i class="fas fa-star"></i> Terbaru</span>
       <div><span class="dk-chip ${catClass(a.kategori)}">${esc(a.kategori || 'Umum')}</span></div>
@@ -297,6 +310,11 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 loadArticles(true);
+</script>
+<script src="js/kontak-data.js"></script>
+<script>
+window.KONTAK.muat(db).then((d) => { const f = document.getElementById('footKontak'); if (f) f.innerHTML = window.KONTAK.footerHTML(d); });
+window.PENG.mulai(db);
 </script>
 <script src="js/pwa-init.js"></script>
 </body>

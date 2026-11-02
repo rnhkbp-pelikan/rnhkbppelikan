@@ -24,6 +24,8 @@
     { href: 'admin-kepengurusan.html', key: 'kepengurusan', icon: 'fa-user-tie', label: 'Kepengurusan' },
     { group: 'Tampilan situs' },
     { href: 'admin-tentang.html', key: 'tentang', icon: 'fa-image', label: 'Foto Tentang Kami' },
+    { href: 'admin-kontak.html', key: 'kontak', icon: 'fa-address-book', label: 'Info Kontak' },
+    { href: 'admin-pengaturan.html', key: 'pengaturan', icon: 'fa-palette', label: 'Tema & Pengumuman' },
     { href: 'admin-partitur.html', key: 'partitur', icon: 'fa-music', label: 'Partitur' }
   ];
 

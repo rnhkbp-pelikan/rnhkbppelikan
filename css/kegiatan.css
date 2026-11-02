@@ -12,13 +12,12 @@
 .kgp-card:hover{transform:translateY(-8px);box-shadow:0 28px 44px -26px var(--c1);border-color:var(--c2)}
 @keyframes kgpIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .kgp-photo{aspect-ratio:16/9;overflow:hidden;background:#dbeafe}
-.kgp-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s}
-.kgp-card:hover .kgp-photo img{transform:scale(1.07)}
+.kgp-card:hover .kgp-photo .ph-main{transform:scale(1.03)}
 .kgp-inner{padding:24px 24px 22px;display:flex;flex-direction:column;gap:12px;flex:1}
 .kgp-head{display:flex;align-items:flex-start;justify-content:space-between}
 .kgp-ic{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;display:grid;place-items:center;font-size:1.4rem;box-shadow:0 14px 24px -14px var(--c1);transition:transform .35s}
 .kgp-card:hover .kgp-ic{transform:scale(1.08) rotate(-6deg)}
-.kgp-photo + .kgp-inner .kgp-ic{margin-top:-52px;border:4px solid #fff;box-shadow:0 12px 22px -12px var(--c1)}
+.kgp-photo + .kgp-inner .kgp-ic{position:relative;z-index:2;margin-top:-52px;border:4px solid #fff;box-shadow:0 12px 22px -12px var(--c1)}
 .kgp-num{font-size:2.6rem;font-weight:700;line-height:1;color:rgba(15,31,61,.07);letter-spacing:-.04em}
 .kgp-card h3{font-size:1.15rem;font-weight:600;color:#0f1f3d;margin:4px 0 0;line-height:1.3}
 .kgp-card p{font-size:.88rem;color:#64748b;margin:0;line-height:1.6;flex:1}

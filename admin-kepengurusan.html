@@ -359,6 +359,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/foto.css">
+  <style>
+    .pc-note{color:var(--gray);font-size:.88rem;margin:-6px 0 14px}
+    .pcard{display:grid;grid-template-columns:150px minmax(0,1fr);gap:22px;padding:22px 0;border-top:1px solid var(--gray-light)}
+    .pcard:first-of-type{border-top:0;padding-top:4px}
+    .pc-photo{display:flex;flex-direction:column;gap:8px}
+    .pc-frame{aspect-ratio:4/5;border-radius:16px;display:grid;place-items:center;background:#eef2fa}
+    .pc-empty{font-size:2.4rem;color:#b9c4dc;position:relative;z-index:1}
+    .pc-photo .btn{width:100%;font-size:.8rem;padding:.45rem .6rem;text-align:center;cursor:pointer}
+    .pc-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .pc-fields .form-group{margin-bottom:14px}
+    .pc-fields textarea.form-control{min-height:84px;resize:vertical;line-height:1.55}
+    .pc-cnt{font-weight:500;color:var(--gray);font-size:.78rem;margin-left:6px}
+    .pc-tag{display:inline-block;background:#dbeafe;color:#1d4ed8;border-radius:999px;font-size:.7rem;font-weight:600;padding:2px 10px;margin-left:6px;vertical-align:middle}
+    .pv-thumb{width:46px;height:46px;border-radius:10px;overflow:hidden;position:relative;background:#eef2fa;display:grid;place-items:center;color:#b9c4dc}
+    .pv-thumb .ph-main{transition:none}
+    @media (max-width:760px){.pcard{grid-template-columns:1fr}.pc-photo{flex-direction:row;align-items:center;flex-wrap:wrap}.pc-frame{width:96px}.pc-photo .btn{width:auto}.pc-row{grid-template-columns:1fr}}
+  </style>
   <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
@@ -375,6 +393,8 @@
     <li><a href="admin-kegiatan.html"><i class="fas fa-calendar-check"></i> Kegiatan</a></li>
     <li><a href="admin-kepengurusan.html" class="active"><i class="fas fa-users-cog"></i> Kepengurusan</a></li>
     <li><a href="admin-tentang.html"><i class="fas fa-image"></i> Foto Tentang</a></li>
+    <li><a href="admin-kontak.html"><i class="fas fa-address-book"></i> Info Kontak</a></li>
+    <li><a href="admin-pengaturan.html"><i class="fas fa-palette"></i> Tema &amp; Pengumuman</a></li>
     <li><a href="admin-partitur.html"><i class="fas fa-music"></i> Partitur</a></li>
   </ul>
 </div>
@@ -401,149 +421,7 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- FORM INTI PENGURUS (Ketua, Sekretaris, Bendahara) -->
-  <div class="section-card">
-    <h5 class="section-title"><i class="fas fa-user-tie"></i> Inti Pengurus</h5>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Ketua Naposobulung</label>
-        <input type="text" class="form-control" id="ketua" placeholder="Nama Ketua">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Ketua</label>
-        <input type="text" class="form-control" id="ketua_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Sekretaris</label>
-        <input type="text" class="form-control" id="sekretaris" placeholder="Nama Sekretaris">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Sekretaris</label>
-        <input type="text" class="form-control" id="sekretaris_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Bendahara</label>
-        <input type="text" class="form-control" id="bendahara" placeholder="Nama Bendahara">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Bendahara</label>
-        <input type="text" class="form-control" id="bendahara_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-  </div>
-
-  <!-- FORM 7 SEKSI NAPOSOBULUNG -->
-  <div class="section-card">
-    <h5 class="section-title"><i class="fas fa-users"></i> 7 Seksi Naposobulung</h5>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Seksi 1 (Koor & Musik)</label>
-        <input type="text" class="form-control" id="seksi1" placeholder="Nama">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Seksi 1</label>
-        <input type="text" class="form-control" id="seksi1_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Seksi 2 (Perlengkapan)</label>
-        <input type="text" class="form-control" id="seksi2" placeholder="Nama">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Seksi 2</label>
-        <input type="text" class="form-control" id="seksi2_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Seksi 3 (Konsumsi)</label>
-        <input type="text" class="form-control" id="seksi3" placeholder="Nama">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Seksi 3</label>
-        <input type="text" class="form-control" id="seksi3_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Seksi 4 (Dokumentasi)</label>
-        <input type="text" class="form-control" id="seksi4" placeholder="Nama">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Seksi 4</label>
-        <input type="text" class="form-control" id="seksi4_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Seksi 5 (Kebersihan)</label>
-        <input type="text" class="form-control" id="seksi5" placeholder="Nama">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Seksi 5</label>
-        <input type="text" class="form-control" id="seksi5_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Seksi 6 (Acara & Kreatif)</label>
-        <input type="text" class="form-control" id="seksi6" placeholder="Nama">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Seksi 6</label>
-        <input type="text" class="form-control" id="seksi6_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Seksi 7 (Humas)</label>
-        <input type="text" class="form-control" id="seksi7" placeholder="Nama">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Seksi 7</label>
-        <input type="text" class="form-control" id="seksi7_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-  </div>
-
-  <!-- FORM PARGURU MALUA & INANG PANIROI -->
-  <div class="section-card">
-    <h5 class="section-title"><i class="fas fa-chalkboard-teacher"></i> Parguru & Inang Paniroi</h5>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Koordinator Parguru Malua</label>
-        <input type="text" class="form-control" id="parguru" placeholder="Nama">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Parguru</label>
-        <input type="text" class="form-control" id="parguru_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Inang Paniroi</label>
-        <input type="text" class="form-control" id="inang" placeholder="Nama">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Kontak Inang Paniroi</label>
-        <input type="text" class="form-control" id="inang_kontak" placeholder="No. WhatsApp">
-      </div>
-    </div>
-  </div>
+  <div id="forms"></div>
 
   <!-- TOMBOL SIMPAN -->
   <div class="section-card text-center">
@@ -562,9 +440,11 @@
       <table class="preview-table">
         <thead>
           <tr>
+            <th>Foto</th>
             <th>Jabatan</th>
             <th>Nama</th>
             <th>Kontak</th>
+            <th>Bio</th>
           </tr>
         </thead>
         <tbody id="previewTable"></tbody>
@@ -579,6 +459,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+<script src="js/pengurus-data.js"></script>
 <script>
 // ================= KONFIGURASI FIREBASE =================
 const firebaseConfig = {
@@ -593,13 +474,24 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+const DOC = db.collection("pengurus").doc("kepengurusan");
+const CLOUD = "dnyrxwl1g", PRESET = "rnhkbp-pelikan";     // sama seperti foto artikel
+const GROUPS = window.PENGURUS_GROUPS;
+const ALL = GROUPS.flatMap(g => g.items);
+const $ = (id) => document.getElementById(id);
+const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// foto Cloudinary dikecilkan tanpa dipotong (c_limit)
+const kecil = (u) => (u && u.includes('res.cloudinary.com') && u.includes('/upload/') && !/\/upload\/[a-z]_/.test(u)) ? u.replace('/upload/', '/upload/c_limit,w_400,f_auto,q_auto/') : u;
+
+let S = {};            // S[key] = {label, nama, kontak, bio, foto, file, previewUrl, hapusFoto}
+let dirty = false;
 
 // ================= CEK LOGIN =================
 auth.onAuthStateChanged(user => {
   if (!user) {
     window.location.href = "login.html";
   } else {
-    document.getElementById('adminEmail').innerHTML = `<i class="fas fa-user-circle me-1"></i>${user.email}`;
+    $('adminEmail').innerHTML = `<i class="fas fa-user-circle me-1"></i>${esc(user.email)}`;
     loadData();
   }
 });
@@ -607,178 +499,159 @@ auth.onAuthStateChanged(user => {
 // ================= LOGOUT =================
 function logout() {
   auth.signOut()
-    .then(() => {
-      window.location.href = "login.html";
-    })
-    .catch(error => {
-      showAlert('Gagal logout: ' + error.message, 'danger');
-    });
+    .then(() => { window.location.href = "login.html"; })
+    .catch(error => { showAlert('Gagal logout: ' + error.message, 'danger'); });
 }
 
-// ================= SHOW ALERT =================
+// ================= SHOW ALERT / LOADING =================
 function showAlert(message, type = 'success') {
-  const alertEl = document.getElementById('alertMessage');
-  alertEl.className = `alert alert-${type}`;
-  alertEl.style.display = 'block';
-  alertEl.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>${message}`;
-  
-  setTimeout(() => {
-    alertEl.style.display = 'none';
-  }, 3000);
+  const el = $('alertMessage');
+  el.className = `alert alert-${type}`;
+  el.style.display = 'block';
+  el.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>${esc(message)}`;
+  clearTimeout(showAlert._t);
+  showAlert._t = setTimeout(() => { el.style.display = 'none'; }, type === 'success' ? 3500 : 7000);
+}
+function showLoading(show) { $('loadingSpinner').style.display = show ? 'flex' : 'none'; }
+
+// ================= FORMULIR =================
+const kosong = (it) => ({ label: it.label, nama: '', kontak: '', bio: '', foto: '', file: null, previewUrl: '', hapusFoto: false });
+function fotoSrc(s) { return s.previewUrl || (!s.hapusFoto && s.foto) || ''; }
+function frameHTML(src, previewIsLocal) {
+  if (!src) return '<i class="fas fa-user pc-empty"></i>';
+  const u = previewIsLocal ? src : kecil(src);
+  return `<img class="ph-bd" src="${esc(u)}" alt="" aria-hidden="true"><img class="ph-main" src="${esc(u)}" alt="">`;
+}
+function cardHTML(it) {
+  const s = S[it.key], src = fotoSrc(s);
+  return `<div class="pcard" data-k="${it.key}">
+    <div class="pc-photo">
+      <div class="ph pc-frame">${frameHTML(src, Boolean(s.previewUrl))}</div>
+      <label class="btn btn-outline-primary btn-sm" for="f-${it.key}"><i class="fas fa-camera me-1"></i>${src ? 'Ganti foto' : 'Tambah foto'}</label>
+      <input type="file" id="f-${it.key}" data-file accept="image/*" hidden>
+      ${src ? '<button type="button" class="btn btn-danger btn-sm" data-act="rmfoto"><i class="fas fa-trash me-1"></i>Hapus foto</button>' : ''}
+    </div>
+    <div class="pc-fields">
+      <div class="pc-row">
+        <div class="form-group"><label class="form-label" for="l-${it.key}">${it.badge ? 'Nama seksi' : 'Nama jabatan'}${it.badge ? `<span class="pc-tag">${esc(it.badge)}</span>` : ''}</label>
+          <input type="text" class="form-control" id="l-${it.key}" data-f="label" value="${esc(s.label)}" maxlength="40" placeholder="${it.badge ? 'Contoh: Koor & Musik' : 'Contoh: Sekretaris'}" autocomplete="off"></div>
+        <div class="form-group"><label class="form-label" for="n-${it.key}">Nama</label>
+          <input type="text" class="form-control" id="n-${it.key}" data-f="nama" value="${esc(s.nama)}" maxlength="60" placeholder="Nama lengkap" autocomplete="off"></div>
+      </div>
+      <div class="form-group"><label class="form-label" for="k-${it.key}">Kontak WhatsApp</label>
+        <input type="text" class="form-control" id="k-${it.key}" data-f="kontak" value="${esc(s.kontak)}" maxlength="20" placeholder="Contoh: 0813-6085-6654" inputmode="tel" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label" for="b-${it.key}">Bio<span class="pc-cnt" data-v="cnt">${s.bio.length}/300</span></label>
+        <textarea class="form-control" id="b-${it.key}" data-f="bio" maxlength="300" placeholder="Cerita singkat tentang pengurus ini (opsional)">${esc(s.bio)}</textarea></div>
+    </div>
+  </div>`;
+}
+function renderForms() {
+  $('forms').innerHTML = GROUPS.map(g => `
+    <div class="section-card">
+      <h5 class="section-title"><i class="fas ${g.ikon}"></i> ${esc(g.judul)}</h5>
+      ${g.note ? `<p class="pc-note">${esc(g.note)}</p>` : ''}
+      ${g.items.map(cardHTML).join('')}
+    </div>`).join('');
+}
+function renderCard(key) {
+  const it = ALL.find(x => x.key === key), old = document.querySelector(`.pcard[data-k="${key}"]`);
+  if (it && old) { const t = document.createElement('div'); t.innerHTML = cardHTML(it); old.replaceWith(t.firstElementChild); }
 }
 
-// ================= SHOW LOADING =================
-function showLoading(show) {
-  document.getElementById('loadingSpinner').style.display = show ? 'flex' : 'none';
+// isian
+$('forms').addEventListener('input', (e) => {
+  const f = e.target.dataset.f; if (!f) return;
+  const card = e.target.closest('.pcard'), k = card.dataset.k;
+  S[k][f] = e.target.value;
+  if (f === 'bio') card.querySelector('[data-v="cnt"]').textContent = e.target.value.length + '/300';
+  dirty = true; updatePreview();
+});
+$('forms').addEventListener('change', (e) => { if (e.target.dataset.file !== undefined) pilihFoto(e.target.closest('.pcard').dataset.k, e.target.files[0]); });
+$('forms').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act="rmfoto"]'); if (!b) return;
+  const k = b.closest('.pcard').dataset.k;
+  S[k].file = null; S[k].previewUrl = ''; S[k].hapusFoto = true; dirty = true; renderCard(k); updatePreview();
+});
+function pilihFoto(k, file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showAlert('File harus berupa gambar.', 'danger'); renderCard(k); return; }
+  if (file.size > 5 * 1024 * 1024) { showAlert('Ukuran foto maksimal 5 MB.', 'danger'); renderCard(k); return; }
+  const r = new FileReader();
+  r.onload = (ev) => { S[k].file = file; S[k].previewUrl = ev.target.result; S[k].hapusFoto = false; dirty = true; renderCard(k); updatePreview(); };
+  r.readAsDataURL(file);
+}
+window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+// ================= PREVIEW =================
+function updatePreview() {
+  $('previewTable').innerHTML = ALL.map(it => {
+    const s = S[it.key]; if (!s.label.trim()) return '';
+    const src = fotoSrc(s);
+    return `<tr>
+      <td><span class="pv-thumb ph">${src ? frameHTML(src, Boolean(s.previewUrl)) : '<i class="fas fa-user"></i>'}</span></td>
+      <td><strong>${esc(s.label)}</strong>${it.badge ? ` <span class="pc-tag">${esc(it.badge)}</span>` : ''}</td>
+      <td>${s.nama ? esc(s.nama) : '<span style="color:#94a3b8">Belum diisi</span>'}</td>
+      <td>${esc(s.kontak) || '-'}</td>
+      <td style="max-width:260px;color:#64748b">${esc(s.bio.length > 70 ? s.bio.slice(0, 70) + '…' : s.bio) || '-'}</td></tr>`;
+  }).join('');
 }
 
 // ================= LOAD DATA DARI FIRESTORE =================
 async function loadData() {
   showLoading(true);
-  
   try {
-    const docRef = db.collection("pengurus").doc("kepengurusan");
-    const docSnap = await docRef.get();
-    
-    if (docSnap.exists) {
-      const data = docSnap.data();
-      
-      // Inti Pengurus
-      document.getElementById('ketua').value = data.ketua || 'Ricky Sihombing';
-      document.getElementById('ketua_kontak').value = data.ketua_kontak || '0812-3456-7890';
-      document.getElementById('sekretaris').value = data.sekretaris || 'Gabriel Marbun';
-      document.getElementById('sekretaris_kontak').value = data.sekretaris_kontak || '0812-3456-7891';
-      document.getElementById('bendahara').value = data.bendahara || 'Vincen Manurung';
-      document.getElementById('bendahara_kontak').value = data.bendahara_kontak || '0812-3456-7892';
-      
-      // 7 Seksi
-      document.getElementById('seksi1').value = data.seksi1 || 'Liven Manalu';
-      document.getElementById('seksi1_kontak').value = data.seksi1_kontak || '0812-3456-7893';
-      document.getElementById('seksi2').value = data.seksi2 || 'Dirga Simarmata';
-      document.getElementById('seksi2_kontak').value = data.seksi2_kontak || '0812-3456-7894';
-      document.getElementById('seksi3').value = data.seksi3 || 'Bella Tampubolon';
-      document.getElementById('seksi3_kontak').value = data.seksi3_kontak || '0812-3456-7895';
-      document.getElementById('seksi4').value = data.seksi4 || 'Frans Hutagalung';
-      document.getElementById('seksi4_kontak').value = data.seksi4_kontak || '0812-3456-7896';
-      document.getElementById('seksi5').value = data.seksi5 || 'Herland Pardede';
-      document.getElementById('seksi5_kontak').value = data.seksi5_kontak || '0812-3456-7897';
-      document.getElementById('seksi6').value = data.seksi6 || 'Putri Manalu';
-      document.getElementById('seksi6_kontak').value = data.seksi6_kontak || '0812-3456-7898';
-      document.getElementById('seksi7').value = data.seksi7 || 'Samuel Sitanggang';
-      document.getElementById('seksi7_kontak').value = data.seksi7_kontak || '0812-3456-7899';
-      
-      // Parguru & Inang
-      document.getElementById('parguru').value = data.parguru || 'Gabriel Manullang';
-      document.getElementById('parguru_kontak').value = data.parguru_kontak || '0812-3456-7800';
-      document.getElementById('inang').value = data.inang || 'Ibu Sorta Simanjuntak';
-      document.getElementById('inang_kontak').value = data.inang_kontak || '0812-3456-7810';
-    } else {
-      // Data default jika belum ada
-      console.log("Data belum ada, menggunakan default");
-    }
-    
-    updatePreview();
-    showAlert('Data berhasil dimuat', 'success');
-    
+    const snap = await DOC.get();
+    const d = snap.exists ? snap.data() : {};
+    S = {};
+    ALL.forEach(it => {
+      S[it.key] = {
+        label: d[it.key + '_label'] !== undefined ? d[it.key + '_label'] : it.label,   // '' = sengaja dikosongkan
+        nama: d[it.key] || '', kontak: d[it.key + '_kontak'] || '', bio: d[it.key + '_bio'] || '',
+        foto: d[it.key + '_foto'] || '', file: null, previewUrl: '', hapusFoto: false
+      };
+    });
+    renderForms(); updatePreview(); dirty = false;
+    if (!snap.exists) showAlert('Belum ada data tersimpan. Isi lalu simpan.', 'success');
   } catch (error) {
     console.error("Error loading data:", error);
+    ALL.forEach(it => { S[it.key] = kosong(it); });
+    renderForms(); updatePreview();
     showAlert('Gagal memuat data: ' + error.message, 'danger');
   }
-  
   showLoading(false);
 }
 
 // ================= SIMPAN DATA KE FIRESTORE =================
+async function unggah(file) {
+  const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', PRESET);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, { method: 'POST', body: fd });
+  if (!res.ok) throw new Error('Upload foto gagal (' + res.status + ').');
+  return (await res.json()).secure_url;
+}
 async function simpanData() {
   showLoading(true);
-  
   try {
-    const data = {
-      // Inti Pengurus
-      ketua: document.getElementById('ketua').value,
-      ketua_kontak: document.getElementById('ketua_kontak').value,
-      sekretaris: document.getElementById('sekretaris').value,
-      sekretaris_kontak: document.getElementById('sekretaris_kontak').value,
-      bendahara: document.getElementById('bendahara').value,
-      bendahara_kontak: document.getElementById('bendahara_kontak').value,
-      
-      // 7 Seksi
-      seksi1: document.getElementById('seksi1').value,
-      seksi1_kontak: document.getElementById('seksi1_kontak').value,
-      seksi2: document.getElementById('seksi2').value,
-      seksi2_kontak: document.getElementById('seksi2_kontak').value,
-      seksi3: document.getElementById('seksi3').value,
-      seksi3_kontak: document.getElementById('seksi3_kontak').value,
-      seksi4: document.getElementById('seksi4').value,
-      seksi4_kontak: document.getElementById('seksi4_kontak').value,
-      seksi5: document.getElementById('seksi5').value,
-      seksi5_kontak: document.getElementById('seksi5_kontak').value,
-      seksi6: document.getElementById('seksi6').value,
-      seksi6_kontak: document.getElementById('seksi6_kontak').value,
-      seksi7: document.getElementById('seksi7').value,
-      seksi7_kontak: document.getElementById('seksi7_kontak').value,
-      
-      // Parguru & Inang
-      parguru: document.getElementById('parguru').value,
-      parguru_kontak: document.getElementById('parguru_kontak').value,
-      inang: document.getElementById('inang').value,
-      inang_kontak: document.getElementById('inang_kontak').value,
-      
-      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    
-    await db.collection("pengurus").doc("kepengurusan").set(data);
-    
-    updatePreview();
-    showAlert('Data kepengurusan berhasil disimpan!', 'success');
-    
+    const data = { lastUpdated: firebase.firestore.FieldValue.serverTimestamp() };
+    for (const it of ALL) {
+      const s = S[it.key];
+      let foto = s.hapusFoto ? '' : s.foto;
+      if (s.file) foto = await unggah(s.file);
+      data[it.key] = s.nama.trim();
+      data[it.key + '_label'] = s.label.trim();
+      data[it.key + '_kontak'] = s.kontak.trim();
+      data[it.key + '_bio'] = s.bio.trim();
+      data[it.key + '_foto'] = foto;
+    }
+    await DOC.set(data, { merge: true });
+    ALL.forEach(it => { const s = S[it.key]; s.foto = data[it.key + '_foto']; s.file = null; s.previewUrl = ''; s.hapusFoto = false; });
+    renderForms(); updatePreview(); dirty = false;
+    showAlert('Data kepengurusan berhasil disimpan', 'success');
   } catch (error) {
     console.error("Error saving data:", error);
-    showAlert('Gagal menyimpan: ' + error.message, 'danger');
+    showAlert(error.code === 'permission-denied' ? 'Firestore menolak penyimpanan. Periksa Rules untuk dokumen pengurus/kepengurusan.' : 'Gagal menyimpan data: ' + error.message, 'danger');
   }
-  
   showLoading(false);
 }
-
-// ================= UPDATE PREVIEW TABLE =================
-function updatePreview() {
-  const data = [
-    { jabatan: 'Ketua Naposobulung', nama: document.getElementById('ketua').value, kontak: document.getElementById('ketua_kontak').value },
-    { jabatan: 'Sekretaris', nama: document.getElementById('sekretaris').value, kontak: document.getElementById('sekretaris_kontak').value },
-    { jabatan: 'Bendahara', nama: document.getElementById('bendahara').value, kontak: document.getElementById('bendahara_kontak').value },
-    { jabatan: 'Seksi 1 (Koor & Musik)', nama: document.getElementById('seksi1').value, kontak: document.getElementById('seksi1_kontak').value },
-    { jabatan: 'Seksi 2 (Perlengkapan)', nama: document.getElementById('seksi2').value, kontak: document.getElementById('seksi2_kontak').value },
-    { jabatan: 'Seksi 3 (Konsumsi)', nama: document.getElementById('seksi3').value, kontak: document.getElementById('seksi3_kontak').value },
-    { jabatan: 'Seksi 4 (Dokumentasi)', nama: document.getElementById('seksi4').value, kontak: document.getElementById('seksi4_kontak').value },
-    { jabatan: 'Seksi 5 (Kebersihan)', nama: document.getElementById('seksi5').value, kontak: document.getElementById('seksi5_kontak').value },
-    { jabatan: 'Seksi 6 (Acara & Kreatif)', nama: document.getElementById('seksi6').value, kontak: document.getElementById('seksi6_kontak').value },
-    { jabatan: 'Seksi 7 (Humas)', nama: document.getElementById('seksi7').value, kontak: document.getElementById('seksi7_kontak').value },
-    { jabatan: 'Koordinator Parguru', nama: document.getElementById('parguru').value, kontak: document.getElementById('parguru_kontak').value },
-    { jabatan: 'Inang Paniroi', nama: document.getElementById('inang').value, kontak: document.getElementById('inang_kontak').value }
-  ];
-  
-  let html = '';
-  data.forEach(item => {
-    html += `
-      <tr>
-        <td><strong>${item.jabatan}</strong></td>
-        <td>${item.nama || '-'}</td>
-        <td>${item.kontak || '-'}</td>
-      </tr>
-    `;
-  });
-  
-  document.getElementById('previewTable').innerHTML = html;
-}
-
-// ================= INIT LOAD =================
-document.addEventListener('DOMContentLoaded', () => {
-  // Update preview setiap ada perubahan input
-  const inputs = document.querySelectorAll('input');
-  inputs.forEach(input => {
-    input.addEventListener('keyup', updatePreview);
-  });
-});
 </script>
 
 <script src="js/pwa-init.js"></script>

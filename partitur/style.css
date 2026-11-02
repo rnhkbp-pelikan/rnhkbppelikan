@@ -70,7 +70,7 @@ code{background:var(--teal-soft);padding:1px 7px;border-radius:6px;font-size:.88
 .song-card:nth-child(2){animation-delay:.04s}.song-card:nth-child(3){animation-delay:.08s}.song-card:nth-child(4){animation-delay:.12s}.song-card:nth-child(n+5){animation-delay:.16s}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .thumb{position:relative;display:block;width:100%;aspect-ratio:4/4.4;padding:0;border:0;cursor:pointer;overflow:hidden;background:linear-gradient(160deg,var(--teal-soft),var(--sky))}
-.thumb img{position:absolute;inset:16px 16px 0 16px;width:calc(100% - 32px);height:calc(100% - 16px);object-fit:cover;object-position:top;background:#fff;border-radius:10px 10px 0 0;box-shadow:0 10px 26px -10px #0b2a2d66;transition:transform .3s}
+.thumb img{position:absolute;inset:16px 16px 0 16px;width:calc(100% - 32px);height:calc(100% - 16px);object-fit:contain;object-position:center top;background:#fff;border-radius:10px 10px 0 0;box-shadow:0 10px 26px -10px #0b2a2d66;transition:transform .3s}
 .song-card:hover .thumb img{transform:translateY(-3px)}
 .thumb-fallback{position:absolute;inset:0;display:grid;place-items:center;font-size:3rem;color:var(--teal);opacity:.55}
 .badge-new{position:absolute;top:12px;left:12px;z-index:2;padding:4px 11px;border-radius:999px;background:var(--coral);color:#2a0d04;font-size:.7rem;font-weight:800;letter-spacing:.08em;box-shadow:0 6px 14px -6px #ff7a59}
@@ -131,7 +131,7 @@ fieldset.source legend{padding:0;margin-bottom:10px;font-size:.88rem;font-weight
 #photoInput::file-selector-button{margin-right:14px;padding:9px 16px;border:0;border-radius:10px;background:var(--teal);color:#fff;font:inherit;font-weight:700;cursor:pointer}
 .photo-list{display:grid;gap:10px;margin:14px 0 0;padding:0;list-style:none}
 .photo-list li{display:flex;align-items:center;gap:14px;padding:10px;background:#fff;border:1px solid var(--line);border-radius:14px}
-.photo-list img{width:54px;height:54px;object-fit:cover;border-radius:9px}
+.photo-list img{width:54px;height:54px;object-fit:contain;background:#eef2f6;border-radius:9px}
 .pname{flex:1;font-size:.9rem;font-weight:600;overflow-wrap:anywhere}
 .pbtns{display:flex;gap:6px}
 .pbtns .button{padding:7px 12px}

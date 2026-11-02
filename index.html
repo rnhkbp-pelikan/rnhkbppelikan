@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta property="og:site_name" content="RNHKBP Pelikan">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "RNHKBP Pelikan",
-  "alternateName": "RNHKBP Pelikan Raya",
-  "url": "https://rnhkbp-pelikan.github.io/rnhkbppelikan/"
-}
-</script>
   <meta name="google-site-verification" content="IpEgfeEtGRFA-t9VZ0LZSQUHX5l5-g-uP36x_ayAUPI" />
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#3b82f6">
@@ -532,14 +521,12 @@
       box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
     }
 
-    .article-card img {
-      height: 180px;
-      object-fit: cover;
-      transition: transform 0.5s ease;
+    .article-card .ph {
+      height: 190px;
     }
 
-    .article-card:hover img {
-      transform: scale(1.05);
+    .article-card:hover .ph-main {
+      transform: scale(1.03);
     }
 
     .article-card .card-body {
@@ -866,6 +853,14 @@
     }
   </style>
   <link rel="stylesheet" href="css/kegiatan.css">
+  <link rel="stylesheet" href="css/foto.css">
+  <link rel="stylesheet" href="css/pengurus.css">
+  <link rel="stylesheet" href="css/kontak.css">
+  <link rel="stylesheet" href="css/tema.css">
+  <link rel="stylesheet" href="css/pengaturan.css">
+  <script src="js/pengaturan.js"></script>
+  <script src="js/kontak-data.js"></script>
+  <script src="js/pengurus-data.js"></script>
   <script src="js/kegiatan-data.js"></script>
 </head>
 <body>
@@ -1022,7 +1017,7 @@
           <i class="fas fa-users-cog"></i>
         </div>
         <h4>Kepengurusan</h4>
-        <p>Profil lengkap pengurus Naposobulung, Parguru, Inang Paniroi, dan 7 Seksi.</p>
+        <p>Profil lengkap pengurus Naposobulung, Parguru, Paniroi Naposobulung, dan 10 Seksi.</p>
         <a href="#profil" class="btn">Lihat Profil</a>
       </div>
     </div>
@@ -1062,140 +1057,39 @@
 <section id="profil" class="profil-section">
   <div class="container">
     <h2 class="section-title">Kepengurusan <span>RNHKBP</span></h2>
-    
-    <!-- KETUA, SEKRETARIS, BENDAHARA -->
-    <div class="row g-4 mb-5">
-      <div class="col-md-4">
-        <div class="kepengurusan-card">
-          <div class="kepengurusan-icon">
-            <i class="fas fa-user-tie"></i>
-          </div>
-          <h4>Ketua Naposobulung</h4>
-          <div class="jabatan">Koordinator</div>
-          <div class="nama" id="ketua">-</div>
-          <div class="kontak"><i class="fab fa-whatsapp me-1"></i> <span id="ketua_kontak">-</span></div>
-        </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="kepengurusan-card">
-          <div class="kepengurusan-icon">
-            <i class="fas fa-file-signature"></i>
-          </div>
-          <h4>Sekretaris</h4>
-          <div class="jabatan">Administrasi</div>
-          <div class="nama" id="sekretaris">-</div>
-          <div class="kontak"><i class="fab fa-whatsapp me-1"></i> <span id="sekretaris_kontak">-</span></div>
-        </div>
-      </div>
-      
-      <div class="col-md-4">
-        <div class="kepengurusan-card">
-          <div class="kepengurusan-icon">
-            <i class="fas fa-coins"></i>
-          </div>
-          <h4>Bendahara</h4>
-          <div class="jabatan">Keuangan</div>
-          <div class="nama" id="bendahara">-</div>
-          <div class="kontak"><i class="fab fa-whatsapp me-1"></i> <span id="bendahara_kontak">-</span></div>
-        </div>
-      </div>
+
+    <div class="pg-group">
+      <h4 class="pg-sub">Inti Pengurus</h4>
+      <div class="pg-list pg-3" id="pgInti"></div>
     </div>
-    
-    <!-- 7 SEKSI NAPOSO -->
-    <h4 class="text-center mb-4" style="color: var(--primary-dark);">7 Seksi Naposobulung</h4>
-    <div class="row g-4 mb-5">
-      <div class="col-md-3 col-6">
-        <div class="kepengurusan-card">
-          <span class="seksi-badge">Seksi 1</span>
-          <h5>Koor & Musik</h5>
-          <div class="nama" id="seksi1">-</div>
-          <div class="kontak" id="seksi1_kontak">-</div>
-        </div>
-      </div>
-      
-      <div class="col-md-3 col-6">
-        <div class="kepengurusan-card">
-          <span class="seksi-badge">Seksi 2</span>
-          <h5>Perlengkapan</h5>
-          <div class="nama" id="seksi2">-</div>
-          <div class="kontak" id="seksi2_kontak">-</div>
-        </div>
-      </div>
-      
-      <div class="col-md-3 col-6">
-        <div class="kepengurusan-card">
-          <span class="seksi-badge">Seksi 3</span>
-          <h5>Konsumsi</h5>
-          <div class="nama" id="seksi3">-</div>
-          <div class="kontak" id="seksi3_kontak">-</div>
-        </div>
-      </div>
-      
-      <div class="col-md-3 col-6">
-        <div class="kepengurusan-card">
-          <span class="seksi-badge">Seksi 4</span>
-          <h5>Dokumentasi</h5>
-          <div class="nama" id="seksi4">-</div>
-          <div class="kontak" id="seksi4_kontak">-</div>
-        </div>
-      </div>
-      
-      <div class="col-md-3 col-6">
-        <div class="kepengurusan-card">
-          <span class="seksi-badge">Seksi 5</span>
-          <h5>Kebersihan</h5>
-          <div class="nama" id="seksi5">-</div>
-          <div class="kontak" id="seksi5_kontak">-</div>
-        </div>
-      </div>
-      
-      <div class="col-md-3 col-6">
-        <div class="kepengurusan-card">
-          <span class="seksi-badge">Seksi 6</span>
-          <h5>Acara & Kreatif</h5>
-          <div class="nama" id="seksi6">-</div>
-          <div class="kontak" id="seksi6_kontak">-</div>
-        </div>
-      </div>
-      
-      <div class="col-md-3 col-6">
-        <div class="kepengurusan-card">
-          <span class="seksi-badge">Seksi 7</span>
-          <h5>Humas</h5>
-          <div class="nama" id="seksi7">-</div>
-          <div class="kontak" id="seksi7_kontak">-</div>
-        </div>
-      </div>
-      
-      <div class="col-md-3 col-6">
-        <div class="kepengurusan-card">
-          <span class="seksi-badge">Parguru</span>
-          <h5>Parguru Malua</h5>
-          <div class="nama" id="parguru">-</div>
-          <div class="kontak" id="parguru_kontak">-</div>
-        </div>
-      </div>
+
+    <div class="pg-group">
+      <h4 class="pg-sub" id="pgSeksiJudul">Seksi Naposobulung</h4>
+      <div class="pg-list pg-5" id="pgSeksi"></div>
     </div>
-    
-    <!-- INANG PANIROI -->
-    <h4 class="text-center mb-4" style="color: var(--primary-dark);">Inang Paniroi</h4>
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="kepengurusan-card">
-          <div class="kepengurusan-icon">
-            <i class="fas fa-female"></i>
-          </div>
-          <h4>Inang Paniroi</h4>
-          <div class="jabatan">Pembina Naposobulung</div>
-          <div class="nama" id="inang">-</div>
-          <div class="kontak"><i class="fab fa-whatsapp me-1"></i> <span id="inang_kontak">-</span></div>
-          <div class="mt-2 small text-muted">"Membimbing dengan kasih"</div>
-        </div>
-      </div>
+
+    <div class="pg-group">
+      <h4 class="pg-sub">Pembina</h4>
+      <div class="pg-list pg-2" id="pgPembina"></div>
     </div>
   </div>
 </section>
+
+<!-- Jendela profil pengurus -->
+<div class="pg-modal" id="pgModal" aria-hidden="true">
+  <div class="pg-dialog" role="dialog" aria-modal="true" aria-labelledby="pgmName">
+    <button type="button" class="pg-x" id="pgClose" aria-label="Tutup"><i class="fas fa-xmark"></i></button>
+    <div class="pg-m-photo" id="pgmPhoto"></div>
+    <div class="pg-m-body">
+      <span class="pg-badge" id="pgmBadge" style="align-self:flex-start"></span>
+      <h3 id="pgmRole"></h3>
+      <h2 id="pgmName"></h2>
+      <p id="pgmBio"></p>
+      <div id="pgmKontak"></div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Tentang Section -->
 <section id="tentang" class="about-section">
@@ -1207,7 +1101,10 @@
         <p>Kami hadir untuk membangun persekutuan yang saling mengasihi, bertumbuh dalam iman, dan melayani sesama melalui berbagai kegiatan rohani dan sosial. Setiap minggu kami mengadakan Partangiangan dan Latihan Koor sebagai bentuk pelayanan dan persekutuan.</p>
       </div>
       <div class="col-lg-6">
-        <img id="tentangFoto" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 700'%3E%3Crect width='1000' height='700' fill='%23dbe7ff'/%3E%3Ctext x='500' y='370' font-family='Arial' font-size='84' text-anchor='middle' fill='%232563eb' opacity='.55'%3ENHKBP Pelikan%3C/text%3E%3C/svg%3E" class="img-fluid rounded-4 shadow" alt="Tentang Kami" style="width:100%;aspect-ratio:10/7;object-fit:cover;">
+        <span class="ph nat" style="--ph-max:560px;border-radius:24px;box-shadow:0 18px 40px -22px rgba(15,31,61,.45)">
+          <img class="ph-bd" id="tentangFotoBd" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 700'%3E%3Crect width='1000' height='700' fill='%23dbe7ff'/%3E%3Ctext x='500' y='370' font-family='Arial' font-size='84' text-anchor='middle' fill='%232563eb' opacity='.55'%3ENHKBP Pelikan%3C/text%3E%3C/svg%3E" alt="" aria-hidden="true">
+          <img class="ph-main" id="tentangFoto" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 700'%3E%3Crect width='1000' height='700' fill='%23dbe7ff'/%3E%3Ctext x='500' y='370' font-family='Arial' font-size='84' text-anchor='middle' fill='%232563eb' opacity='.55'%3ENHKBP Pelikan%3C/text%3E%3C/svg%3E" alt="Tentang Kami">
+        </span>
       </div>
     </div>
   </div>
@@ -1237,48 +1134,10 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-5">
-        <div class="contact-info">
+        <div class="contact-info kt-wrap">
           <h2>Hubungi Kami</h2>
-          
-          <div class="info-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <div>
-              <h5>Alamat</h5>
-              <p>Jl. Pelikan Raya No. 1, Perumnas Mandala, Medan, Sumatera Utara 20226</p>
-            </div>
-          </div>
-          
-          <div class="info-item">
-            <i class="fas fa-phone"></i>
-            <div>
-              <h5>Telepon</h5>
-              <p>+62 812 3456 7890</p>
-            </div>
-          </div>
-          
-          <div class="info-item">
-            <i class="fas fa-envelope"></i>
-            <div>
-              <h5>Email</h5>
-              <p>info@nhkbp-pelikan.org</p>
-            </div>
-          </div>
-          
-          <div class="info-item">
-            <i class="fab fa-instagram"></i>
-            <div>
-              <h5>Instagram</h5>
-              <a href="https://www.instagram.com/nhkbppelikanrealaccount" target="_blank">
-                @nhkbppelikanrealaccount
-              </a>
-            </div>
-          </div>
-          
-          <div class="social-links">
-            <a href="https://www.instagram.com/nhkbppelikanrealaccount" target="_blank" class="social-btn">
-              <i class="fab fa-instagram"></i>
-            </a>
-          </div>
+          <div class="kt-list" id="kontakItems"></div>
+          <div class="kt-jam" id="kontakJam"></div>
         </div>
       </div>
       
@@ -1288,22 +1147,29 @@
           <form id="formPesan">
             <div class="row">
               <div class="col-md-6 mb-3">
-                <input type="text" class="form-control" placeholder="Nama Lengkap" required>
+                <input type="text" id="pesanNama" class="form-control" placeholder="Nama Lengkap" required maxlength="60" autocomplete="name">
               </div>
               <div class="col-md-6 mb-3">
-                <input type="email" class="form-control" placeholder="Email" required>
+                <input type="email" id="pesanEmail" class="form-control" placeholder="Email (opsional)" autocomplete="email">
               </div>
             </div>
             <div class="mb-3">
-              <input type="text" class="form-control" placeholder="Subjek" required>
+              <input type="text" id="pesanSubjek" class="form-control" placeholder="Subjek" required maxlength="80">
             </div>
             <div class="mb-3">
-              <textarea class="form-control" rows="4" placeholder="Pesan Anda" required></textarea>
+              <textarea id="pesanIsi" class="form-control" rows="4" placeholder="Pesan Anda" required maxlength="1000"></textarea>
             </div>
             <button type="submit" class="btn btn-primary w-100">
-              <i class="fas fa-paper-plane me-2"></i>Kirim Pesan
+              <i class="fab fa-whatsapp me-2"></i>Kirim via WhatsApp
             </button>
+            <p class="kt-note"><i class="fab fa-whatsapp"></i>Pesan dikirim lewat WhatsApp admin. Balasan otomatis muncul di sini.</p>
           </form>
+          <div class="kt-reply" id="ktReply" hidden>
+            <div class="kt-reply-head"><img src="logo.png" alt=""><div><b>Balasan otomatis</b><span id="ktWaktu"></span></div></div>
+            <div class="kt-bubble" id="ktBubble"></div>
+            <div class="kt-bubble" id="ktBubble2" hidden></div>
+            <div class="kt-reply-foot">Jika WhatsApp tidak terbuka, <a id="ktWaLink" href="#" target="_blank" rel="noopener">klik di sini untuk melanjutkan</a>.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1343,17 +1209,17 @@
         <ul class="footer-links">
           <li><a href="#profil">Ketua Naposobulung</a></li>
           <li><a href="#profil">Sekretaris & Bendahara</a></li>
-          <li><a href="#profil">7 Seksi Naposo</a></li>
-          <li><a href="#profil">Inang Paniroi</a></li>
+          <li><a href="#profil">10 Seksi Naposo</a></li>
+          <li><a href="#profil">Paniroi Naposobulung</a></li>
         </ul>
       </div>
       
       <div class="col-lg-3 mb-4">
         <h5>Info Kontak</h5>
-        <ul class="footer-contact">
-          <li><i class="fas fa-map-marker-alt"></i> Jl. Pelikan Raya No. 1</li>
-          <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
-          <li><i class="fas fa-envelope"></i> info@nhkbp-pelikan.org</li>
+        <ul class="footer-contact" id="footKontak">
+          <li><i class="fas fa-map-marker-alt"></i> <a href="https://maps.app.goo.gl/xH5D7FNRyEXDWFrF8" target="_blank" rel="noopener">Jl. Pelikan 5 No. 2, Medan Denai</a></li>
+          <li><i class="fas fa-phone"></i> <a href="tel:+6281360856654">0813-6085-6654</a></li>
+          <li><i class="fas fa-envelope"></i> <a href="mailto:rnhkbppelikan@gmail.com">rnhkbppelikan@gmail.com</a></li>
           <li><i class="fab fa-instagram"></i> <a href="https://www.instagram.com/nhkbppelikanrealaccount" target="_blank">@nhkbppelikanrealaccount</a></li>
         </ul>
       </div>
@@ -1430,7 +1296,7 @@ function renderKegiatan(items) {
   section.style.display = '';
   list.innerHTML = items.map((k, i) => {
     const w = window.KEGIATAN_WARNA[i % window.KEGIATAN_WARNA.length];
-    const foto = k.foto ? `<div class="kgp-photo"><img src="${escKg(optKg(k.foto, 700))}" alt="${escKg(k.nama)}" loading="lazy" onerror="this.parentNode.remove()"></div>` : '';
+    const foto = k.foto ? `<div class="kgp-photo ph">${frKg(k.foto, k.nama, 700)}</div>` : '';
     const meta = [
       k.jadwal ? `<span><i class="far fa-clock"></i>${escKg(k.jadwal)}</span>` : '',
       k.lokasi ? `<span><i class="fas fa-location-dot"></i>${escKg(k.lokasi)}</span>` : ''
@@ -1544,48 +1410,94 @@ document.getElementById('btnSemuaRenungan').addEventListener('click', () => {
 });
 listenRenungan();
 
+// ================= BANTUAN FOTO (tidak terpotong) =================
+const NOIMG_PH = 'data:image/svg+xml,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><rect width='800' height='500' fill='#dbe7ff'/><g fill='#93b4ff'><circle cx='330' cy='210' r='34'/><path d='M200 360l120-130 90 90 70-70 120 110z'/></g><text x='400' y='430' font-family='Arial' font-size='34' text-anchor='middle' fill='#2563eb' opacity='.55'>RNHKBP Pelikan</text></svg>");
+function phErr(i) { i.onerror = null; i.src = NOIMG_PH; const b = i.parentNode && i.parentNode.querySelector('.ph-bd'); if (b) b.remove(); }
+const optFoto = (u, w) => (u && u.includes('res.cloudinary.com') && u.includes('/upload/') && !/\/upload\/[a-z]_/.test(u)) ? u.replace('/upload/', '/upload/c_limit,w_' + w + ',f_auto,q_auto/') : u;
+const frKg = (url, alt, w) => {
+  const src = escKg(optFoto(url, w) || '');
+  return src
+    ? `<img class="ph-bd" src="${src}" alt="" aria-hidden="true" loading="lazy" onerror="this.remove()"><img class="ph-main" src="${src}" alt="${escKg(alt)}" loading="lazy" onerror="phErr(this)">`
+    : `<img class="ph-main" src="${NOIMG_PH}" alt="">`;
+};
+const plainKg = (h) => new DOMParser().parseFromString((h || '').replace(/<(\/?)(p|h[1-6]|li|ul|ol|div|blockquote|br)\b/gi, ' <$1$2'), 'text/html').body.textContent.replace(/\s+/g, ' ').trim();
+
 // ================= LOAD KEPENGURUSAN =================
+const PG = {};   // data tiap kartu, dipakai jendela profil
+
+function pgCard(it, d, urut, badge) {
+  const label = d[it.key + '_label'] !== undefined ? d[it.key + '_label'] : it.label;
+  if (!String(label).trim()) return '';
+  const nama = (d[it.key] || '').trim(), kontak = (d[it.key + '_kontak'] || '').trim();
+  const bio = (d[it.key + '_bio'] || '').trim(), foto = (d[it.key + '_foto'] || '').trim();
+  const w = window.PENGURUS_WARNA[urut % window.PENGURUS_WARNA.length];
+  PG[it.key] = { label, nama, kontak, bio, foto, badge: badge || '', c1: w[0], c2: w[1] };
+  const photo = foto
+    ? `<div class="pg-photo ph">${frKg(foto, nama || label, 480)}</div>`
+    : `<div class="pg-ava">${nama ? `<b>${escKg(nama.charAt(0).toUpperCase())}</b>` : `<i class="fas ${escKg(it.ikon || 'fa-user')}"></i>`}</div>`;
+  return `<button type="button" class="pg-card" data-k="${it.key}" style="--c1:${w[0]};--c2:${w[1]};animation-delay:${Math.min(urut, 9) * 50}ms" aria-label="Lihat profil ${escKg(nama || label)}">
+    ${photo}
+    <div class="pg-body">
+      ${badge ? `<span class="pg-badge">${escKg(badge)}</span>` : ''}
+      <div class="pg-role">${escKg(label)}</div>
+      <div class="pg-name${nama ? '' : ' none'}">${nama ? escKg(nama) : 'Belum ditentukan'}</div>
+      ${bio ? `<p class="pg-bio">${escKg(bio)}</p>` : ''}
+      ${kontak ? `<div class="pg-wa"><i class="fab fa-whatsapp"></i>${escKg(kontak)}</div>` : ''}
+    </div>
+  </button>`;
+}
+
+function renderPengurus(d) {
+  const g = (id) => window.PENGURUS_GROUPS.find((x) => x.id === id);
+  let n = 0;
+  const bangun = (grup, withBadge) => grup.items.map((it) => pgCard(it, d, n++, withBadge ? it.badge : '')).join('');
+  document.getElementById('pgInti').innerHTML = bangun(g('inti'), false);
+  const seksiHtml = bangun(g('seksi'), true);
+  document.getElementById('pgSeksi').innerHTML = seksiHtml;
+  const jumlahSeksi = g('seksi').items.filter((it) => PG[it.key]).length;
+  document.getElementById('pgSeksiJudul').textContent = jumlahSeksi + ' Seksi Naposobulung';
+  document.getElementById('pgSeksi').parentNode.style.display = jumlahSeksi ? '' : 'none';
+  document.getElementById('pgPembina').innerHTML = bangun(g('pembina'), false);
+}
+
+function bukaProfil(key) {
+  const p = PG[key]; if (!p) return;
+  const modal = document.getElementById('pgModal');
+  modal.style.setProperty('--c1', p.c1);
+  document.getElementById('pgmPhoto').innerHTML = p.foto
+    ? `<div class="ph">${frKg(p.foto, p.nama || p.label, 900)}</div>`
+    : `<div class="pg-ava" style="--c1:${p.c1};--c2:${p.c2}">${p.nama ? `<b>${escKg(p.nama.charAt(0).toUpperCase())}</b>` : '<i class="fas fa-user"></i>'}</div>`;
+  const badge = document.getElementById('pgmBadge');
+  badge.textContent = p.badge; badge.style.display = p.badge ? '' : 'none';
+  document.getElementById('pgmRole').textContent = p.label;
+  document.getElementById('pgmName').textContent = p.nama || 'Belum ditentukan';
+  const bio = document.getElementById('pgmBio');
+  bio.textContent = p.bio || 'Bio belum diisi.'; bio.style.opacity = p.bio ? '1' : '.6';
+  const wa = window.waNomor(p.kontak);
+  document.getElementById('pgmKontak').innerHTML = wa
+    ? `<a class="pg-m-wa" href="https://wa.me/${wa}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i>Hubungi via WhatsApp</a><div class="pg-m-num">${escKg(p.kontak)}</div>` : '';
+  modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('pgClose').focus();
+}
+function tutupProfil() {
+  const modal = document.getElementById('pgModal');
+  modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); document.body.style.overflow = '';
+}
+document.getElementById('profil').addEventListener('click', (e) => { const c = e.target.closest('.pg-card'); if (c) bukaProfil(c.dataset.k); });
+document.getElementById('pgClose').addEventListener('click', tutupProfil);
+document.getElementById('pgModal').addEventListener('click', (e) => { if (e.target.id === 'pgModal') tutupProfil(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') tutupProfil(); });
+
 async function loadKepengurusan() {
+  let data = {};
   try {
-    const docRef = db.collection("pengurus").doc("kepengurusan");
-    const docSnap = await docRef.get();
-    
-    if (docSnap.exists) {
-      const data = docSnap.data();
-      
-      // Inti Pengurus
-      document.getElementById('ketua').textContent = data.ketua || 'Ricky Sihombing';
-      document.getElementById('ketua_kontak').textContent = data.ketua_kontak || '0812-3456-7890';
-      document.getElementById('sekretaris').textContent = data.sekretaris || 'Gabriel Marbun';
-      document.getElementById('sekretaris_kontak').textContent = data.sekretaris_kontak || '0812-3456-7891';
-      document.getElementById('bendahara').textContent = data.bendahara || 'Vincen Manurung';
-      document.getElementById('bendahara_kontak').textContent = data.bendahara_kontak || '0812-3456-7892';
-      
-      // 7 Seksi
-      document.getElementById('seksi1').textContent = data.seksi1 || 'Liven Manalu';
-      document.getElementById('seksi1_kontak').textContent = data.seksi1_kontak || '0812-3456-7893';
-      document.getElementById('seksi2').textContent = data.seksi2 || 'Dirga Simarmata';
-      document.getElementById('seksi2_kontak').textContent = data.seksi2_kontak || '0812-3456-7894';
-      document.getElementById('seksi3').textContent = data.seksi3 || 'Bella Tampubolon';
-      document.getElementById('seksi3_kontak').textContent = data.seksi3_kontak || '0812-3456-7895';
-      document.getElementById('seksi4').textContent = data.seksi4 || 'Frans Hutagalung';
-      document.getElementById('seksi4_kontak').textContent = data.seksi4_kontak || '0812-3456-7896';
-      document.getElementById('seksi5').textContent = data.seksi5 || 'Herland Pardede';
-      document.getElementById('seksi5_kontak').textContent = data.seksi5_kontak || '0812-3456-7897';
-      document.getElementById('seksi6').textContent = data.seksi6 || 'Putri Manalu';
-      document.getElementById('seksi6_kontak').textContent = data.seksi6_kontak || '0812-3456-7898';
-      document.getElementById('seksi7').textContent = data.seksi7 || 'Samuel Sitanggang';
-      document.getElementById('seksi7_kontak').textContent = data.seksi7_kontak || '0812-3456-7899';
-      
-      // Parguru & Inang
-      document.getElementById('parguru').textContent = data.parguru || 'Gabriel Manullang';
-      document.getElementById('parguru_kontak').textContent = data.parguru_kontak || '0812-3456-7800';
-      document.getElementById('inang').textContent = data.inang || 'Ibu Sorta Simanjuntak';
-      document.getElementById('inang_kontak').textContent = data.inang_kontak || '0812-3456-7810';
-    }
+    const snap = await db.collection("pengurus").doc("kepengurusan").get();
+    if (snap.exists) data = snap.data();
   } catch (error) {
     console.error("Error loading kepengurusan:", error);
   }
+  renderPengurus(data);
 }
 
 // ================= LOAD ARTIKEL TERBARU =================
@@ -1614,21 +1526,17 @@ db.collection("artikel")
         
         let excerpt = '';
         if (data.isi) {
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = data.isi;
-          excerpt = tempDiv.textContent.substring(0, 80) + '...';
+          excerpt = plainKg(data.isi).substring(0, 80) + '...';
         }
         
         html += `
           <div class="col-md-4 mb-3">
             <div class="article-card">
-              <img src="${data.foto || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 200%27%3E%3Crect width=%27400%27 height=%27200%27 fill=%27%23dbe7ff%27/%3E%3Ctext x=%27200%27 y=%27108%27 font-family=%27Arial%27 font-size=%2725%27 text-anchor=%27middle%27 fill=%27%232563eb%27 opacity=%27.6%27%3ERNHKBP Pelikan%3C/text%3E%3C/svg%3E'}" 
-                   class="card-img-top"
-                   onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 200%27%3E%3Crect width=%27400%27 height=%27200%27 fill=%27%23dbe7ff%27/%3E%3Ctext x=%27200%27 y=%27108%27 font-family=%27Arial%27 font-size=%2725%27 text-anchor=%27middle%27 fill=%27%232563eb%27 opacity=%27.6%27%3ERNHKBP Pelikan%3C/text%3E%3C/svg%3E'">
+              <div class="ph">${frKg(data.foto, data.judul, 600)}</div>
               <div class="card-body">
-                <h5 class="card-title">${data.judul || 'Judul Artikel'}</h5>
+                <h5 class="card-title">${escKg(data.judul || 'Judul Artikel')}</h5>
                 <p class="text-muted small mb-2">${tanggal || ''}</p>
-                <p class="card-text">${excerpt}</p>
+                <p class="card-text">${escKg(excerpt)}</p>
                 <a href="detail-artikel-publik.html?id=${doc.id}" class="btn btn-sm">
                   Baca
                 </a>
@@ -1642,10 +1550,47 @@ db.collection("artikel")
     document.getElementById('artikelTerbaru').innerHTML = html;
   });
 
-// ================= FORM HANDLER =================
-document.getElementById('formPesan')?.addEventListener('submit', function(e) {
+// ================= KONTAK, FORMULIR WHATSAPP & BALASAN OTOMATIS =================
+let KT = window.KONTAK.gabung({});
+function renderKontak(d) {
+  KT = d;
+  document.getElementById('kontakItems').innerHTML = window.KONTAK.itemsHTML(d);
+  document.getElementById('kontakJam').innerHTML = window.KONTAK.jamHTML(d);
+  const foot = document.getElementById('footKontak');
+  if (foot) foot.innerHTML = window.KONTAK.footerHTML(d);
+  document.getElementById('ktWaLink').href = window.KONTAK.waLink(d);
+}
+renderKontak(KT);                                  // langsung tampil dengan data bawaan
+window.KONTAK.muat(db).then(renderKontak);         // lalu diganti data yang diatur admin
+window.PENG.mulai(db);                            // tema (Normal/Natal) & teks berjalan
+
+document.getElementById('formPesan')?.addEventListener('submit', function (e) {
   e.preventDefault();
-  alert('✅ Terima kasih! Pesan Anda telah terkirim.');
+  const K = window.KONTAK, d = KT;
+  const nama = document.getElementById('pesanNama').value.trim();
+  const email = document.getElementById('pesanEmail').value.trim();
+  const subjek = document.getElementById('pesanSubjek').value.trim();
+  const isi = document.getElementById('pesanIsi').value.trim();
+  const sapa = K.sapaan();
+
+  // 1) pesan yang dikirim ke WhatsApp admin
+  const teks = sapa + ' admin RNHKBP Pelikan 🙏\n\nNama: ' + nama + (email ? '\nEmail: ' + email : '') +
+    '\nSubjek: ' + subjek + '\n\nPesan:\n' + isi;
+  const url = K.waLink(d, teks);
+  window.open(url, '_blank', 'noopener');
+
+  // 2) balasan otomatis di website (menyesuaikan waktu & jam layanan admin)
+  const v = { sapaan: sapa, nama: nama.split(/\s+/)[0], jam: K.jamTeks(d) };
+  document.getElementById('ktBubble').textContent = K.isi(d.balasan, v);
+  const luar = !K.dalamJam(d), b2 = document.getElementById('ktBubble2');
+  b2.textContent = luar ? K.isi(d.balasanLuar, v) : '';
+  b2.hidden = !luar;
+  document.getElementById('ktWaktu').textContent = ' · ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('ktWaLink').href = url;
+  const box = document.getElementById('ktReply');
+  box.hidden = false;
+  box.style.animation = 'none'; void box.offsetWidth; box.style.animation = '';
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   this.reset();
 });
 
@@ -1660,6 +1605,7 @@ async function loadTentangFoto() {
         url = url.replace("/upload/", "/upload/f_auto,q_auto,w_1200/");
       }
       document.getElementById('tentangFoto').src = url;
+      document.getElementById('tentangFotoBd').src = url;
     }
   } catch (error) {
     console.warn("Foto Tentang Kami memakai gambar bawaan:", error.message);

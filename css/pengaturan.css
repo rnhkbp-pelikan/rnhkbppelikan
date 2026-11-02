@@ -1,0 +1,87 @@
+/* Tema Natal + teks berjalan (pengumuman). Diatur dari admin-pengaturan.html */
+
+/* ============ Teks berjalan ============ */
+:root{--tk-h:0px}
+html.tk-on{--tk-h:36px}
+html.tk-on body{margin-top:var(--tk-h)}
+html.tk-on .navbar.fixed-top{top:var(--tk-h)}
+html.tk-on .site-header{top:var(--tk-h)}
+.tk-bar{position:fixed;left:0;right:0;top:0;height:36px;z-index:1040;display:flex;align-items:center;gap:12px;padding:0 8px 0 12px;color:#fff;font:500 .82rem/1 'Poppins','Figtree',system-ui,sans-serif;background:linear-gradient(90deg,#0b1b3a,#1e3a8a 60%,#2563eb);box-shadow:0 4px 14px -8px rgba(0,0,0,.55)}
+html[data-tema="natal"] .tk-bar,.tk-bar.t-natal{background:linear-gradient(90deg,#0d3b27,#14532d 45%,#9b1c1c)}
+.tk-bar.static{position:relative;z-index:auto;border-radius:12px;box-shadow:none}
+.tk-badge{flex:none;display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#fcd34d,#f59e0b);color:#3a2600;border-radius:999px;padding:5px 11px;font-weight:700;font-size:.72rem}
+.tk-track{flex:1;min-width:0;overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}
+.tk-move{display:inline-flex;animation:tkMove var(--dur,30s) linear infinite;will-change:transform}
+.tk-move span{padding-right:5rem}
+.tk-track:hover .tk-move{animation-play-state:paused}
+@keyframes tkMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tk-x{flex:none;width:26px;height:26px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:.78rem;display:grid;place-items:center;cursor:pointer;transition:background .2s,color .2s}
+.tk-x:hover{background:#fff;color:#0b1b3a}
+@media (max-width:575px){.tk-badge{display:none}.tk-bar{padding-left:14px}}
+
+/* ============ Tema Natal ============ */
+html[data-tema="natal"]{
+  --primary:#c62828; --primary-light:#f2a3a0; --primary-soft:#fde8e6; --primary-dark:#7f1d1d;
+  --secondary:#166534; --accent:#f5c542; --gold:#f5c542;
+  --dark:#10241a; --gray:#5f6b66; --gray-light:#f0e2dd; --bg-soft:#fff8f4;
+  --primary-600:#a31515; --bg:#fff8f4; --ink:#10241a; --text:#26332c; --muted:#5f6b66; --line:#f0e2dd;
+  --grad:linear-gradient(135deg,#c62828 0%,#a31515 100%);
+  --grad-hover:linear-gradient(135deg,#a31515 0%,#7f1d1d 100%);
+  --hero:radial-gradient(900px 420px at 88% -8%,rgba(245,197,66,.40),transparent 62%),radial-gradient(700px 420px at -5% 108%,rgba(239,68,68,.35),transparent 62%),linear-gradient(135deg,#0d3b27 0%,#14532d 45%,#9b1c1c 100%);
+  /* halaman Partitur */
+  --teal:#b91c1c; --teal-dark:#7f1d1d; --teal-soft:#fde8e6; --mint:#fff8f4; --sky:#e3f5e8; --coral:#f5c542; --brass:#f5c542;
+  --ink-soft:#5f6b66;
+}
+html[data-tema="natal"] .navbar{border-bottom-color:rgba(198,40,40,.16)}
+html[data-tema="natal"] .stat-card i,
+html[data-tema="natal"] .feature-icon{background:linear-gradient(135deg,#fde8e6,#e3f5e8);color:#c62828}
+html[data-tema="natal"] .feature-card:hover .feature-icon{background:var(--grad);color:#fff}
+html[data-tema="natal"] .section-title span,
+html[data-tema="natal"] .about-content h2 span{background:linear-gradient(90deg,#c62828,#15803d);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+html[data-tema="natal"] .section-title::after{background:linear-gradient(90deg,#c62828,#f5c542,#15803d)}
+html[data-tema="natal"] .footer,
+html[data-tema="natal"] .pub-footer{background:#10241a radial-gradient(600px 220px at 85% 0,rgba(198,40,40,.38),transparent 70%)}
+html[data-tema="natal"] .footer-contact i{color:#f5c542}
+html[data-tema="natal"] .kt-wrap{background:linear-gradient(145deg,#0d3b27 0%,#14532d 55%,#9b1c1c 100%)}
+html[data-tema="natal"] .kt-item:hover .kt-go{color:#7f1d1d}
+html[data-tema="natal"] .about-section{background:linear-gradient(180deg,#fff 0%,#fff3ee 100%)}
+html[data-tema="natal"] .kgp-section{background:linear-gradient(180deg,#fff0ea 0%,#fff9f6 100%)}
+html[data-tema="natal"] .contact-section{background:linear-gradient(180deg,#fff3ee 0%,#fff 100%)}
+html[data-tema="natal"] .contact-form .form-control:focus{border-color:#c62828;box-shadow:0 0 0 4px rgba(198,40,40,.14)}
+html[data-tema="natal"] .pg-badge{background:#fde8e6;color:#a31515}
+html[data-tema="natal"] .dk-pill:hover{border-color:#c62828;color:#c62828}
+html[data-tema="natal"] .dk-btn.ghost{color:#a31515}
+html[data-tema="natal"] .dk-btn.ghost:hover{background:#fde8e6}
+html[data-tema="natal"] .hero-section .btn-outline-light:hover{color:#7f1d1d}
+html[data-tema="natal"] .site-header{border-bottom-color:rgba(198,40,40,.18)}
+
+/* lampu hias di bawah menu atas */
+html[data-tema="natal"]:not(.no-lampu) .navbar::after,
+html[data-tema="natal"]:not(.no-lampu) .site-header::after{content:"";position:absolute;left:0;right:0;top:100%;height:26px;pointer-events:none;
+  background:
+    radial-gradient(circle at 12px 12px,#ef4444 0 5px,transparent 6px) 0 0/96px 26px repeat-x,
+    radial-gradient(circle at 12px 12px,#fbbf24 0 5px,transparent 6px) 24px 0/96px 26px repeat-x,
+    radial-gradient(circle at 12px 12px,#22c55e 0 5px,transparent 6px) 48px 0/96px 26px repeat-x,
+    radial-gradient(circle at 12px 12px,#60a5fa 0 5px,transparent 6px) 72px 0/96px 26px repeat-x,
+    linear-gradient(#1f2937,#1f2937) 0 2px/100% 2px no-repeat;
+  filter:drop-shadow(0 0 5px rgba(255,255,255,.35));animation:natalLampu 2.4s ease-in-out infinite alternate}
+@keyframes natalLampu{from{opacity:.62}to{opacity:1}}
+
+/* ucapan Natal di hero */
+.natal-salam{display:flex;width:max-content;max-width:100%;margin:0 auto 18px;align-items:center;gap:10px;padding:7px 18px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(245,197,66,.75);color:#ffe9a8;font-weight:500;font-size:.9rem;backdrop-filter:blur(4px);animation:natalIn .6s ease both}
+@keyframes natalIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+/* salju */
+.natal-snow{position:fixed;inset:0;z-index:1020;pointer-events:none;overflow:hidden}
+.natal-snow i{position:absolute;top:-12px;border-radius:50%;background:#fff;box-shadow:0 0 6px 1px rgba(130,170,230,.65);animation:natalSalju linear infinite;will-change:transform}
+@keyframes natalSalju{from{transform:translate3d(0,-5vh,0)}to{transform:translate3d(var(--dx,20px),108vh,0)}}
+html.no-salju .natal-snow{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  .tk-move{animation:none}
+  .tk-move span+span{display:none}
+  .tk-move span{padding-right:0}
+  .tk-track{text-overflow:ellipsis}
+  .natal-snow{display:none}
+  .natal-salam,html[data-tema="natal"] .navbar::after,html[data-tema="natal"] .site-header::after{animation:none}
+}
