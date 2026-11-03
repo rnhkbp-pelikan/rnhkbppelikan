@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#3b82f6">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin - RNHKBP Pelikan</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .login-card {
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      animation: slideIn 0.5s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .login-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+    
+    .login-header i {
+      font-size: 60px;
+      margin-bottom: 15px;
+    }
+    
+    .login-body {
+      padding: 40px;
+      background: white;
+    }
+    
+    .form-control {
+      border-radius: 30px;
+      padding: 12px 20px;
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: none;
+    }
+    
+    .btn-login {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 12px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .back-link {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    
+    .alert {
+      border-radius: 30px;
+      padding: 12px 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <div class="login-card">
+          <div class="login-header">
+            <i class="fas fa-church"></i>
+            <h3>RNHKBP Pelikan</h3>
+            <p class="mb-0">Admin Login</p>
+          </div>
+          <div class="login-body">
+            <div id="alertMessage" class="alert alert-danger d-none" role="alert">
+              <i class="fas fa-exclamation-circle me-2"></i>
+              <span id="alertText"></span>
+            </div>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)">
+              <div class="mb-4">
+                <label class="form-label fw-bold">Email</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-0">
+                    <i class="fas fa-envelope text-primary"></i>
+                  </span>
+                  <input type="email" id="email" class="form-control" placeholder="admin@rnhkbp.org" required>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <label class="form-label fw-bold">Password</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-0">
+                    <i class="fas fa-lock text-primary"></i>
+                  </span>
+                  <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+              </div>
+              
+              <button type="submit" class="btn btn-login w-100 mb-3" id="btnLogin">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+              </button>
+              
+              <div class="text-center">
+                <a href="index.html" class="back-link">
+                  <i class="fas fa-arrow-left me-2"></i>Kembali ke Beranda
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <div class="text-center mt-3 text-white">
+          <small>© 2024 RNHKBP Pelikan. All rights reserved.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+      authDomain: "rnhkbp-pelikan.firebaseapp.com",
+      projectId: "rnhkbp-pelikan",
+      storageBucket: "rnhkbp-pelikan.firebasestorage.app",
+      messagingSenderId: "202813062166",
+      appId: "1:202813062166:web:eb3d963d5965a5e6f48937"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Cek apakah sudah login
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        window.location.href = "dashboard.html";
+      }
+    });
+
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const btnLogin = document.getElementById('btnLogin');
+      const alertMessage = document.getElementById('alertMessage');
+      const alertText = document.getElementById('alertText');
+      
+      // Tampilkan loading
+      btnLogin.disabled = true;
+      btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+      
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          // Sembunyikan loading
+          btnLogin.disabled = false;
+          btnLogin.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Login';
+          
+          // Tampilkan pesan error
+          let errorMessage = '';
+          switch(error.code) {
+            case 'auth/user-not-found':
+              errorMessage = 'Email tidak terdaftar';
+              break;
+            case 'auth/wrong-password':
+              errorMessage = 'Password salah';
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'Format email tidak valid';
+              break;
+            default:
+              errorMessage = 'Login gagal: ' + error.message;
+          }
+          
+          alertText.textContent = errorMessage;
+          alertMessage.classList.remove('d-none');
+          
+          // Hilangkan alert setelah 5 detik
+          setTimeout(() => {
+            alertMessage.classList.add('d-none');
+          }, 5000);
+        });
+    }
+  </script>
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

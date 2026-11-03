@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <title>Absensi Kegiatan</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .filter-section {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .stats-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+    .stats-card:last-child {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    .badge-naposobulung {
+      background-color: #0d6efd;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+    .badge-parguru {
+      background-color: #198754;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+    .anggota-search-wrapper {
+      position: relative;
+    }
+    #anggotaDropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 1050;
+      max-height: 260px;
+      overflow-y: auto;
+      display: none;
+      border-radius: 8px;
+      margin-top: -6px;
+    }
+    #anggotaDropdown .list-group-item {
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    #anggotaDropdown .list-group-item small {
+      display: block;
+      color: #6c757d;
+    }
+    .badge-mini {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      color: #fff;
+    }
+    .badge-mini.naposo { background-color: #0d6efd; }
+    .badge-mini.parguru { background-color: #198754; }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <span class="navbar-brand">
+      <i class="fas fa-church me-2"></i>Absensi Partangiangan & Latihan Koor
+    </span>
+    <a href="dashboard.html" class="btn btn-light">
+      <i class="fas fa-arrow-left me-2"></i>Kembali
+    </a>
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+  <!-- STATUS KONEKSI / OFFLINE -->
+  <div id="statusKoneksi" class="alert py-2 px-3 d-flex align-items-center" style="display:none;">
+    <span id="statusKoneksiText"></span>
+  </div>
+
+  <!-- FORM INPUT -->
+  <div class="card p-3 mb-4 shadow">
+    <h5 class="mb-3">
+      <i class="fas fa-edit me-2 text-primary"></i>Input Absensi Kegiatan
+    </h5>
+
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Kegiatan</label>
+        <select id="kegiatan" class="form-control mb-2">
+          <option value="Partangiangan">🙏 Partangiangan</option>
+          <option value="Latihan Koor">🎵 Latihan Koor</option>
+          <option value="Lainnya">📌 Lainnya</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Nama Anggota</label>
+        <div class="anggota-search-wrapper">
+          <input type="text" id="anggotaSearch" class="form-control mb-2"
+                 placeholder="🔍 Ketik untuk cari nama..." autocomplete="off"
+                 oninput="filterAnggota()" onfocus="filterAnggota()">
+          <input type="hidden" id="anggotaId">
+          <input type="hidden" id="anggotaKategori">
+          <div id="anggotaDropdown" class="list-group shadow"></div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Status</label>
+        <select id="status" class="form-control mb-2">
+          <option value="Hadir">✅ Hadir</option>
+          <option value="Izin">📝 Izin</option>
+          <option value="Sakit">🤒 Sakit</option>
+          <option value="Alpha">❌ Alpha</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label fw-bold">Tanggal</label>
+        <input type="date" id="tanggal" class="form-control mb-2" onchange="isiHari()">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label fw-bold">Hari</label>
+        <input type="text" id="hari" class="form-control mb-2" placeholder="Hari" readonly>
+      </div>
+    </div>
+
+    <button onclick="simpanAbsensi()" class="btn btn-primary" id="btnSimpan">
+      <i class="fas fa-save me-2"></i>Simpan Absensi
+    </button>
+  </div>
+
+  <!-- MODAL TAMBAH ANGGOTA BARU -->
+  <div class="modal fade" id="modalTambahAnggota" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-user-plus me-2 text-success"></i>Tambah Anggota Baru
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small">Nama tidak ditemukan di daftar. Lengkapi data di bawah untuk menambahkan keanggotaan baru, lalu anggota ini akan otomatis terpilih untuk absensi.</p>
+          <label class="form-label fw-bold">Nama</label>
+          <input type="text" id="newAnggotaNama" class="form-control mb-2" placeholder="Nama lengkap">
+
+          <label class="form-label fw-bold">Weyik</label>
+          <select id="newAnggotaWeyik" class="form-control mb-2">
+            <option value="">Pilih Weyik</option>
+            <option value="Roma">Roma</option>
+            <option value="Kolose">Kolose</option>
+            <option value="Filipi">Filipi</option>
+            <option value="Pilippi">Pilippi</option>
+            <option value="Tesalonika">Tesalonika</option>
+            <option value="Betlehem">Betlehem</option>
+            <option value="Galatia">Galatia</option>
+            <option value="Efesus">Efesus</option>
+          </select>
+
+          <label class="form-label fw-bold">Kategori</label>
+          <select id="newAnggotaKategori" class="form-control mb-2">
+            <option value="Naposobulung">Naposobulung</option>
+            <option value="Parguru Malua">Parguru Malua</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-success" id="btnSimpanAnggotaBaru" onclick="simpanAnggotaBaru()">
+            <i class="fas fa-save me-2"></i>Simpan & Pilih
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER DAN DOWNLOAD SECTION -->
+  <div class="card p-3 mb-4 shadow filter-section">
+    <h5 class="mb-3">
+      <i class="fas fa-download me-2 text-success"></i>Download Laporan Absensi (TXT)
+    </h5>
+    
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Filter Tanggal</label>
+        <input type="date" id="filterTanggal" class="form-control mb-2">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Filter Kegiatan</label>
+        <select id="filterKegiatan" class="form-control mb-2">
+          <option value="">📋 Semua Kegiatan</option>
+          <option value="Partangiangan">🙏 Partangiangan</option>
+          <option value="Latihan Koor">🎵 Latihan Koor</option>
+          <option value="Lainnya">📌 Lainnya</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-bold">&nbsp;</label>
+        <button onclick="downloadTXT()" class="btn btn-success w-100" id="btnDownload">
+          <i class="fas fa-file-alt me-2"></i>Download Laporan (TXT)
+        </button>
+      </div>
+    </div>
+    
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="alert alert-info mb-0">
+          <i class="fas fa-info-circle me-2"></i>
+          Laporan akan didownload dalam format TXT dengan tampilan rapi dan terstruktur.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABEL RIWAYAT -->
+  <div class="card p-3 shadow">
+    <h5 class="mb-3">
+      <i class="fas fa-history me-2 text-info"></i>Riwayat Absensi
+    </h5>
+    
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Kegiatan</th>
+            <th>Nama</th>
+            <th>Kategori</th>
+            <th>Hari</th>
+            <th>Tanggal</th>
+            <th>Status</th>
+            <th style="width: 100px;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="dataAbsensi">
+          <tr>
+            <td colspan="7" class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-2 text-muted">Memuat data absensi...</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- REKAP TOTAL -->
+  <div class="card p-3 mt-4 shadow">
+    <h5 class="mb-3">
+      <i class="fas fa-chart-pie me-2 text-warning"></i>Rekap Total Absensi
+    </h5>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="stats-card">
+          <h6 class="fw-bold"><i class="fas fa-user-graduate me-2"></i>Naposobulung</h6>
+          <div class="row text-center">
+            <div class="col-3">
+              <div class="small">Hadir</div>
+              <h4 class="mb-0" id="naposoHadir">0</h4>
+            </div>
+            <div class="col-3">
+              <div class="small">Izin</div>
+              <h4 class="mb-0" id="naposoIzin">0</h4>
+            </div>
+            <div class="col-3">
+              <div class="small">Sakit</div>
+              <h4 class="mb-0" id="naposoSakit">0</h4>
+            </div>
+            <div class="col-3">
+              <div class="small">Alpha</div>
+              <h4 class="mb-0" id="naposoAlpha">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="stats-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+          <h6 class="fw-bold"><i class="fas fa-chalkboard-teacher me-2"></i>Parguru Malua</h6>
+          <div class="row text-center">
+            <div class="col-3">
+              <div class="small">Hadir</div>
+              <h4 class="mb-0" id="parguruHadir">0</h4>
+            </div>
+            <div class="col-3">
+              <div class="small">Izin</div>
+              <h4 class="mb-0" id="parguruIzin">0</h4>
+            </div>
+            <div class="col-3">
+              <div class="small">Sakit</div>
+              <h4 class="mb-0" id="parguruSakit">0</h4>
+            </div>
+            <div class="col-3">
+              <div class="small">Alpha</div>
+              <h4 class="mb-0" id="parguruAlpha">0</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOOTSTRAP JS (untuk modal tambah anggota) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+// ================= KONFIGURASI FIREBASE =================
+const firebaseConfig = {
+  apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+  authDomain: "rnhkbp-pelikan.firebaseapp.com",
+  projectId: "rnhkbp-pelikan",
+  storageBucket: "rnhkbp-pelikan.firebasestorage.app",
+  messagingSenderId: "202813062166",
+  appId: "1:202813062166:web:eb3d963d5965a5e6f48937"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ================= AKTIFKAN MODE OFFLINE (Firestore Offline Persistence) =================
+// Absensi yang diisi saat tidak ada internet akan disimpan di perangkat (IndexedDB)
+// dan otomatis terupload ke server begitu internet tersambung lagi — tanpa kode tambahan,
+// ini bawaan Firestore SDK.
+let offlineSiap = true;
+db.enablePersistence({ synchronizeTabs: true }).catch(err => {
+  offlineSiap = false;
+  if (err.code === 'failed-precondition') {
+    console.warn('Mode offline hanya bisa aktif di satu tab. Tutup tab RNHKBP lain yang terbuka.');
+  } else if (err.code === 'unimplemented') {
+    console.warn('Browser ini tidak mendukung penyimpanan offline.');
+  }
+});
+
+// ================= CEK LOGIN =================
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
+});
+
+// ================= LOAD ANGGOTA (untuk pencarian) =================
+let anggotaList = [];
+let anggotaSelectedNama = "";
+
+db.collection("anggota").onSnapshot(snapshot => {
+  anggotaList = [];
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data && data.nama) {
+      anggotaList.push({
+        id: doc.id,
+        nama: data.nama,
+        kategori: data.kategori || "-",
+        weyik: data.weyik || ""
+      });
+    }
+  });
+  anggotaList.sort((a, b) => a.nama.localeCompare(b.nama, "id"));
+
+  // Refresh dropdown kalau sedang terbuka/sedang diketik
+  const dropdown = document.getElementById("anggotaDropdown");
+  if (dropdown && dropdown.style.display === "block") {
+    filterAnggota();
+  }
+});
+
+// ================= PENCARIAN NAMA ANGGOTA =================
+function filterAnggota() {
+  const input = document.getElementById("anggotaSearch");
+  const query = input.value.trim().toLowerCase();
+  const dropdown = document.getElementById("anggotaDropdown");
+
+  // Kalau teks berubah dari nama yang sudah dipilih sebelumnya, batalkan seleksi
+  if (input.value !== anggotaSelectedNama) {
+    document.getElementById("anggotaId").value = "";
+    document.getElementById("anggotaKategori").value = "";
+  }
+
+  const matches = query
+    ? anggotaList.filter(a => a.nama.toLowerCase().includes(query))
+    : anggotaList;
+
+  let html = "";
+
+  if (matches.length === 0) {
+    html += `<div class="list-group-item text-muted">Anggota tidak ditemukan</div>`;
+  } else {
+    matches.slice(0, 30).forEach(a => {
+      const badgeClass = a.kategori === "Naposobulung" ? "naposo" : "parguru";
+      const namaAman = a.nama.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      html += `
+        <button type="button" class="list-group-item list-group-item-action"
+                onclick="pilihAnggota('${a.id}', '${namaAman}', '${a.kategori}')">
+          ${a.nama} <span class="badge-mini ${badgeClass} ms-1">${a.kategori}</span>
+          ${a.weyik ? `<small>Weyik: ${a.weyik}</small>` : ""}
+        </button>`;
+    });
+  }
+
+  // Opsi tambah anggota baru selalu muncul kalau user sedang mengetik
+  if (query) {
+    const queryAman = input.value.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    html += `
+      <button type="button" class="list-group-item list-group-item-action list-group-item-success fw-bold"
+              onclick="bukaModalTambahAnggota('${queryAman}')">
+        <i class="fas fa-user-plus me-2"></i>Tambah Anggota Baru: "${input.value}"
+      </button>`;
+  }
+
+  dropdown.innerHTML = html;
+  dropdown.style.display = "block";
+}
+
+function pilihAnggota(id, nama, kategori) {
+  document.getElementById("anggotaSearch").value = nama;
+  document.getElementById("anggotaId").value = id;
+  document.getElementById("anggotaKategori").value = kategori;
+  anggotaSelectedNama = nama;
+  document.getElementById("anggotaDropdown").style.display = "none";
+}
+
+// Tutup dropdown kalau klik di luar area pencarian
+document.addEventListener("click", function (e) {
+  const wrapper = document.querySelector(".anggota-search-wrapper");
+  if (wrapper && !wrapper.contains(e.target)) {
+    document.getElementById("anggotaDropdown").style.display = "none";
+  }
+});
+
+// ================= TAMBAH ANGGOTA BARU (KEANGGOTAAN BARU) =================
+function bukaModalTambahAnggota(namaAwal) {
+  const nama = namaAwal || document.getElementById("anggotaSearch").value;
+  document.getElementById("newAnggotaNama").value = nama
+    .replace(/\b\w/g, c => c.toUpperCase());
+  document.getElementById("newAnggotaWeyik").value = "";
+  document.getElementById("newAnggotaKategori").value = "Naposobulung";
+  document.getElementById("anggotaDropdown").style.display = "none";
+
+  const modal = new bootstrap.Modal(document.getElementById("modalTambahAnggota"));
+  modal.show();
+}
+
+function simpanAnggotaBaru() {
+  const nama = document.getElementById("newAnggotaNama").value.trim();
+  const weyik = document.getElementById("newAnggotaWeyik").value;
+  const kategori = document.getElementById("newAnggotaKategori").value;
+
+  if (!nama) {
+    alert("Nama anggota tidak boleh kosong!");
+    return;
+  }
+
+  const btn = document.getElementById("btnSimpanAnggotaBaru");
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...';
+
+  db.collection("anggota").add({
+    nama: nama,
+    weyik: weyik,
+    kategori: kategori,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  })
+  .then(docRef => {
+    // Otomatis pilih anggota baru ini untuk diabsen
+    pilihAnggota(docRef.id, nama, kategori);
+
+    const modalEl = document.getElementById("modalTambahAnggota");
+    bootstrap.Modal.getInstance(modalEl).hide();
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan & Pilih';
+    alert("✅ Anggota baru berhasil ditambahkan dan langsung terpilih untuk absensi!");
+  })
+  .catch(error => {
+    alert("❌ Gagal menambahkan anggota: " + error.message);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan & Pilih';
+  });
+}
+
+// ================= ISI HARI =================
+function isiHari() {
+  const tanggal = document.getElementById("tanggal").value;
+  if (!tanggal) return;
+
+  const hariList = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const date = new Date(tanggal + "T00:00:00");
+  document.getElementById("hari").value = hariList[date.getDay()];
+}
+
+// ================= SIMPAN ABSENSI =================
+function simpanAbsensi() {
+  const kegiatan = document.getElementById("kegiatan").value;
+  const anggotaId = document.getElementById("anggotaId").value;
+  const nama = document.getElementById("anggotaSearch").value.trim();
+  const kategori = document.getElementById("anggotaKategori").value;
+  const tanggal = document.getElementById("tanggal").value;
+  const hari = document.getElementById("hari").value;
+  const status = document.getElementById("status").value;
+  
+  if (!anggotaId || !nama || !tanggal) {
+    alert("Cari dan pilih anggota dari daftar (atau tambahkan anggota baru), lalu isi tanggal terlebih dahulu!");
+    return;
+  }
+  
+  const isOnline = navigator.onLine;
+  const btnSimpan = document.getElementById('btnSimpan');
+  btnSimpan.disabled = true;
+  btnSimpan.innerHTML = isOnline
+    ? '<i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...'
+    : '<i class="fas fa-cloud-upload-alt me-2"></i>Menyimpan offline...';
+
+  // PENTING: promise ini TIDAK di-await untuk reset form.
+  // Kalau sedang offline, Firestore menyimpan data ini di penyimpanan lokal
+  // perangkat (IndexedDB) dan promise baru "selesai" nanti setelah internet
+  // tersambung lagi & data berhasil terupload ke server — otomatis, tanpa kode tambahan.
+  const tugasSimpan = db.collection("absensi").add({
+    kegiatan: kegiatan,
+    anggotaId: anggotaId,
+    nama: nama,
+    kategori: kategori,
+    tanggal: tanggal,
+    hari: hari,
+    status: status,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  // Reset form & beri feedback SEGERA, tidak menunggu tugasSimpan selesai
+  document.getElementById("tanggal").value = "";
+  document.getElementById("hari").value = "";
+  document.getElementById("anggotaSearch").value = "";
+  document.getElementById("anggotaId").value = "";
+  document.getElementById("anggotaKategori").value = "";
+  anggotaSelectedNama = "";
+  document.getElementById("anggotaDropdown").style.display = "none";
+
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("tanggal").value = today;
+  isiHari();
+
+  btnSimpan.disabled = false;
+  btnSimpan.innerHTML = '<i class="fas fa-save me-2"></i>Simpan Absensi';
+
+  if (isOnline) {
+    tampilkanToast(`✅ Absensi ${nama} berhasil disimpan!`, 'success');
+  } else {
+    tampilkanToast(`📥 Absensi ${nama} tersimpan offline di perangkat ini. Akan otomatis terupload begitu internet tersambung.`, 'warning');
+  }
+
+  // Kalau ternyata gagal karena alasan lain (bukan sekadar offline), baru beri tahu
+  tugasSimpan.catch((error) => {
+    tampilkanToast("❌ Gagal menyimpan data " + nama + ": " + error.message, 'danger');
+  });
+}
+
+// ================= TOAST NOTIFIKASI RINGAN =================
+function tampilkanToast(pesan, tipe) {
+  let container = document.getElementById('toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:1090; width:90%; max-width:420px;';
+    document.body.appendChild(container);
+  }
+
+  const warna = { success: 'success', warning: 'warning', danger: 'danger', info: 'info' }[tipe] || 'secondary';
+  const el = document.createElement('div');
+  el.className = `alert alert-${warna} shadow mb-2`;
+  el.style.cssText = 'animation: fadeInDown .3s ease;';
+  el.innerText = pesan;
+  container.appendChild(el);
+
+  setTimeout(() => {
+    el.style.transition = 'opacity .4s ease';
+    el.style.opacity = '0';
+    setTimeout(() => el.remove(), 400);
+  }, 4000);
+}
+
+// ================= HAPUS ABSENSI =================
+function hapusAbsensi(id) {
+  if (confirm("Apakah Anda yakin ingin menghapus data absensi ini?")) {
+    db.collection("absensi").doc(id).delete()
+      .then(() => {
+        alert("✅ Data absensi berhasil dihapus!");
+      })
+      .catch((error) => {
+        alert("❌ Gagal menghapus: " + error.message);
+      });
+  }
+}
+
+// ================= GET STATUS BADGE =================
+function getStatusBadge(status) {
+  switch(status) {
+    case 'Hadir': return 'bg-success';
+    case 'Izin': return 'bg-warning text-dark';
+    case 'Sakit': return 'bg-info';
+    case 'Alpha': return 'bg-danger';
+    default: return 'bg-secondary';
+  }
+}
+
+// ================= TAMPILKAN ABSENSI =================
+db.collection("absensi")
+  .orderBy("createdAt", "desc")
+  .onSnapshot({ includeMetadataChanges: true }, snapshot => {
+    let html = "";
+    let naposoHadir = 0, naposoIzin = 0, naposoSakit = 0, naposoAlpha = 0;
+    let parguruHadir = 0, parguruIzin = 0, parguruSakit = 0, parguruAlpha = 0;
+    let jumlahPending = 0;
+
+    if (snapshot.empty) {
+      html = `
+        <tr>
+          <td colspan="7" class="text-center py-4">
+            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+            <p class="text-muted">Belum ada data absensi</p>
+          </td>
+        </tr>
+      `;
+    } else {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const docId = doc.id;
+        const kategori = data.kategori || "";
+        const belumSinkron = doc.metadata.hasPendingWrites;
+        if (belumSinkron) jumlahPending++;
+        
+        if (kategori === "Naposobulung") {
+          if (data.status === "Hadir") naposoHadir++;
+          else if (data.status === "Izin") naposoIzin++;
+          else if (data.status === "Sakit") naposoSakit++;
+          else if (data.status === "Alpha") naposoAlpha++;
+        } else if (kategori === "Parguru Malua") {
+          if (data.status === "Hadir") parguruHadir++;
+          else if (data.status === "Izin") parguruIzin++;
+          else if (data.status === "Sakit") parguruSakit++;
+          else if (data.status === "Alpha") parguruAlpha++;
+        }
+
+        const kategoriBadge = kategori === 'Naposobulung' ? 
+          '<span class="badge bg-primary">Naposobulung</span>' : 
+          '<span class="badge bg-success">Parguru Malua</span>';
+        
+        const pendingBadge = belumSinkron
+          ? '<br><span class="badge bg-secondary mt-1"><i class="fas fa-cloud-upload-alt me-1"></i>Menunggu upload</span>'
+          : '';
+
+        html += `
+          <tr${belumSinkron ? ' class="table-warning"' : ''}>
+            <td>${data.kegiatan || '-'}</td>
+            <td>${data.nama || '-'}</td>
+            <td>${kategoriBadge}</td>
+            <td>${data.hari || '-'}</td>
+            <td>${data.tanggal || '-'}</td>
+            <td>
+              <span class="badge ${getStatusBadge(data.status)}">${data.status || '-'}</span>
+              ${pendingBadge}
+            </td>
+            <td>
+              <button onclick="hapusAbsensi('${docId}')" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    document.getElementById("dataAbsensi").innerHTML = html;
+
+    document.getElementById("naposoHadir").innerText = naposoHadir;
+    document.getElementById("naposoIzin").innerText = naposoIzin;
+    document.getElementById("naposoSakit").innerText = naposoSakit;
+    document.getElementById("naposoAlpha").innerText = naposoAlpha;
+    document.getElementById("parguruHadir").innerText = parguruHadir;
+    document.getElementById("parguruIzin").innerText = parguruIzin;
+    document.getElementById("parguruSakit").innerText = parguruSakit;
+    document.getElementById("parguruAlpha").innerText = parguruAlpha;
+
+    pendingSyncCount = jumlahPending;
+    updateStatusKoneksi();
+  });
+
+// ================= STATUS KONEKSI (ONLINE / OFFLINE / SINKRONISASI) =================
+let pendingSyncCount = 0;
+
+function updateStatusKoneksi() {
+  const box = document.getElementById('statusKoneksi');
+  const text = document.getElementById('statusKoneksiText');
+  const online = navigator.onLine;
+
+  if (online && pendingSyncCount === 0) {
+    box.style.display = 'none';
+    return;
+  }
+
+  box.style.display = 'flex';
+
+  if (!online) {
+    box.className = 'alert alert-warning py-2 px-3 d-flex align-items-center';
+    text.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>
+      <b>Mode Offline</b> — Absensi yang diisi tetap tersimpan di perangkat ini
+      dan akan otomatis terupload begitu internet tersambung lagi.
+      ${pendingSyncCount > 0 ? `<b class="ms-1">(${pendingSyncCount} data menunggu upload)</b>` : ''}`;
+  } else {
+    box.className = 'alert alert-info py-2 px-3 d-flex align-items-center';
+    text.innerHTML = `<i class="fas fa-sync fa-spin me-2"></i>
+      Menyinkronkan ${pendingSyncCount} data absensi ke server...`;
+  }
+}
+
+window.addEventListener('online', () => {
+  updateStatusKoneksi();
+  tampilkanToast('🌐 Internet tersambung kembali. Menyinkronkan data...', 'info');
+});
+window.addEventListener('offline', () => {
+  updateStatusKoneksi();
+  tampilkanToast('📴 Koneksi internet terputus. Absensi tetap bisa diisi secara offline.', 'warning');
+});
+
+document.addEventListener('DOMContentLoaded', updateStatusKoneksi);
+
+// ================= DOWNLOAD LAPORAN TXT =================
+function downloadTXT() {
+  const tanggalFilter = document.getElementById("filterTanggal").value;
+  const kegiatanFilter = document.getElementById("filterKegiatan").value;
+  const isOnline = navigator.onLine;
+  
+  // Tampilkan loading
+  const btnDownload = document.getElementById('btnDownload');
+  btnDownload.disabled = true;
+  btnDownload.innerHTML = isOnline
+    ? '<i class="fas fa-spinner fa-spin me-2"></i>Menyiapkan laporan...'
+    : '<i class="fas fa-database me-2"></i>Menyiapkan laporan (offline)...';
+
+  // Kalau offline, langsung ambil dari cache lokal (tidak perlu tunggu timeout server)
+  // Kalau online, coba server dulu; kalau gagal otomatis jatuh ke cache
+  const opsiSumber = isOnline ? {} : { source: 'cache' };
+
+  db.collection("absensi")
+    .orderBy("createdAt", "desc")
+    .get(opsiSumber)
+    .then(snapshot => {
+      // Filter data
+      let filteredData = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        
+        if (tanggalFilter && data.tanggal !== tanggalFilter) return;
+        if (kegiatanFilter && data.kegiatan !== kegiatanFilter) return;
+        
+        filteredData.push(data);
+      });
+
+      if (filteredData.length === 0) {
+        alert("Tidak ada data sesuai filter!");
+        btnDownload.disabled = false;
+        btnDownload.innerHTML = '<i class="fas fa-file-alt me-2"></i>Download Laporan (TXT)';
+        return;
+      }
+
+      // Kelompokkan data berdasarkan tanggal dan kegiatan
+      const groupedData = {};
+      filteredData.forEach(data => {
+        const key = `${data.tanggal}|${data.kegiatan}`;
+        if (!groupedData[key]) {
+          groupedData[key] = {
+            tanggal: data.tanggal,
+            hari: data.hari,
+            kegiatan: data.kegiatan,
+            naposoHadir: [],
+            naposoIzin: [],
+            naposoSakit: [],
+            naposoAlpha: [],
+            parguruHadir: [],
+            parguruIzin: [],
+            parguruSakit: [],
+            parguruAlpha: []
+          };
+        }
+        
+        if (data.kategori === "Naposobulung") {
+          if (data.status === "Hadir") groupedData[key].naposoHadir.push(data.nama);
+          else if (data.status === "Izin") groupedData[key].naposoIzin.push(data.nama);
+          else if (data.status === "Sakit") groupedData[key].naposoSakit.push(data.nama);
+          else if (data.status === "Alpha") groupedData[key].naposoAlpha.push(data.nama);
+        } else if (data.kategori === "Parguru Malua") {
+          if (data.status === "Hadir") groupedData[key].parguruHadir.push(data.nama);
+          else if (data.status === "Izin") groupedData[key].parguruIzin.push(data.nama);
+          else if (data.status === "Sakit") groupedData[key].parguruSakit.push(data.nama);
+          else if (data.status === "Alpha") groupedData[key].parguruAlpha.push(data.nama);
+        }
+      });
+
+      // Urutkan nama
+      for (let key in groupedData) {
+        groupedData[key].naposoHadir.sort();
+        groupedData[key].naposoIzin.sort();
+        groupedData[key].naposoSakit.sort();
+        groupedData[key].naposoAlpha.sort();
+        groupedData[key].parguruHadir.sort();
+        groupedData[key].parguruIzin.sort();
+        groupedData[key].parguruSakit.sort();
+        groupedData[key].parguruAlpha.sort();
+      }
+
+      // Buat konten TXT
+      let content = "";
+      
+      // Header
+      content += "========================================\n";
+      content += "     RNHKBP - PELIKAN\n";
+      content += "     LAPORAN ABSENSI KEGIATAN\n";
+      content += "========================================\n";
+      if (!isOnline) {
+        content += "(Dibuat dalam mode OFFLINE - data dari penyimpanan perangkat)\n";
+      }
+      content += "\n";
+
+      // Loop setiap kegiatan
+      let first = true;
+      for (const key in groupedData) {
+        const data = groupedData[key];
+        
+        if (!first) {
+          content += "\n\n";
+          content += "----------------------------------------\n\n";
+        }
+        first = false;
+
+        // Format tanggal
+        let tanggalFormatted = data.tanggal;
+        if (data.tanggal) {
+          const parts = data.tanggal.split('-');
+          if (parts.length === 3) {
+            const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                           'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const tgl = parseInt(parts[2]);
+            const bln = parseInt(parts[1]) - 1;
+            const thn = parts[0];
+            tanggalFormatted = `${tgl} ${bulan[bln]} ${thn}`;
+          }
+        }
+
+        content += `${data.kegiatan}\n`;
+        content += `${data.hari}, ${tanggalFormatted}\n`;
+        content += "----------------------------------------\n\n";
+
+        // NAPOSOBULUNG
+        content += "A. NAPOSOBULUNG\n";
+        content += "----------------\n";
+        
+        content += `✅ HADIR (${data.naposoHadir.length} orang):\n`;
+        if (data.naposoHadir.length > 0) {
+          data.naposoHadir.forEach(nama => {
+            content += `   - ${nama}\n`;
+          });
+        } else {
+          content += `   - Tidak ada\n`;
+        }
+        
+        content += `\n📝 IZIN (${data.naposoIzin.length} orang):\n`;
+        if (data.naposoIzin.length > 0) {
+          data.naposoIzin.forEach(nama => {
+            content += `   - ${nama}\n`;
+          });
+        } else {
+          content += `   - Tidak ada\n`;
+        }
+        
+        content += `\n🤒 SAKIT (${data.naposoSakit.length} orang):\n`;
+        if (data.naposoSakit.length > 0) {
+          data.naposoSakit.forEach(nama => {
+            content += `   - ${nama}\n`;
+          });
+        } else {
+          content += `   - Tidak ada\n`;
+        }
+        
+        content += `\n❌ ALPHA (${data.naposoAlpha.length} orang):\n`;
+        if (data.naposoAlpha.length > 0) {
+          data.naposoAlpha.forEach(nama => {
+            content += `   - ${nama}\n`;
+          });
+        } else {
+          content += `   - Tidak ada\n`;
+        }
+
+        content += "\n";
+
+        // PARGURU MALUA
+        content += "B. PARGURU MALUA\n";
+        content += "----------------\n";
+        
+        content += `✅ HADIR (${data.parguruHadir.length} orang):\n`;
+        if (data.parguruHadir.length > 0) {
+          data.parguruHadir.forEach(nama => {
+            content += `   - ${nama}\n`;
+          });
+        } else {
+          content += `   - Tidak ada\n`;
+        }
+        
+        content += `\n📝 IZIN (${data.parguruIzin.length} orang):\n`;
+        if (data.parguruIzin.length > 0) {
+          data.parguruIzin.forEach(nama => {
+            content += `   - ${nama}\n`;
+          });
+        } else {
+          content += `   - Tidak ada\n`;
+        }
+        
+        content += `\n🤒 SAKIT (${data.parguruSakit.length} orang):\n`;
+        if (data.parguruSakit.length > 0) {
+          data.parguruSakit.forEach(nama => {
+            content += `   - ${nama}\n`;
+          });
+        } else {
+          content += `   - Tidak ada\n`;
+        }
+        
+        content += `\n❌ ALPHA (${data.parguruAlpha.length} orang):\n`;
+        if (data.parguruAlpha.length > 0) {
+          data.parguruAlpha.forEach(nama => {
+            content += `   - ${nama}\n`;
+          });
+        } else {
+          content += `   - Tidak ada\n`;
+        }
+
+        // REKAP
+        const totalNaposoHadir = data.naposoHadir.length;
+        const totalNaposoIzin = data.naposoIzin.length;
+        const totalNaposoSakit = data.naposoSakit.length;
+        const totalNaposoAlpha = data.naposoAlpha.length;
+        const totalNaposo = totalNaposoHadir + totalNaposoIzin + totalNaposoSakit + totalNaposoAlpha;
+        
+        const totalParguruHadir = data.parguruHadir.length;
+        const totalParguruIzin = data.parguruIzin.length;
+        const totalParguruSakit = data.parguruSakit.length;
+        const totalParguruAlpha = data.parguruAlpha.length;
+        const totalParguru = totalParguruHadir + totalParguruIzin + totalParguruSakit + totalParguruAlpha;
+
+        content += "\n";
+        content += "========================================\n";
+        content += "          REKAPITULASI ABSENSI\n";
+        content += "========================================\n";
+        content += "Kategori         H   I   S   A   Total\n";
+        content += "----------------------------------------\n";
+        content += `Naposobulung     ${totalNaposoHadir.toString().padStart(2)} ${totalNaposoIzin.toString().padStart(2)} ${totalNaposoSakit.toString().padStart(2)} ${totalNaposoAlpha.toString().padStart(2)}   ${totalNaposo.toString().padStart(3)}\n`;
+        content += `Parguru Malua    ${totalParguruHadir.toString().padStart(2)} ${totalParguruIzin.toString().padStart(2)} ${totalParguruSakit.toString().padStart(2)} ${totalParguruAlpha.toString().padStart(2)}   ${totalParguru.toString().padStart(3)}\n`;
+        content += "----------------------------------------\n";
+        content += `TOTAL           ${(totalNaposoHadir + totalParguruHadir).toString().padStart(2)} ${(totalNaposoIzin + totalParguruIzin).toString().padStart(2)} ${(totalNaposoSakit + totalParguruSakit).toString().padStart(2)} ${(totalNaposoAlpha + totalParguruAlpha).toString().padStart(2)}   ${(totalNaposo + totalParguru).toString().padStart(3)}\n`;
+      }
+
+      // Footer
+      const now = new Date();
+      const tanggalCetak = now.toLocaleDateString('id-ID', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      content += "\n\n";
+      content += "========================================\n";
+      content += `Dicetak pada: ${tanggalCetak}\n`;
+      content += "Dokumen ini digenerate secara otomatis\n";
+      content += "dari sistem RNHKBP\n";
+      content += "========================================\n";
+
+      // Buat file TXT
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      
+      // Buat nama file
+      let fileName = "Laporan_Absensi_RNHKBP";
+      if (tanggalFilter) fileName += "_" + tanggalFilter;
+      if (kegiatanFilter) fileName += "_" + kegiatanFilter.replace(/ /g, "_");
+      fileName += ".txt";
+      
+      link.download = fileName;
+      link.click();
+      
+      // Bersihkan URL object
+      setTimeout(() => {
+        URL.revokeObjectURL(link.href);
+      }, 100);
+      
+      // Reset button
+      btnDownload.disabled = false;
+      btnDownload.innerHTML = '<i class="fas fa-file-alt me-2"></i>Download Laporan (TXT)';
+    })
+    .catch(error => {
+      console.error("Error downloading:", error);
+      if (!isOnline) {
+        alert("❌ Belum ada data tersimpan di perangkat ini untuk diunduh secara offline.\n\nBuka halaman ini minimal sekali saat online agar data absensi tersimpan di perangkat, setelah itu laporan bisa diunduh kapan pun walau tanpa internet.");
+      } else {
+        alert("❌ Gagal mendownload: " + error.message);
+      }
+      
+      // Reset button
+      btnDownload.disabled = false;
+      btnDownload.innerHTML = '<i class="fas fa-file-alt me-2"></i>Download Laporan (TXT)';
+    });
+}
+
+// ================= SET TANGGAL DEFAULT =================
+document.addEventListener('DOMContentLoaded', function() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('tanggal').value = today;
+  isiHari();
+});
+</script>
+
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

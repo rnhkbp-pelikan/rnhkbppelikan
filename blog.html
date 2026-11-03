@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#3b82f6">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <title>Blog Dokumentasi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-4">
+  <h2>Dokumentasi Kegiatan</h2>
+  <div id="listArtikel"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+  authDomain: "rnhkbp-pelikan.firebaseapp.com",
+  projectId: "rnhkbp-pelikan"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+db.collection("artikel")
+  .orderBy("tanggal", "desc")
+  .onSnapshot(snapshot=>{
+    let html="";
+    snapshot.forEach(doc=>{
+      const data = doc.data();
+
+      html += `
+        <div class="card mb-4">
+          <img src="${data.foto}" class="card-img-top">
+          <div class="card-body">
+            <h4>${data.judul}</h4>
+            <small>${new Date(data.tanggal.seconds*1000).toLocaleDateString()}</small>
+            <div>${data.isi.substring(0,150)}...</div>
+            <a href="detail.html?id=${doc.id}" class="btn btn-sm btn-primary mt-2">
+              Baca Selengkapnya
+            </a>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById("listArtikel").innerHTML = html;
+  });
+</script>
+
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="robots" content="noindex">
+  <title>Tema & Pengumuman · Admin RNHKBP Pelikan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/pengaturan.css">
+  <style>
+    .tema-opsi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .tema-card{position:relative;display:flex;flex-direction:column;gap:6px;border:2px solid var(--line);border-radius:16px;padding:12px;background:#fff;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+    .tema-card:hover{border-color:#b9c8e8}
+    .tema-card.on{border-color:var(--blue);box-shadow:0 0 0 4px #2563eb1f}
+    .tema-card input{position:absolute;opacity:0;pointer-events:none}
+    .tema-prev{height:62px;border-radius:10px;display:block}
+    .tema-card b{color:var(--ink);font-size:.95rem}
+    .tema-card small{color:var(--muted);font-size:.78rem;line-height:1.4}
+    .tema-card .cek{position:absolute;right:10px;top:10px;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;display:none;place-items:center;font-size:.7rem}
+    .tema-card.on .cek{display:grid}
+    .sw{display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:600;color:var(--ink);font-size:.92rem}
+    .sw input{width:42px;height:24px;appearance:none;-webkit-appearance:none;background:#cbd5e1;border-radius:999px;position:relative;cursor:pointer;transition:background .2s;flex:none}
+    .sw input::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+    .sw input:checked{background:var(--blue)}
+    .sw input:checked::after{transform:translateX(18px)}
+    .sw small{display:block;font-weight:400;color:var(--muted);font-size:.8rem}
+    .mock{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#fff}
+    .mock .tkslot{padding:10px 10px 0}
+    .mock-hero{position:relative;margin:10px;border-radius:14px;padding:26px 16px 30px;text-align:center;color:#fff;overflow:hidden}
+    .mock-hero h4{font-size:1.05rem;font-weight:800;margin:6px 0 12px}
+    .mock-hero .cta{display:inline-block;background:linear-gradient(135deg,#fcd34d,#f59e0b);color:#3a2600;border-radius:999px;padding:6px 16px;font-weight:700;font-size:.78rem}
+    .mock-hero .rb{display:inline-block;border:1px solid rgba(245,197,66,.75);background:rgba(255,255,255,.14);color:#ffe9a8;border-radius:999px;padding:4px 12px;font-size:.74rem}
+    .mock-hero .dots{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(3px 3px at 20px 24px,#fff,transparent 60%),radial-gradient(2px 2px at 90px 70px,#fff,transparent 60%),radial-gradient(4px 4px at 150px 30px,#fff,transparent 60%),radial-gradient(2px 2px at 210px 90px,#fff,transparent 60%),radial-gradient(3px 3px at 270px 44px,#fff,transparent 60%);background-size:300px 120px}
+    .mock-lights{height:14px;margin:-4px 10px 0;background:radial-gradient(circle at 7px 7px,#ef4444 0 3.5px,transparent 4.5px) 0 0/56px 14px repeat-x,radial-gradient(circle at 7px 7px,#fbbf24 0 3.5px,transparent 4.5px) 14px 0/56px 14px repeat-x,radial-gradient(circle at 7px 7px,#22c55e 0 3.5px,transparent 4.5px) 28px 0/56px 14px repeat-x,radial-gradient(circle at 7px 7px,#60a5fa 0 3.5px,transparent 4.5px) 42px 0/56px 14px repeat-x}
+    @media (max-width:640px){.tema-opsi{grid-template-columns:1fr}}
+  </style>
+</head>
+<body data-active="pengaturan" data-title="Tema & Pengumuman">
+<div class="shell" id="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+
+    <div class="page-head">
+      <h1>Tema &amp; Pengumuman</h1>
+      <p>Ganti tampilan situs antara tema asal dan Natal, serta atur teks berjalan berisi pemberitahuan. Berlaku untuk semua pengunjung setelah disimpan.</p>
+    </div>
+
+    <div class="overlay" id="overlay"><span class="spin"></span></div>
+
+    <div class="split">
+      <div>
+        <div class="card">
+          <div class="card-head"><div><h3>Tema situs</h3><p class="hint">Pilih tampilan yang dipakai di beranda, Dokumentasi, detail artikel, dan Partitur.</p></div></div>
+          <div class="tema-opsi" id="temaOpsi" role="radiogroup" aria-label="Tema situs">
+            <label class="tema-card"><input type="radio" name="tema" value="normal"><span class="cek"><i class="fas fa-check"></i></span>
+              <span class="tema-prev" style="background:linear-gradient(135deg,#0b1b3a 0%,#16348a 52%,#2563eb 100%)"></span><b>Normal</b><small>Tema asal: navy dan biru</small></label>
+            <label class="tema-card"><input type="radio" name="tema" value="natal"><span class="cek"><i class="fas fa-check"></i></span>
+              <span class="tema-prev" style="background:linear-gradient(135deg,#0d3b27 0%,#14532d 45%,#9b1c1c 100%)"></span><b>Natal 🎄</b><small>Merah, hijau, dan emas</small></label>
+            <label class="tema-card"><input type="radio" name="tema" value="auto"><span class="cek"><i class="fas fa-check"></i></span>
+              <span class="tema-prev" style="background:linear-gradient(90deg,#16348a 0%,#2563eb 45%,#14532d 55%,#9b1c1c 100%)"></span><b>Otomatis</b><small>Natal tiap 1 Des – 6 Jan, selain itu Normal</small></label>
+          </div>
+          <div class="stack-16" style="margin-top:18px" id="natalOpsi">
+            <label class="sw"><input type="checkbox" id="salju"><span>Salju turun<small>Butiran salju halus di seluruh halaman</small></span></label>
+            <label class="sw"><input type="checkbox" id="lampu"><span>Lampu hias<small>Untaian lampu berkelip di bawah menu atas</small></span></label>
+            <div class="field"><label for="ucapan">Ucapan di bagian atas beranda</label><input class="input" id="ucapan" maxlength="60" placeholder="Selamat Hari Natal & Tahun Baru" autocomplete="off"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Teks berjalan</h3><p class="hint">Pemberitahuan yang bergerak di bagian paling atas semua halaman publik.</p></div></div>
+          <div class="stack-16">
+            <label class="sw"><input type="checkbox" id="tickerAktif"><span>Tampilkan teks berjalan<small>Matikan untuk menyembunyikannya dari semua pengunjung</small></span></label>
+            <div class="field"><label for="tickerTeks">Isi pemberitahuan <span class="opt" id="cnt">0/220</span></label><textarea class="textarea" id="tickerTeks" maxlength="220" style="min-height:84px"></textarea></div>
+            <div class="grid2">
+              <div class="field"><label for="tickerKecepatan">Kecepatan</label><select class="select" id="tickerKecepatan"><option value="lambat">Lambat</option><option value="sedang">Sedang</option><option value="cepat">Cepat</option></select></div>
+              <div class="field"><span class="lbl">Pengunjung</span>
+                <label class="sw" style="margin-top:6px"><input type="checkbox" id="tickerBisaDitutup"><span>Boleh menyembunyikan<small>Tombol ✕ di ujung kanan</small></span></label></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sticky">
+        <div class="card" style="padding:18px">
+          <div class="card-head" style="margin-bottom:12px"><div><h3>Pratinjau</h3></div></div>
+          <div class="mock">
+            <div class="tkslot" id="pvTicker"></div>
+            <div class="mock-hero" id="pvHero"><div class="dots" id="pvDots"></div>
+              <div class="rb" id="pvRb">🎄 Selamat Hari Natal &amp; Tahun Baru ✨</div>
+              <h4>Selamat Datang di Website R-NHKBP Pelikan</h4>
+              <span class="cta">Lihat Dokumentasi</span></div>
+            <div class="mock-lights" id="pvLights"></div>
+            <div style="height:14px"></div>
+          </div>
+          <p class="hint" style="margin:12px 0 0" id="pvInfo"></p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="savebar" id="savebar">
+      <span id="saveState">Memuat…</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" id="btnDefault" type="button"><i class="fas fa-rotate-left"></i> Kembalikan bawaan</button>
+        <button class="btn btn-sm" id="btnSimpan" type="button"><i class="fas fa-floppy-disk"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="js/admin-common.js"></script>
+<script src="js/pengaturan.js" data-manual></script>
+<script>
+const { db, toast, confirmBox, requireAuth, auth } = AdminApp;
+const $ = (id) => document.getElementById(id);
+const P = window.PENG, DEF = P.DEFAULT;
+const DOC = db.collection("pengurus").doc("pengaturan");
+let dirty = false;
+
+function setDirty(v) {
+  dirty = v; $('savebar').classList.toggle('dirty', v);
+  $('saveState').textContent = v ? 'Ada perubahan yang belum disimpan.' : 'Semua perubahan sudah tersimpan.';
+}
+function nilai() {
+  return {
+    tema: (document.querySelector('input[name="tema"]:checked') || {}).value || 'natal',
+    salju: $('salju').checked, lampu: $('lampu').checked, ucapan: $('ucapan').value,
+    tickerAktif: $('tickerAktif').checked, tickerTeks: $('tickerTeks').value,
+    tickerKecepatan: $('tickerKecepatan').value, tickerBisaDitutup: $('tickerBisaDitutup').checked
+  };
+}
+function isi(c) {
+  document.querySelectorAll('input[name="tema"]').forEach((r) => { r.checked = r.value === c.tema; });
+  $('salju').checked = c.salju; $('lampu').checked = c.lampu; $('ucapan').value = c.ucapan;
+  $('tickerAktif').checked = c.tickerAktif; $('tickerTeks').value = c.tickerTeks;
+  $('tickerKecepatan').value = c.tickerKecepatan; $('tickerBisaDitutup').checked = c.tickerBisaDitutup;
+}
+
+function preview() {
+  const c = P.gabung(nilai()), natal = P.natalAktif(c);
+  document.querySelectorAll('.tema-card').forEach((l) => l.classList.toggle('on', l.querySelector('input').checked));
+  $('cnt').textContent = $('tickerTeks').value.length + '/220';
+  $('natalOpsi').style.display = c.tema === 'normal' ? 'none' : '';
+
+  const hero = $('pvHero');
+  hero.style.background = natal
+    ? 'radial-gradient(300px 160px at 88% -8%,rgba(245,197,66,.4),transparent 62%),linear-gradient(135deg,#0d3b27 0%,#14532d 45%,#9b1c1c 100%)'
+    : 'radial-gradient(300px 160px at 88% -8%,rgba(129,140,248,.5),transparent 62%),linear-gradient(135deg,#0b1b3a 0%,#16348a 52%,#2563eb 100%)';
+  $('pvRb').style.display = natal ? '' : 'none';
+  $('pvRb').textContent = '🎄 ' + c.ucapan + ' ✨';
+  $('pvDots').style.display = natal && c.salju ? '' : 'none';
+  $('pvLights').style.display = natal && c.lampu ? '' : 'none';
+
+  const slot = $('pvTicker'); slot.innerHTML = '';
+  if (c.tickerAktif && c.tickerTeks) {
+    const bar = P.bangunTicker(c, true, natal); slot.appendChild(bar); P.ukurTicker(bar, c);
+    const x = bar.querySelector('.tk-x'); if (x) x.addEventListener('click', (e) => e.preventDefault());
+  }
+  $('pvInfo').textContent = c.tema === 'auto'
+    ? (natal ? 'Mode otomatis: hari ini masuk musim Natal, jadi tema Natal tampil.' : 'Mode otomatis: saat ini di luar 1 Des – 6 Jan, jadi tema Normal tampil.')
+    : (natal ? 'Tema Natal aktif untuk semua pengunjung.' : 'Tema Normal (asal) aktif untuk semua pengunjung.');
+}
+document.querySelectorAll('.split input, .split textarea, .split select').forEach((el) => {
+  el.addEventListener('input', () => { preview(); setDirty(true); });
+  el.addEventListener('change', () => { preview(); setDirty(true); });
+});
+
+async function muat() {
+  $('overlay').classList.add('show');
+  try {
+    const snap = await DOC.get();
+    isi(P.gabung(snap.exists ? snap.data() : {}));
+    setDirty(false);
+    $('saveState').textContent = snap.exists ? 'Data terbaru sudah dimuat.' : 'Belum pernah disimpan, tema Natal dan teks berjalan tampil secara bawaan.';
+  } catch (err) {
+    isi(P.gabung({}));
+    toast(err.code === 'permission-denied' ? 'Firestore menolak membaca pengurus/pengaturan. Periksa Rules.' : 'Gagal memuat: ' + err.message, 'error');
+  }
+  preview();
+  $('overlay').classList.remove('show');
+}
+async function simpan() {
+  const v = nilai();
+  if (v.tickerAktif && !v.tickerTeks.trim()) { toast('Isi teks pemberitahuan atau matikan teks berjalan.', 'warn'); $('tickerTeks').focus(); return; }
+  const btn = $('btnSimpan'); btn.disabled = true; $('overlay').classList.add('show');
+  try {
+    await DOC.set({ tema: v.tema, salju: v.salju, lampu: v.lampu, ucapan: v.ucapan.trim(), tickerAktif: v.tickerAktif, tickerTeks: v.tickerTeks.trim(),
+      tickerKecepatan: v.tickerKecepatan, tickerBisaDitutup: v.tickerBisaDitutup,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: auth.currentUser ? auth.currentUser.email : '' }, { merge: true });
+    setDirty(false); toast('Pengaturan disimpan. Pengunjung akan melihatnya saat memuat ulang halaman.', 'success');
+  } catch (err) {
+    console.error(err);
+    toast(err.code === 'permission-denied' ? 'Firestore menolak penyimpanan. Izinkan admin menulis ke dokumen pengurus/pengaturan.' : 'Gagal menyimpan: ' + err.message, 'error');
+  }
+  btn.disabled = false; $('overlay').classList.remove('show');
+}
+$('btnSimpan').addEventListener('click', simpan);
+$('btnDefault').addEventListener('click', async () => {
+  if (!(await confirmBox({ title: 'Kembalikan pengaturan bawaan?', text: 'Isian diganti nilai bawaan (tema Natal, teks berjalan aktif). Baru berlaku setelah kamu menekan Simpan.', ok: 'Kembalikan', danger: true }))) return;
+  isi(P.gabung({})); preview(); setDirty(true);
+});
+window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+requireAuth(muat);
+</script>
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

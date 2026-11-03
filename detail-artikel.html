@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#3b82f6">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <title>Detail Artikel - RNHKBP</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .article-detail {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .article-image {
+      width: 100%;
+      max-height: 500px;
+      object-fit: contain;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .article-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #333;
+      line-height: 1.2;
+    }
+    .article-meta {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+    }
+    .article-content {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #444;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .article-content p {
+      margin-bottom: 20px;
+    }
+    .article-content h1, .article-content h2, .article-content h3 {
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    .like-btn {
+      background: none;
+      border: 2px solid #dc3545;
+      color: #dc3545;
+      padding: 12px 40px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .like-btn:hover {
+      background: #dc3545;
+      color: white;
+      transform: scale(1.05);
+    }
+    .like-btn.liked {
+      background: #dc3545;
+      color: white;
+    }
+    .comment-box {
+      background: #f8f9fa;
+      border-radius: 20px;
+      padding: 30px;
+    }
+    .comment-item {
+      border-bottom: 1px solid #dee2e6;
+      padding: 20px 0;
+      animation: fadeIn 0.5s ease;
+    }
+    .comment-item:last-child {
+      border-bottom: none;
+    }
+    .comment-avatar {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .back-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #0d6efd;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+    .back-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4);
+      color: white;
+    }
+    .loading-spinner {
+      width: 80px;
+      height: 80px;
+      margin: 50px auto;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #0d6efd;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .share-buttons {
+      position: fixed;
+      left: 30px;
+      bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+    .share-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transition: all 0.3s;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .share-btn:hover {
+      transform: translateY(-5px);
+      color: white;
+    }
+    .share-btn.facebook { background: #1877f2; }
+    .share-btn.twitter { background: #1da1f2; }
+    .share-btn.whatsapp { background: #25d366; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="dokumentasi-publik.html">
+      <i class="fas fa-camera-retro me-2"></i>Dokumentasi RNHKBP
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="dokumentasi-publik.html">
+            <i class="fas fa-home me-1"></i>Beranda
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">
+            <i class="fas fa-lock me-1"></i>Admin
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Share Buttons -->
+<div class="share-buttons d-none d-md-flex">
+  <a href="#" class="share-btn facebook" onclick="shareFacebook()" title="Bagikan ke Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+  <a href="#" class="share-btn twitter" onclick="shareTwitter()" title="Bagikan ke Twitter">
+    <i class="fab fa-twitter"></i>
+  </a>
+  <a href="#" class="share-btn whatsapp" onclick="shareWhatsApp()" title="Bagikan ke WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+</div>
+
+<!-- Back to Top Button -->
+<a href="dokumentasi-publik.html" class="back-btn" title="Kembali">
+  <i class="fas fa-arrow-left"></i>
+</a>
+
+<!-- Article Detail -->
+<div class="container my-5">
+  <div id="loadingSpinner" class="text-center py-5">
+    <div class="loading-spinner"></div>
+    <p class="text-muted mt-3">Memuat artikel...</p>
+  </div>
+  
+  <div id="detailArtikel" class="article-detail" style="display: none;"></div>
+</div>
+
+<!-- Comments Section -->
+<div class="container my-5" id="commentsSection" style="display: none;">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="comment-box">
+        <h4 class="mb-4">
+          <i class="far fa-comments me-2 text-primary"></i>
+          Komentar
+        </h4>
+        
+        <!-- Comment Form -->
+        <div class="mb-4">
+          <div class="row">
+            <div class="col-md-4">
+              <input 
+                type="text" 
+                id="namaKomentar" 
+                class="form-control mb-2" 
+                placeholder="Nama Anda *"
+                maxlength="50"
+              >
+            </div>
+            <div class="col-md-8">
+              <textarea 
+                id="isiKomentar" 
+                class="form-control mb-2" 
+                rows="3" 
+                placeholder="Tulis komentar Anda... *"
+                maxlength="500"
+              ></textarea>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              <span id="charCount">0</span>/500 karakter
+            </small>
+            <button onclick="kirimKomentar()" class="btn btn-primary px-4" id="btnKirimKomentar">
+              <i class="fas fa-paper-plane me-2"></i>Kirim Komentar
+            </button>
+          </div>
+        </div>
+        
+        <!-- Comments List -->
+        <div id="listKomentar" class="mt-4">
+          <div class="text-center text-muted py-4">
+            <i class="far fa-comment-dots fa-3x mb-3"></i>
+            <p>Belum ada komentar. Jadilah yang pertama!</p>
+          </div>
+        </div>
+        
+        <!-- Load More Comments -->
+        <div class="text-center mt-3" id="loadMoreComments" style="display: none;">
+          <button class="btn btn-outline-primary btn-sm" onclick="loadMoreComments()">
+            <i class="fas fa-sync-alt me-2"></i>Muat Komentar Lainnya
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-4 mt-5">
+  <div class="container text-center">
+    <p class="mb-0">
+      <i class="fas fa-church me-2"></i>RNHKBP - Pelikan 
+      <span class="mx-2">|</span> 
+      <i class="far fa-copyright me-1"></i>2024
+    </p>
+  </div>
+</footer>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ================= KONFIGURASI FIREBASE =================
+const firebaseConfig = {
+  apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+  authDomain: "rnhkbp-pelikan.firebaseapp.com",
+  projectId: "rnhkbp-pelikan",
+  storageBucket: "rnhkbp-pelikan.firebasestorage.app",
+  messagingSenderId: "202813062166",
+  appId: "1:202813062166:web:eb3d963d5965a5e6f48937"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ================= AMBIL ID ARTIKEL DARI URL =================
+const params = new URLSearchParams(window.location.search);
+const artikelId = params.get('id');
+
+// Redirect jika tidak ada ID
+if (!artikelId) {
+  window.location.href = 'dokumentasi-publik.html';
+}
+
+// ================= VARIABEL GLOBAL =================
+let currentArticle = null;
+let lastCommentVisible = null;
+let hasMoreComments = true;
+const COMMENTS_PER_PAGE = 10;
+
+// ================= LOAD DETAIL ARTIKEL =================
+db.collection("artikel").doc(artikelId).onSnapshot((doc) => {
+  if (!doc.exists) {
+    alert("Artikel tidak ditemukan!");
+    window.location.href = 'dokumentasi-publik.html';
+    return;
+  }
+  
+  const data = doc.data();
+  currentArticle = { id: doc.id, ...data };
+  
+  // Sembunyikan loading
+  document.getElementById('loadingSpinner').style.display = 'none';
+  document.getElementById('detailArtikel').style.display = 'block';
+  document.getElementById('commentsSection').style.display = 'block';
+  
+  // Format tanggal
+  let tanggal = 'Tanggal tidak tersedia';
+  if (data.tanggal) {
+    try {
+      if (data.tanggal.toDate) {
+        tanggal = new Date(data.tanggal.toDate()).toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+    } catch (e) {
+      console.log("Error formatting date:", e);
+    }
+  }
+  
+  // Tampilkan detail artikel
+  document.getElementById("detailArtikel").innerHTML = `
+    <div class="card border-0 shadow-lg">
+      <img src="${data.foto || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 900 500%27%3E%3Crect width=%27900%27 height=%27500%27 fill=%27%23dbe7ff%27/%3E%3Ctext x=%27450%27 y=%27268%27 font-family=%27Arial%27 font-size=%2756%27 text-anchor=%27middle%27 fill=%27%232563eb%27 opacity=%27.6%27%3ERNHKBP Pelikan%3C/text%3E%3C/svg%3E'}" 
+           class="article-image w-100" 
+           alt="${data.judul || 'Artikel'}"
+           onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 900 500%27%3E%3Crect width=%27900%27 height=%27500%27 fill=%27%23dbe7ff%27/%3E%3Ctext x=%27450%27 y=%27268%27 font-family=%27Arial%27 font-size=%2756%27 text-anchor=%27middle%27 fill=%27%232563eb%27 opacity=%27.6%27%3EGambar tidak tersedia%3C/text%3E%3C/svg%3E'">
+      <div class="card-body p-5">
+        <h1 class="article-title mb-3">${data.judul || 'Judul Tidak Tersedia'}</h1>
+        
+        <div class="article-meta d-flex flex-wrap gap-3">
+          <span>
+            <i class="far fa-calendar-alt text-primary me-2"></i>
+            ${tanggal}
+          </span>
+          <span>
+            <i class="fas fa-tag text-success me-2"></i>
+            ${data.kategori || 'Umum'}
+          </span>
+          <span>
+            <i class="far fa-heart text-danger me-2"></i>
+            <span id="likeCount">${data.like || 0}</span> Suka
+          </span>
+          <span>
+            <i class="far fa-comment text-info me-2"></i>
+            <span id="commentCount">0</span> Komentar
+          </span>
+        </div>
+        
+        <div class="article-content mt-4">
+          ${data.isi || '<p class="text-muted">Konten tidak tersedia</p>'}
+        </div>
+        
+        <div class="text-center mt-5">
+          <button onclick="likeArtikel()" class="like-btn" id="likeButton">
+            <i class="far fa-heart me-2"></i>Suka Artikel Ini
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Load komentar
+  loadComments(true);
+  
+  // Update judul halaman
+  document.title = `${data.judul || 'Detail Artikel'} - RNHKBP`;
+  
+}, (error) => {
+  console.error("Error loading article:", error);
+  document.getElementById('loadingSpinner').innerHTML = `
+    <div class="text-center py-5">
+      <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
+      <h5 class="text-danger">Gagal Memuat Artikel</h5>
+      <p class="text-muted">${error.message}</p>
+      <button class="btn btn-primary mt-3" onclick="window.location.href='dokumentasi-publik.html'">
+        <i class="fas fa-home me-2"></i>Kembali ke Beranda
+      </button>
+    </div>
+  `;
+});
+
+// ================= FUNGSI LIKE =================
+function likeArtikel() {
+  if (!currentArticle) return;
+  
+  // Disable button sementara
+  const btn = document.getElementById('likeButton');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
+  
+  db.collection("artikel").doc(artikelId).update({
+    like: firebase.firestore.FieldValue.increment(1)
+  })
+  .then(() => {
+    // Update tampilan like
+    const likeSpan = document.getElementById('likeCount');
+    const currentLikes = parseInt(likeSpan.innerText) + 1;
+    likeSpan.innerText = currentLikes;
+    
+    btn.innerHTML = '<i class="fas fa-heart me-2"></i>Disukai';
+    btn.classList.add('liked');
+  })
+  .catch((error) => {
+    alert("Gagal memberi like: " + error.message);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="far fa-heart me-2"></i>Suka Artikel Ini';
+  });
+}
+
+// ================= FUNGSI KOMENTAR =================
+function kirimKomentar() {
+  const nama = document.getElementById("namaKomentar").value.trim();
+  const isi = document.getElementById("isiKomentar").value.trim();
+  const btn = document.getElementById('btnKirimKomentar');
+
+  if (!nama) {
+    alert("Nama harus diisi!");
+    document.getElementById('namaKomentar').focus();
+    return;
+  }
+
+  if (!isi) {
+    alert("Komentar harus diisi!");
+    document.getElementById('isiKomentar').focus();
+    return;
+  }
+
+  if (nama.length > 50) {
+    alert("Nama maksimal 50 karakter!");
+    return;
+  }
+
+  if (isi.length > 500) {
+    alert("Komentar maksimal 500 karakter!");
+    return;
+  }
+
+  // Disable button
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+
+  db.collection("artikel").doc(artikelId)
+    .collection("komentar")
+    .add({
+      nama: nama,
+      isi: isi,
+      tanggal: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+      // Reset form
+      document.getElementById("namaKomentar").value = "";
+      document.getElementById("isiKomentar").value = "";
+      document.getElementById("charCount").innerText = "0";
+      
+      // Tampilkan pesan sukses
+      alert("✅ Komentar berhasil dikirim!");
+      
+      // Reload komentar
+      loadComments(true);
+    })
+    .catch((error) => {
+      alert("❌ Gagal mengirim komentar: " + error.message);
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Kirim Komentar';
+    });
+}
+
+// ================= LOAD KOMENTAR =================
+function loadComments(reset = false) {
+  if (reset) {
+    lastCommentVisible = null;
+    hasMoreComments = true;
+  }
+  
+  if (!hasMoreComments) return;
+  
+  let query = db.collection("artikel").doc(artikelId)
+    .collection("komentar")
+    .orderBy("tanggal", "desc")
+    .limit(COMMENTS_PER_PAGE);
+  
+  if (lastCommentVisible) {
+    query = query.startAfter(lastCommentVisible);
+  }
+  
+  query.get().then((snapshot) => {
+    if (reset) {
+      document.getElementById('listKomentar').innerHTML = '';
+    }
+    
+    if (snapshot.empty) {
+      hasMoreComments = false;
+      document.getElementById('loadMoreComments').style.display = 'none';
+      
+      if (reset) {
+        document.getElementById('listKomentar').innerHTML = `
+          <div class="text-center text-muted py-4">
+            <i class="far fa-comment-dots fa-3x mb-3"></i>
+            <p>Belum ada komentar. Jadilah yang pertama!</p>
+          </div>
+        `;
+      }
+      return;
+    }
+    
+    // Set last visible untuk pagination
+    lastCommentVisible = snapshot.docs[snapshot.docs.length - 1];
+    
+    // Update comment count
+    if (reset) {
+      document.getElementById('commentCount').innerText = snapshot.size;
+    } else {
+      const currentCount = parseInt(document.getElementById('commentCount').innerText) || 0;
+      document.getElementById('commentCount').innerText = currentCount + snapshot.size;
+    }
+    
+    let html = '';
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      
+      // Format tanggal
+      let tanggal = 'Baru saja';
+      if (data.tanggal) {
+        try {
+          if (data.tanggal.toDate) {
+            const date = data.tanggal.toDate();
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000); // detik
+            
+            if (diff < 60) {
+              tanggal = 'Baru saja';
+            } else if (diff < 3600) {
+              const menit = Math.floor(diff / 60);
+              tanggal = `${menit} menit yang lalu`;
+            } else if (diff < 86400) {
+              const jam = Math.floor(diff / 3600);
+              tanggal = `${jam} jam yang lalu`;
+            } else {
+              tanggal = date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              });
+            }
+          }
+        } catch (e) {
+          tanggal = 'Tanggal tidak tersedia';
+        }
+      }
+      
+      // Ambil inisial untuk avatar
+      const initial = data.nama ? data.nama.charAt(0).toUpperCase() : 'A';
+      
+      html += `
+        <div class="comment-item">
+          <div class="d-flex gap-3">
+            <div class="comment-avatar">
+              ${initial}
+            </div>
+            <div style="flex: 1;">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0 fw-bold">${data.nama}</h6>
+                <small class="text-muted">
+                  <i class="far fa-clock me-1"></i>${tanggal}
+                </small>
+              </div>
+              <p class="mb-0">${data.isi}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    
+    if (reset) {
+      document.getElementById('listKomentar').innerHTML = html;
+    } else {
+      document.getElementById('listKomentar').innerHTML += html;
+    }
+    
+    // Tampilkan tombol load more jika masih ada
+    hasMoreComments = snapshot.size === COMMENTS_PER_PAGE;
+    document.getElementById('loadMoreComments').style.display = 
+      hasMoreComments ? 'block' : 'none';
+      
+  }).catch((error) => {
+    console.error("Error loading comments:", error);
+  });
+}
+
+// ================= LOAD MORE COMMENTS =================
+function loadMoreComments() {
+  loadComments(false);
+}
+
+// ================= HITUNG KARAKTER KOMENTAR =================
+document.getElementById('isiKomentar')?.addEventListener('input', function(e) {
+  const length = e.target.value.length;
+  document.getElementById('charCount').innerText = length;
+  
+  // Ubah warna jika mendekati batas
+  const charCountEl = document.getElementById('charCount');
+  if (length > 450) {
+    charCountEl.style.color = 'orange';
+  } else if (length > 490) {
+    charCountEl.style.color = 'red';
+  } else {
+    charCountEl.style.color = '';
+  }
+});
+
+// ================= FUNGSI SHARE =================
+function shareFacebook() {
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+}
+
+function shareTwitter() {
+  const text = encodeURIComponent(currentArticle?.judul || 'Artikel RNHKBP');
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+}
+
+function shareWhatsApp() {
+  const text = encodeURIComponent(`${currentArticle?.judul}\n\n${window.location.href}`);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+// ================= HANDLE ESC KEY =================
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    window.location.href = 'dokumentasi-publik.html';
+  }
+});
+</script>
+
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

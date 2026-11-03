@@ -1,0 +1,56 @@
+name: Perbarui halaman untuk Google (SEO)
+
+# Membuat halaman statis (kepengurusan, artikel, partitur per lagu, sitemap) dari data terbaru
+# supaya bisa dibaca dan ditampilkan Google. Jalan otomatis tiap 6 jam, dan bisa dijalankan manual:
+# tab Actions -> "Perbarui halaman untuk Google (SEO)" -> Run workflow.
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/generate-seo.mjs"
+      - "js/seo-render.js"
+      - "js/pengurus-data.js"
+      - "kepengurusan.html"
+      - "lagu.html"
+      - "detail-artikel-publik.html"
+      - "dokumentasi-publik.html"
+      - "partitur.html"
+      - "index.html"
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: seo
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Buat halaman statis
+        run: node scripts/generate-seo.mjs
+      - name: Simpan jika ada perubahan
+        run: |
+          git config user.name "seo-bot"
+          git config user.email "seo-bot@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan."
+          else
+            git commit -m "Perbarui halaman SEO otomatis"
+            git push
+          fi
+      - name: Minta GitHub Pages membangun ulang
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || true

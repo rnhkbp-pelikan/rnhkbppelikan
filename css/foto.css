@@ -1,0 +1,7 @@
+/* Bingkai foto: foto selalu tampil UTUH (tidak terpotong).
+   Ruang sisa di bingkai diisi latar buram dari foto yang sama. */
+.ph{position:relative;display:block;overflow:hidden;background:#dbe7ff}
+.ph .ph-bd{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(18px) saturate(1.2);transform:scale(1.25);opacity:.9;pointer-events:none;user-select:none}
+.ph .ph-main{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:contain;display:block;transition:transform .5s ease}
+/* bingkai yang tingginya mengikuti foto asli (halaman detail, Tentang Kami) */
+.ph.nat .ph-main{position:relative;inset:auto;height:auto;max-height:var(--ph-max,640px);margin:0 auto}

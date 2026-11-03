@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#3b82f6">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <title>Detail Artikel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-4">
+  <div id="detailArtikel"></div>
+
+  <hr>
+
+  <h5>Komentar</h5>
+
+  <input type="text" id="namaKomentar" class="form-control mb-2" placeholder="Nama">
+  <textarea id="isiKomentar" class="form-control mb-2" placeholder="Komentar"></textarea>
+  <button onclick="kirimKomentar()" class="btn btn-primary mb-3">Kirim</button>
+
+  <div id="listKomentar"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+  authDomain: "rnhkbp-pelikan.firebaseapp.com",
+  projectId: "rnhkbp-pelikan"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+db.collection("artikel").doc(id).onSnapshot(doc=>{
+  const data = doc.data();
+
+  document.getElementById("detailArtikel").innerHTML = `
+    <div class="card">
+      <img src="${data.foto}" class="card-img-top">
+      <div class="card-body">
+        <h3>${data.judul}</h3>
+        <small>${new Date(data.tanggal.seconds*1000).toLocaleDateString()}</small>
+        <div class="mt-3">${data.isi}</div>
+        <button onclick="likeArtikel()" class="btn btn-danger mt-3">
+          ❤️ Like (${data.like || 0})
+        </button>
+      </div>
+    </div>
+  `;
+});
+
+function likeArtikel(){
+  db.collection("artikel").doc(id).update({
+    like: firebase.firestore.FieldValue.increment(1)
+  });
+}
+
+function kirimKomentar(){
+  const nama = document.getElementById("namaKomentar").value;
+  const isi = document.getElementById("isiKomentar").value;
+
+  if(!nama || !isi){
+    alert("Isi komentar dulu!");
+    return;
+  }
+
+  db.collection("artikel").doc(id)
+    .collection("komentar")
+    .add({
+      nama: nama,
+      isi: isi,
+      tanggal: new Date()
+    });
+
+  document.getElementById("namaKomentar").value="";
+  document.getElementById("isiKomentar").value="";
+}
+
+db.collection("artikel").doc(id)
+  .collection("komentar")
+  .orderBy("tanggal","desc")
+  .onSnapshot(snapshot=>{
+    let html="";
+    snapshot.forEach(doc=>{
+      const data = doc.data();
+      html += `
+        <div class="card p-2 mb-2">
+          <b>${data.nama}</b>
+          <p>${data.isi}</p>
+        </div>
+      `;
+    });
+    document.getElementById("listKomentar").innerHTML=html;
+  });
+</script>
+
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

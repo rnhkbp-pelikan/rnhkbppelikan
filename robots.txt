@@ -1,0 +1,9 @@
+# Catatan: Google hanya membaca robots.txt di akar domain (rnhkbp-pelikan.github.io/robots.txt).
+# Untuk situs di sub-folder /rnhkbppelikan/, kirim sitemap lewat Google Search Console.
+User-agent: *
+Allow: /
+Disallow: /rnhkbppelikan/admin-
+Disallow: /rnhkbppelikan/dashboard.html
+Disallow: /rnhkbppelikan/login.html
+
+Sitemap: https://rnhkbp-pelikan.github.io/rnhkbppelikan/sitemap.xml

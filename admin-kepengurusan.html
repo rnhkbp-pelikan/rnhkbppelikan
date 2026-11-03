@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Kelola Kepengurusan RNHKBP</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-light: #93c5fd;
+      --primary-soft: #dbeafe;
+      --primary-dark: #1e40af;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --gray-light: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f1f5f9;
+      color: var(--dark);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 260px;
+      background: white;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      padding: 2rem 1rem;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+
+    .sidebar h4 {
+      color: var(--primary-dark);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--primary-soft);
+    }
+
+    .sidebar h4 i {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      color: var(--gray);
+      text-decoration: none;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-menu a i {
+      width: 25px;
+      margin-right: 10px;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-menu a:hover {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+    }
+
+    .sidebar-menu a.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .sidebar-menu a.active i {
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 260px;
+      padding: 2rem;
+    }
+
+    /* Navbar */
+    .navbar-admin {
+      background: white;
+      border-radius: 15px;
+      padding: 1rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar-admin h5 {
+      margin: 0;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .navbar-admin h5 i {
+      color: var(--primary);
+      margin-right: 10px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-info span {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .btn-logout {
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.4rem 1.2rem;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-logout:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+    }
+
+    /* Cards */
+    .section-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary-soft);
+    }
+
+    .section-title i {
+      color: var(--primary);
+      margin-right: 10px;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-bottom: 0.3rem;
+    }
+
+    .form-control {
+      border: 1px solid var(--gray-light);
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border: none;
+      border-radius: 10px;
+      padding: 0.6rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-outline-primary {
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      background: transparent;
+      border-radius: 10px;
+      padding: 0.6rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      border: none;
+      border-radius: 10px;
+      padding: 0.6rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+    }
+
+    /* Grid untuk form */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Tabel preview */
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .preview-table th {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.8rem;
+      text-align: left;
+    }
+
+    .preview-table td {
+      padding: 0.8rem;
+      border-bottom: 1px solid var(--gray-light);
+      font-size: 0.9rem;
+    }
+
+    .preview-table tr:hover {
+      background: var(--primary-soft);
+    }
+
+    .action-btns button {
+      margin: 0 3px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    /* Alert */
+    .alert {
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: none;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .alert-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* Loading */
+    .spinner-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      display: none;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid var(--primary-soft);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/foto.css">
+  <style>
+    .pc-note{color:var(--gray);font-size:.88rem;margin:-6px 0 14px}
+    .pcard{display:grid;grid-template-columns:150px minmax(0,1fr);gap:22px;padding:22px 0;border-top:1px solid var(--gray-light)}
+    .pcard:first-of-type{border-top:0;padding-top:4px}
+    .pc-photo{display:flex;flex-direction:column;gap:8px}
+    .pc-frame{aspect-ratio:4/5;border-radius:16px;display:grid;place-items:center;background:#eef2fa}
+    .pc-empty{font-size:2.4rem;color:#b9c4dc;position:relative;z-index:1}
+    .pc-photo .btn{width:100%;font-size:.8rem;padding:.45rem .6rem;text-align:center;cursor:pointer}
+    .pc-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .pc-fields .form-group{margin-bottom:14px}
+    .pc-fields textarea.form-control{min-height:84px;resize:vertical;line-height:1.55}
+    .pc-cnt{font-weight:500;color:var(--gray);font-size:.78rem;margin-left:6px}
+    .pc-tag{display:inline-block;background:#dbeafe;color:#1d4ed8;border-radius:999px;font-size:.7rem;font-weight:600;padding:2px 10px;margin-left:6px;vertical-align:middle}
+    .pv-thumb{width:46px;height:46px;border-radius:10px;overflow:hidden;position:relative;background:#eef2fa;display:grid;place-items:center;color:#b9c4dc}
+    .pv-thumb .ph-main{transition:none}
+    @media (max-width:760px){.pcard{grid-template-columns:1fr}.pc-photo{flex-direction:row;align-items:center;flex-wrap:wrap}.pc-frame{width:96px}.pc-photo .btn{width:auto}.pc-row{grid-template-columns:1fr}}
+  </style>
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h4><i class="fas fa-church"></i> NHKBP Pelikan</h4>
+  <ul class="sidebar-menu">
+    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+    <li><a href="anggota.html"><i class="fas fa-users"></i> Anggota</a></li>
+    <li><a href="absensi.html"><i class="fas fa-calendar-check"></i> Absensi</a></li>
+    <li><a href="admin-artikel.html"><i class="fas fa-newspaper"></i> Artikel</a></li>
+    <li><a href="admin-renungan.html"><i class="fas fa-bible"></i> Renungan</a></li>
+    <li><a href="admin-kegiatan.html"><i class="fas fa-calendar-check"></i> Kegiatan</a></li>
+    <li><a href="admin-kepengurusan.html" class="active"><i class="fas fa-users-cog"></i> Kepengurusan</a></li>
+    <li><a href="admin-tentang.html"><i class="fas fa-image"></i> Foto Tentang</a></li>
+    <li><a href="admin-kontak.html"><i class="fas fa-address-book"></i> Info Kontak</a></li>
+    <li><a href="admin-pengaturan.html"><i class="fas fa-palette"></i> Tema &amp; Pengumuman</a></li>
+    <li><a href="admin-partitur.html"><i class="fas fa-music"></i> Partitur</a></li>
+  </ul>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  
+  <!-- Navbar -->
+  <div class="navbar-admin">
+    <h5><i class="fas fa-users-cog"></i> Kelola Kepengurusan RNHKBP</h5>
+    <div class="user-info">
+      <span id="adminEmail"><i class="fas fa-user-circle"></i> admin@nhkbp.org</span>
+      <button class="btn-logout" onclick="logout()">
+        <i class="fas fa-sign-out-alt me-2"></i>Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Alert Message -->
+  <div id="alertMessage" class="alert" style="display: none;"></div>
+
+  <!-- Loading Spinner -->
+  <div class="spinner-overlay" id="loadingSpinner">
+    <div class="spinner"></div>
+  </div>
+
+  <div id="forms"></div>
+
+  <!-- TOMBOL SIMPAN -->
+  <div class="section-card text-center">
+    <button class="btn btn-primary px-5 py-2" onclick="simpanData()">
+      <i class="fas fa-save me-2"></i>Simpan Semua Perubahan
+    </button>
+    <button class="btn btn-outline-primary px-5 py-2 ms-2" onclick="loadData()">
+      <i class="fas fa-sync-alt me-2"></i>Refresh
+    </button>
+  </div>
+
+  <!-- PREVIEW DATA -->
+  <div class="section-card">
+    <h5 class="section-title"><i class="fas fa-eye"></i> Preview Data Kepengurusan</h5>
+    <div class="table-responsive">
+      <table class="preview-table">
+        <thead>
+          <tr>
+            <th>Foto</th>
+            <th>Jabatan</th>
+            <th>Nama</th>
+            <th>Kontak</th>
+            <th>Bio</th>
+          </tr>
+        </thead>
+        <tbody id="previewTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script src="js/pengurus-data.js"></script>
+<script>
+// ================= KONFIGURASI FIREBASE =================
+const firebaseConfig = {
+  apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+  authDomain: "rnhkbp-pelikan.firebaseapp.com",
+  projectId: "rnhkbp-pelikan",
+  storageBucket: "rnhkbp-pelikan.firebasestorage.app",
+  messagingSenderId: "202813062166",
+  appId: "1:202813062166:web:eb3d963d5965a5e6f48937"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const DOC = db.collection("pengurus").doc("kepengurusan");
+const CLOUD = "dnyrxwl1g", PRESET = "rnhkbp-pelikan";     // sama seperti foto artikel
+const GROUPS = window.PENGURUS_GROUPS;
+const ALL = GROUPS.flatMap(g => g.items);
+const $ = (id) => document.getElementById(id);
+const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// foto Cloudinary dikecilkan tanpa dipotong (c_limit)
+const kecil = (u) => (u && u.includes('res.cloudinary.com') && u.includes('/upload/') && !/\/upload\/[a-z]_/.test(u)) ? u.replace('/upload/', '/upload/c_limit,w_400,f_auto,q_auto/') : u;
+
+let S = {};            // S[key] = {label, nama, kontak, bio, foto, file, previewUrl, hapusFoto}
+let dirty = false;
+
+// ================= CEK LOGIN =================
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+  } else {
+    $('adminEmail').innerHTML = `<i class="fas fa-user-circle me-1"></i>${esc(user.email)}`;
+    loadData();
+  }
+});
+
+// ================= LOGOUT =================
+function logout() {
+  auth.signOut()
+    .then(() => { window.location.href = "login.html"; })
+    .catch(error => { showAlert('Gagal logout: ' + error.message, 'danger'); });
+}
+
+// ================= SHOW ALERT / LOADING =================
+function showAlert(message, type = 'success') {
+  const el = $('alertMessage');
+  el.className = `alert alert-${type}`;
+  el.style.display = 'block';
+  el.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>${esc(message)}`;
+  clearTimeout(showAlert._t);
+  showAlert._t = setTimeout(() => { el.style.display = 'none'; }, type === 'success' ? 3500 : 7000);
+}
+function showLoading(show) { $('loadingSpinner').style.display = show ? 'flex' : 'none'; }
+
+// ================= FORMULIR =================
+const kosong = (it) => ({ label: it.label, nama: '', kontak: '', bio: '', foto: '', file: null, previewUrl: '', hapusFoto: false });
+function fotoSrc(s) { return s.previewUrl || (!s.hapusFoto && s.foto) || ''; }
+function frameHTML(src, previewIsLocal) {
+  if (!src) return '<i class="fas fa-user pc-empty"></i>';
+  const u = previewIsLocal ? src : kecil(src);
+  return `<img class="ph-bd" src="${esc(u)}" alt="" aria-hidden="true"><img class="ph-main" src="${esc(u)}" alt="">`;
+}
+function cardHTML(it) {
+  const s = S[it.key], src = fotoSrc(s);
+  return `<div class="pcard" data-k="${it.key}">
+    <div class="pc-photo">
+      <div class="ph pc-frame">${frameHTML(src, Boolean(s.previewUrl))}</div>
+      <label class="btn btn-outline-primary btn-sm" for="f-${it.key}"><i class="fas fa-camera me-1"></i>${src ? 'Ganti foto' : 'Tambah foto'}</label>
+      <input type="file" id="f-${it.key}" data-file accept="image/*" hidden>
+      ${src ? '<button type="button" class="btn btn-danger btn-sm" data-act="rmfoto"><i class="fas fa-trash me-1"></i>Hapus foto</button>' : ''}
+    </div>
+    <div class="pc-fields">
+      <div class="pc-row">
+        <div class="form-group"><label class="form-label" for="l-${it.key}">${it.badge ? 'Nama seksi' : 'Nama jabatan'}${it.badge ? `<span class="pc-tag">${esc(it.badge)}</span>` : ''}</label>
+          <input type="text" class="form-control" id="l-${it.key}" data-f="label" value="${esc(s.label)}" maxlength="40" placeholder="${it.badge ? 'Contoh: Koor & Musik' : 'Contoh: Sekretaris'}" autocomplete="off"></div>
+        <div class="form-group"><label class="form-label" for="n-${it.key}">Nama</label>
+          <input type="text" class="form-control" id="n-${it.key}" data-f="nama" value="${esc(s.nama)}" maxlength="60" placeholder="Nama lengkap" autocomplete="off"></div>
+      </div>
+      <div class="form-group"><label class="form-label" for="k-${it.key}">Kontak WhatsApp</label>
+        <input type="text" class="form-control" id="k-${it.key}" data-f="kontak" value="${esc(s.kontak)}" maxlength="20" placeholder="Contoh: 0813-6085-6654" inputmode="tel" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label" for="b-${it.key}">Bio<span class="pc-cnt" data-v="cnt">${s.bio.length}/300</span></label>
+        <textarea class="form-control" id="b-${it.key}" data-f="bio" maxlength="300" placeholder="Cerita singkat tentang pengurus ini (opsional)">${esc(s.bio)}</textarea></div>
+    </div>
+  </div>`;
+}
+function renderForms() {
+  $('forms').innerHTML = GROUPS.map(g => `
+    <div class="section-card">
+      <h5 class="section-title"><i class="fas ${g.ikon}"></i> ${esc(g.judul)}</h5>
+      ${g.note ? `<p class="pc-note">${esc(g.note)}</p>` : ''}
+      ${g.items.map(cardHTML).join('')}
+    </div>`).join('');
+}
+function renderCard(key) {
+  const it = ALL.find(x => x.key === key), old = document.querySelector(`.pcard[data-k="${key}"]`);
+  if (it && old) { const t = document.createElement('div'); t.innerHTML = cardHTML(it); old.replaceWith(t.firstElementChild); }
+}
+
+// isian
+$('forms').addEventListener('input', (e) => {
+  const f = e.target.dataset.f; if (!f) return;
+  const card = e.target.closest('.pcard'), k = card.dataset.k;
+  S[k][f] = e.target.value;
+  if (f === 'bio') card.querySelector('[data-v="cnt"]').textContent = e.target.value.length + '/300';
+  dirty = true; updatePreview();
+});
+$('forms').addEventListener('change', (e) => { if (e.target.dataset.file !== undefined) pilihFoto(e.target.closest('.pcard').dataset.k, e.target.files[0]); });
+$('forms').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act="rmfoto"]'); if (!b) return;
+  const k = b.closest('.pcard').dataset.k;
+  S[k].file = null; S[k].previewUrl = ''; S[k].hapusFoto = true; dirty = true; renderCard(k); updatePreview();
+});
+function pilihFoto(k, file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showAlert('File harus berupa gambar.', 'danger'); renderCard(k); return; }
+  if (file.size > 5 * 1024 * 1024) { showAlert('Ukuran foto maksimal 5 MB.', 'danger'); renderCard(k); return; }
+  const r = new FileReader();
+  r.onload = (ev) => { S[k].file = file; S[k].previewUrl = ev.target.result; S[k].hapusFoto = false; dirty = true; renderCard(k); updatePreview(); };
+  r.readAsDataURL(file);
+}
+window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+// ================= PREVIEW =================
+function updatePreview() {
+  $('previewTable').innerHTML = ALL.map(it => {
+    const s = S[it.key]; if (!s.label.trim()) return '';
+    const src = fotoSrc(s);
+    return `<tr>
+      <td><span class="pv-thumb ph">${src ? frameHTML(src, Boolean(s.previewUrl)) : '<i class="fas fa-user"></i>'}</span></td>
+      <td><strong>${esc(s.label)}</strong>${it.badge ? ` <span class="pc-tag">${esc(it.badge)}</span>` : ''}</td>
+      <td>${s.nama ? esc(s.nama) : '<span style="color:#94a3b8">Belum diisi</span>'}</td>
+      <td>${esc(s.kontak) || '-'}</td>
+      <td style="max-width:260px;color:#64748b">${esc(s.bio.length > 70 ? s.bio.slice(0, 70) + '…' : s.bio) || '-'}</td></tr>`;
+  }).join('');
+}
+
+// ================= LOAD DATA DARI FIRESTORE =================
+async function loadData() {
+  showLoading(true);
+  try {
+    const snap = await DOC.get();
+    const d = snap.exists ? snap.data() : {};
+    S = {};
+    ALL.forEach(it => {
+      S[it.key] = {
+        label: d[it.key + '_label'] !== undefined ? d[it.key + '_label'] : it.label,   // '' = sengaja dikosongkan
+        nama: d[it.key] || '', kontak: d[it.key + '_kontak'] || '', bio: d[it.key + '_bio'] || '',
+        foto: d[it.key + '_foto'] || '', file: null, previewUrl: '', hapusFoto: false
+      };
+    });
+    renderForms(); updatePreview(); dirty = false;
+    if (!snap.exists) showAlert('Belum ada data tersimpan. Isi lalu simpan.', 'success');
+  } catch (error) {
+    console.error("Error loading data:", error);
+    ALL.forEach(it => { S[it.key] = kosong(it); });
+    renderForms(); updatePreview();
+    showAlert('Gagal memuat data: ' + error.message, 'danger');
+  }
+  showLoading(false);
+}
+
+// ================= SIMPAN DATA KE FIRESTORE =================
+async function unggah(file) {
+  const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', PRESET);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, { method: 'POST', body: fd });
+  if (!res.ok) throw new Error('Upload foto gagal (' + res.status + ').');
+  return (await res.json()).secure_url;
+}
+async function simpanData() {
+  showLoading(true);
+  try {
+    const data = { lastUpdated: firebase.firestore.FieldValue.serverTimestamp() };
+    for (const it of ALL) {
+      const s = S[it.key];
+      let foto = s.hapusFoto ? '' : s.foto;
+      if (s.file) foto = await unggah(s.file);
+      data[it.key] = s.nama.trim();
+      data[it.key + '_label'] = s.label.trim();
+      data[it.key + '_kontak'] = s.kontak.trim();
+      data[it.key + '_bio'] = s.bio.trim();
+      data[it.key + '_foto'] = foto;
+    }
+    await DOC.set(data, { merge: true });
+    ALL.forEach(it => { const s = S[it.key]; s.foto = data[it.key + '_foto']; s.file = null; s.previewUrl = ''; s.hapusFoto = false; });
+    renderForms(); updatePreview(); dirty = false;
+    showAlert('Data kepengurusan berhasil disimpan', 'success');
+  } catch (error) {
+    console.error("Error saving data:", error);
+    showAlert(error.code === 'permission-denied' ? 'Firestore menolak penyimpanan. Periksa Rules untuk dokumen pengurus/kepengurusan.' : 'Gagal menyimpan data: ' + error.message, 'danger');
+  }
+  showLoading(false);
+}
+</script>
+
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

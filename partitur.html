@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Koleksi partitur lagu format PDF dari R-NHKBP Pelikan (Naposobulung HKBP Ressort Pelikan Raya, Medan). Cari, lihat, bagikan, dan unduh gratis." />
+  <title>Partitur Lagu PDF – Koleksi Partitur R-NHKBP Pelikan</title>
+  <link rel="canonical" href="https://rnhkbp-pelikan.github.io/rnhkbppelikan/partitur.html" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Partitur R-NHKBP Pelikan" />
+  <meta property="og:title" content="Partitur Lagu PDF – Koleksi Partitur R-NHKBP Pelikan" />
+  <meta property="og:description" content="Cari, lihat, bagikan, dan unduh partitur lagu format PDF dari R-NHKBP Pelikan." />
+  <meta property="og:url" content="https://rnhkbp-pelikan.github.io/rnhkbppelikan/partitur.html" />
+  <meta property="og:image" content="https://rnhkbp-pelikan.github.io/rnhkbppelikan/logo.png" />
+  <meta property="og:locale" content="id_ID" />
+  <meta name="twitter:card" content="summary" />
+  <!--SEO:LD--><!--/SEO:LD-->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♫</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <link rel="stylesheet" href="partitur/style.css" />
+  <link rel="stylesheet" href="css/lagu.css" />
+  <link rel="stylesheet" href="css/pengaturan.css" />
+  <script src="js/pengaturan.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="partitur.html"><span class="brand-mark" aria-hidden="true">♫</span> Partitur RNHKBP-PELIKAN</a>
+    <div class="header-actions">
+      <button id="notifyBtn" class="button button-ghost hidden" type="button">🔔 Aktifkan notifikasi</button>
+      <a class="button button-ghost" href="index.html">← Beranda</a>
+      <a class="button button-ghost" href="dokumentasi-publik.html">Dokumentasi</a>
+      <a class="button button-ghost" href="admin-partitur.html">Admin</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <svg class="staff" viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
+        <g stroke="currentColor" stroke-width="1.5" fill="none">
+          <line x1="0" y1="40" x2="1200" y2="40"/><line x1="0" y1="62" x2="1200" y2="62"/>
+          <line x1="0" y1="84" x2="1200" y2="84"/><line x1="0" y1="106" x2="1200" y2="106"/>
+          <line x1="0" y1="128" x2="1200" y2="128"/>
+        </g>
+        <g fill="var(--brass)">
+          <ellipse cx="760" cy="95" rx="13" ry="10" transform="rotate(-20 760 95)"/><rect x="771" y="30" width="3" height="64"/>
+          <ellipse cx="860" cy="73" rx="13" ry="10" transform="rotate(-20 860 73)"/><rect x="871" y="8" width="3" height="64"/>
+          <ellipse cx="960" cy="117" rx="13" ry="10" transform="rotate(-20 960 117)"/><rect x="971" y="52" width="3" height="64"/>
+          <ellipse cx="1060" cy="51" rx="13" ry="10" transform="rotate(-20 1060 51)"/><rect x="1071" y="-14" width="3" height="64"/>
+        </g>
+      </svg>
+      <div class="container hero-inner">
+        <h1>Partitur lagu, siap dibuka dan diunduh.</h1>
+        <p class="hero-copy">Cari berdasarkan judul, pencipta, atau kategori. Semua file berformat PDF.</p>
+        <label class="search-wrap">
+          <span aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="Cari judul, pencipta, atau kategori" autocomplete="off" aria-label="Cari partitur" />
+        </label>
+      </div>
+    </section>
+
+    <section class="container gallery-section">
+      <div class="section-heading">
+        <h2>Daftar partitur</h2>
+        <span id="songCount" class="muted">Memuat…</span>
+      </div>
+      <div id="newBanner" class="banner hidden" role="status"></div>
+      <div id="categoryBar" class="chips" role="group" aria-label="Filter kategori"></div>
+      <div id="statusMessage" class="status" role="status">Menghubungkan ke galeri…</div>
+      <div id="songGrid" class="song-grid"><!--SEO:LIST--><!--/SEO:LIST--></div>
+    </section>
+  </main>
+
+  <dialog id="viewer" class="viewer" aria-label="Pratinjau partitur">
+    <div class="viewer-bar">
+      <strong id="viewerTitle"></strong>
+      <div class="viewer-actions">
+        <a id="viewerDownload" class="button" target="_blank" rel="noopener noreferrer">Unduh PDF</a>
+        <a id="viewerOpen" class="button button-outline" target="_blank" rel="noopener noreferrer">Buka di Drive</a>
+        <button id="viewerClose" class="button button-outline" type="button">Tutup</button>
+      </div>
+    </div>
+    <iframe id="viewerFrame" title="Pratinjau PDF" allow="autoplay"></iframe>
+  </dialog>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <footer><p>Partitur RNHKBP-PELIKAN · Koleksi PDF untuk belajar dan bermusik</p></footer>
+  <script src="js/seo-render.js"></script>
+  <script type="module" src="partitur/app.js"></script>
+  <script src="js/pwa-init.js"></script>
+  <!-- tema & teks berjalan (diatur dari admin) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+      authDomain: "rnhkbp-pelikan.firebaseapp.com",
+      projectId: "rnhkbp-pelikan",
+      storageBucket: "rnhkbp-pelikan.firebasestorage.app",
+      messagingSenderId: "202813062166",
+      appId: "1:202813062166:web:eb3d963d5965a5e6f48937"
+    });
+    window.PENG.mulai(firebase.firestore());
+  </script>
+</body>
+</html>
