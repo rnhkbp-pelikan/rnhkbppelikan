@@ -62,8 +62,10 @@
     items.forEach(function (p) {
       if (!p.nama) return;
       if (p.grup === 'seksi') { seksi.push(p.badge + ' ' + p.label + ': ' + p.nama); return; }
+      var sudahPelikan = /pelikan/i.test(p.label);      // jabatan yang sudah memuat nama organisasi tidak diberi imbuhan lagi
       var jab = /naposobulung|parguru|paniroi/i.test(p.label) ? p.label : p.label + ' Naposobulung';
-      q.push({ q: 'Siapa ' + jab + ' HKBP Pelikan?', a: p.label + ' R-NHKBP Pelikan (Naposobulung HKBP Ressort Pelikan Raya) adalah ' + p.nama + '.' + (p.bio ? ' ' + p.bio : '') });
+      q.push({ q: sudahPelikan ? 'Siapa ' + p.label + '?' : 'Siapa ' + jab + ' HKBP Pelikan?',
+        a: (sudahPelikan ? p.label : p.label + ' R-NHKBP Pelikan (Naposobulung HKBP Ressort Pelikan Raya)') + ' adalah ' + p.nama + '.' + (p.bio ? ' ' + p.bio : '') });
     });
     if (seksi.length) q.push({ q: 'Siapa saja pengurus seksi Naposobulung HKBP Pelikan?', a: seksi.join('; ') + '.' });
     return q;
