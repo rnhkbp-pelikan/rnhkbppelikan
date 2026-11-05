@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Admin · Partitur RNHKBP-PELIKAN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <link rel="stylesheet" href="partitur/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="partitur.html"><span class="brand-mark" aria-hidden="true">♫</span> Partitur RNHKBP-PELIKAN</a>
+    <div class="header-actions">
+      <a class="button button-ghost" href="dashboard.html">Dashboard</a>
+      <a class="button button-ghost" href="partitur.html">← Lihat galeri</a>
+      <button id="logoutBtn" class="button button-ghost hidden" type="button">Keluar</button>
+    </div>
+  </header>
+
+  <main class="container admin-page">
+    <h1 class="page-title">Panel Admin</h1>
+
+    <div id="gate">
+      <div id="loginBox" class="admin-card">
+        <h3>Masuk sebagai admin</h3>
+        <form id="loginForm" class="form-grid">
+          <label>Email<input id="adminEmail" type="email" required autocomplete="username" placeholder="admin@email.com" /></label>
+          <label>Kata sandi<input id="adminPassword" type="password" required autocomplete="current-password" /></label>
+          <button class="button" type="submit">Masuk</button>
+        </form>
+        <p id="loginMsg" class="form-message" role="status"></p>
+        <button id="forgotLink" class="link-button" type="button">Lupa kata sandi?</button>
+      </div>
+
+      <div id="forgotBox" class="admin-card hidden">
+        <h3>Lupa kata sandi</h3>
+        <p class="muted">Masukkan email akunmu. Kami kirim tautan untuk membuat kata sandi baru.</p>
+        <form id="forgotForm" class="form-grid">
+          <label>Email<input id="forgotEmail" type="email" required autocomplete="email" /></label>
+          <button id="forgotBtn" class="button" type="submit">Kirim tautan reset</button>
+        </form>
+        <p id="forgotMsg" class="form-message" role="status"></p>
+        <button id="backLogin" class="link-button" type="button">← Kembali ke login</button>
+      </div>
+
+      <div id="recoveryBox" class="admin-card hidden">
+        <h3>Buat kata sandi baru</h3>
+        <form id="recoveryForm" class="form-grid">
+          <label>Kata sandi baru<input id="recPass" type="password" required minlength="8" autocomplete="new-password" placeholder="Minimal 8 karakter" /></label>
+          <label>Ulangi kata sandi<input id="recPass2" type="password" required minlength="8" autocomplete="new-password" /></label>
+          <button class="button" type="submit">Simpan kata sandi</button>
+        </form>
+        <p id="recoveryMsg" class="form-message" role="status"></p>
+      </div>
+
+      <div id="denyBox" class="admin-card hidden">
+        <h3>Bukan admin</h3>
+        <p id="denyText" class="muted"></p>
+        <button id="denyLogout" class="button button-outline" type="button">Keluar</button>
+      </div>
+    </div>
+
+    <div id="dash" class="hidden">
+      <nav class="tabs" aria-label="Menu admin">
+        <button class="tab" type="button" data-tab="songs" aria-selected="true">Partitur</button>
+        <button class="tab" type="button" data-tab="admins" aria-selected="false">Admin &amp; pengguna</button>
+        <button class="tab" type="button" data-tab="account" aria-selected="false">Akun saya</button>
+      </nav>
+
+      <section id="tab-songs">
+        <div class="admin-card">
+          <h3 id="formTitle">Tambah partitur</h3>
+          <form id="songForm" class="form-grid">
+            <label>Judul lagu<input id="songTitle" required maxlength="120" placeholder="Contoh: Amazing Grace" /></label>
+            <label>Pencipta / pengaransemen<input id="songCreator" maxlength="120" placeholder="Opsional" /></label>
+            <label>Kategori<input id="songCategory" maxlength="60" list="categoryList" placeholder="Contoh: Rohani, Natal, Pop" /></label>
+            <datalist id="categoryList"></datalist>
+
+            <fieldset class="source">
+              <legend>Sumber PDF</legend>
+              <label class="radio"><input type="radio" name="source" value="photo" checked /> Upload foto (JPG/PNG), otomatis jadi PDF dan masuk Google Drive</label>
+              <label class="radio"><input type="radio" name="source" value="link" /> Pakai link Google Drive yang sudah ada</label>
+            </fieldset>
+
+            <div id="photoBox">
+              <label>Foto partitur<input id="photoInput" type="file" accept="image/*" multiple /></label>
+              <ol id="photoList" class="photo-list"></ol>
+              <p class="small muted">Urutan foto = urutan halaman PDF. Foto otomatis dikecilkan agar PDF tidak terlalu besar.</p>
+            </div>
+            <label id="linkBox" class="hidden">Link Google Drive<input id="songDriveLink" type="url" placeholder="https://drive.google.com/file/d/.../view" /></label>
+
+            <div class="form-actions">
+              <button id="saveBtn" class="button" type="submit">Tambah partitur</button>
+              <button id="cancelEdit" class="button button-outline hidden" type="button">Batal edit</button>
+            </div>
+          </form>
+          <p id="formMsg" class="form-message" role="status"></p>
+        </div>
+        <div class="admin-card">
+          <h3>Semua partitur <span id="adminSongCount" class="muted"></span></h3>
+          <ul id="adminSongList" class="rows"></ul>
+        </div>
+      </section>
+
+      <section id="tab-admins" class="hidden">
+        <div class="admin-card">
+          <h3>Tambah pengguna / admin</h3>
+          <p class="muted">Buat akun baru lengkap dengan kata sandi. Beri tahu orangnya email dan kata sandi ini; ia bisa menggantinya sendiri lewat “Lupa kata sandi”.</p>
+          <form id="userForm" class="form-grid">
+            <label>Email<input id="newEmail" type="email" required autocomplete="off" /></label>
+            <label>Kata sandi<input id="newPass" type="password" required minlength="8" autocomplete="new-password" placeholder="Minimal 8 karakter" /></label>
+            <label class="radio"><input id="newIsAdmin" type="checkbox" checked /> Jadikan admin (boleh mengelola partitur)</label>
+            <button id="userBtn" class="button" type="submit">Buat akun</button>
+          </form>
+          <p id="userMsg" class="form-message" role="status"></p>
+        </div>
+        <div class="admin-card">
+          <h3>Daftar admin</h3>
+          <ul id="adminList" class="rows"></ul>
+        </div>
+      </section>
+
+      <section id="tab-account" class="hidden">
+        <div class="admin-card">
+          <h3>Ganti kata sandi</h3>
+          <p id="whoami" class="muted"></p>
+          <form id="passForm" class="form-grid">
+            <label>Kata sandi baru<input id="myPass" type="password" required minlength="8" autocomplete="new-password" /></label>
+            <label>Ulangi kata sandi<input id="myPass2" type="password" required minlength="8" autocomplete="new-password" /></label>
+            <button class="button" type="submit">Simpan kata sandi</button>
+          </form>
+          <p id="passMsg" class="form-message" role="status"></p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer><p>Partitur RNHKBP-PELIKAN · Panel admin</p></footer>
+  <script type="module" src="partitur/admin.js"></script>
+  <script src="js/pwa-init.js"></script>
+</body>
+</html>

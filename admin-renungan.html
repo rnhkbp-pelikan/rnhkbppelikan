@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="robots" content="noindex">
+  <title>Renungan · Admin RNHKBP Pelikan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-active="renungan" data-title="Renungan">
+<div class="shell" id="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+
+    <div class="page-head">
+      <h1>Renungan harian</h1>
+      <p>Renungan terbaru tampil di bagian Renungan pada beranda. Tulis ayat, isi, dan penerapannya.</p>
+    </div>
+
+    <div class="overlay" id="overlay"><span class="spin"></span></div>
+
+    <div class="card" id="formCard">
+      <div class="card-head"><div><h3 id="formTitle">Tambah renungan baru</h3><p class="hint">Tanggal, ayat, dan isi wajib diisi.</p></div></div>
+      <input type="hidden" id="renunganId">
+      <div class="grid3">
+        <div class="field"><label for="tanggal">Tanggal</label><input type="date" class="input" id="tanggal"></div>
+        <div class="field"><label for="kategori">Kategori</label>
+          <select class="select" id="kategori">
+            <option value="Renungan Pagi">🌅 Renungan Pagi</option>
+            <option value="Renungan Siang">☀️ Renungan Siang</option>
+            <option value="Renungan Malam">🌙 Renungan Malam</option>
+            <option value="Renungan Khusus">✨ Renungan Khusus</option>
+          </select>
+        </div>
+        <div class="field"><label for="ayat">Ayat Alkitab</label><input type="text" class="input" id="ayat" placeholder="Contoh: Mazmur 23:1" autocomplete="off"></div>
+      </div>
+      <div class="stack-16" style="margin-top:16px">
+        <div class="field"><label for="isi">Isi renungan</label><textarea class="textarea" id="isi" placeholder="Tulis renungan di sini…"></textarea></div>
+        <div class="field"><label for="aplikasi">Aplikasi <span class="opt">(opsional)</span></label><textarea class="textarea" id="aplikasi" style="min-height:96px" placeholder="Penerapan dalam kehidupan sehari-hari…"></textarea></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn" id="btnSimpan" type="button"><i class="fas fa-floppy-disk"></i> <span>Simpan renungan</span></button>
+        <button class="btn btn-ghost hidden" id="btnBatal" type="button"><i class="fas fa-xmark"></i> Batal</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Daftar renungan <span class="cnt" id="cnt"></span></h3></div>
+      <div class="toolbar">
+        <div class="search"><i class="fas fa-magnifying-glass"></i><input id="q" class="input" placeholder="Cari ayat atau isi renungan…" autocomplete="off"></div>
+        <select id="fKat" class="select" aria-label="Filter kategori">
+          <option value="">Semua kategori</option><option>Renungan Pagi</option><option>Renungan Siang</option><option>Renungan Malam</option><option>Renungan Khusus</option>
+        </select>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl stack">
+          <thead><tr><th style="width:120px">Tanggal</th><th>Kategori</th><th>Ayat</th><th>Isi</th><th class="right">Aksi</th></tr></thead>
+          <tbody id="daftarRenungan"><tr><td colspan="5"><div class="loading"><span class="spin"></span> Memuat renungan…</div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="js/admin-common.js"></script>
+<script>
+const { db, esc, toast, todayISO, fmtDateStr, confirmBox, requireAuth } = AdminApp;
+const $ = (id) => document.getElementById(id);
+let semua = [];
+
+requireAuth(() => { $('tanggal').value = todayISO(); loadRenungan(); });
+
+async function loadRenungan() {
+  try {
+    const snap = await db.collection("renungan").orderBy("tanggal", "desc").get();
+    semua = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    render();
+  } catch (err) {
+    console.error(err);
+    $('daftarRenungan').innerHTML = `<tr><td colspan="5"><div class="empty"><i class="fas fa-triangle-exclamation"></i><b>Gagal memuat data</b>${esc(err.message)}</div></td></tr>`;
+  }
+}
+
+function render() {
+  const q = $('q').value.trim().toLowerCase(), k = $('fKat').value;
+  const list = semua.filter((r) => (!k || r.kategori === k) && (!q || (r.ayat || '').toLowerCase().includes(q) || (r.isi || '').toLowerCase().includes(q)));
+  $('cnt').textContent = semua.length ? `· ${list.length}${list.length !== semua.length ? ' dari ' + semua.length : ''}` : '';
+  if (!list.length) {
+    $('daftarRenungan').innerHTML = `<tr><td colspan="5"><div class="empty"><i class="fas fa-book-open"></i><b>${semua.length ? 'Tidak ada yang cocok' : 'Belum ada renungan'}</b>${semua.length ? 'Coba kata kunci atau filter lain.' : 'Tulis renungan pertama lewat formulir di atas.'}</div></td></tr>`;
+    return;
+  }
+  $('daftarRenungan').innerHTML = list.map((r) => `<tr>
+    <td class="first strong">${esc(fmtDateStr(r.tanggal))}</td>
+    <td data-label="Kategori"><span class="chip kat">${esc(r.kategori || 'Renungan')}</span></td>
+    <td data-label="Ayat" class="strong">${esc(r.ayat || '-')}</td>
+    <td data-label="Isi"><div class="clamp">${esc(r.isi || '')}</div></td>
+    <td class="acts"><div class="cell-actions">
+      <button class="icon-btn" type="button" data-act="edit" data-id="${r.id}" title="Edit" aria-label="Edit renungan ${esc(r.ayat || '')}"><i class="fas fa-pen"></i></button>
+      <button class="icon-btn del" type="button" data-act="del" data-id="${r.id}" title="Hapus" aria-label="Hapus renungan ${esc(r.ayat || '')}"><i class="fas fa-trash"></i></button>
+    </div></td></tr>`).join('');
+}
+$('q').addEventListener('input', render);
+$('fKat').addEventListener('change', render);
+$('daftarRenungan').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  if (b.dataset.act === 'edit') editRenungan(b.dataset.id); else hapusRenungan(b.dataset.id);
+});
+
+function batalEdit() {
+  $('renunganId').value = ''; $('tanggal').value = todayISO(); $('kategori').value = 'Renungan Pagi';
+  $('ayat').value = ''; $('isi').value = ''; $('aplikasi').value = '';
+  $('formTitle').textContent = 'Tambah renungan baru';
+  $('btnSimpan').querySelector('span').textContent = 'Simpan renungan';
+  $('btnBatal').classList.add('hidden');
+}
+$('btnBatal').addEventListener('click', batalEdit);
+
+function editRenungan(id) {
+  const r = semua.find((x) => x.id === id); if (!r) return;
+  $('renunganId').value = id; $('tanggal').value = r.tanggal || ''; $('kategori').value = r.kategori || 'Renungan Pagi';
+  $('ayat').value = r.ayat || ''; $('isi').value = r.isi || ''; $('aplikasi').value = r.aplikasi || '';
+  $('formTitle').textContent = 'Edit renungan';
+  $('btnSimpan').querySelector('span').textContent = 'Perbarui renungan';
+  $('btnBatal').classList.remove('hidden');
+  $('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function simpanRenungan() {
+  const id = $('renunganId').value;
+  const data = { tanggal: $('tanggal').value, kategori: $('kategori').value, ayat: $('ayat').value.trim(), isi: $('isi').value.trim(), aplikasi: $('aplikasi').value.trim() };
+  if (!data.tanggal || !data.ayat || !data.isi) { toast('Tanggal, ayat, dan isi renungan harus diisi.', 'warn'); return; }
+  $('overlay').classList.add('show');
+  try {
+    if (id) { data.updatedAt = firebase.firestore.FieldValue.serverTimestamp(); await db.collection("renungan").doc(id).update(data); toast('Renungan diperbarui.', 'success'); }
+    else { data.createdAt = firebase.firestore.FieldValue.serverTimestamp(); await db.collection("renungan").add(data); toast('Renungan ditambahkan.', 'success'); }
+    batalEdit(); await loadRenungan();
+  } catch (err) { console.error(err); toast('Gagal menyimpan: ' + err.message, 'error'); }
+  $('overlay').classList.remove('show');
+}
+$('btnSimpan').addEventListener('click', simpanRenungan);
+
+async function hapusRenungan(id) {
+  const r = semua.find((x) => x.id === id);
+  const ya = await confirmBox({ title: 'Hapus renungan?', text: r ? `Renungan “${r.ayat}” akan dihapus permanen.` : '', ok: 'Hapus', danger: true });
+  if (!ya) return;
+  try { await db.collection("renungan").doc(id).delete(); toast('Renungan dihapus.', 'success'); if ($('renunganId').value === id) batalEdit(); await loadRenungan(); }
+  catch (err) { toast('Gagal menghapus: ' + err.message, 'error'); }
+}
+</script>
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

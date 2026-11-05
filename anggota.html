@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <title>Kelola Anggota</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <span class="navbar-brand">Kelola Anggota</span>
+    <a href="dashboard.html" class="btn btn-light">Kembali</a>
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+  <div class="card p-3 mb-4">
+    <h5>Tambah / Edit Anggota</h5>
+
+    <input type="hidden" id="docId">
+
+    <input id="nama" class="form-control mb-2" placeholder="Nama">
+
+    <!-- WEYIK SELECT -->
+    <select id="weyik" class="form-control mb-2">
+      <option value="">Pilih Weyik</option>
+      <option value="Roma">Roma</option>
+      <option value="Kolose">Kolose</option>
+      <option value="Filipi">Filipi</option>
+      <option value="Pilippi">Pilippi</option>
+      <option value="Tesalonika">Tesalonika</option>
+      <option value="Betlehem">Betlehem</option>
+      <option value="Galatia">Galatia</option>
+      <option value="Efesus">Efesus</option>
+    </select>
+
+    <select id="kategori" class="form-control mb-2">
+      <option value="Naposobulung">Naposobulung</option>
+      <option value="Parguru Malua">Parguru Malua</option>
+    </select>
+
+    <button onclick="simpan()" class="btn btn-primary">Simpan</button>
+  </div>
+
+  <div class="card p-3">
+    <h5>Daftar Anggota</h5>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Weyik</th>
+          <th>Kategori</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="dataAnggota"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+  authDomain: "rnhkbp-pelikan.firebaseapp.com",
+  projectId: "rnhkbp-pelikan",
+  storageBucket: "rnhkbp-pelikan.firebasestorage.app",
+  messagingSenderId: "202813062166",
+  appId: "1:202813062166:web:eb3d963d5965a5e6f48937"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+firebase.auth().onAuthStateChanged(user=>{
+  if(!user){
+    window.location.href="login.html";
+  }
+});
+
+function simpan(){
+  const id = document.getElementById("docId").value;
+  const nama = document.getElementById("nama").value;
+  const weyik = document.getElementById("weyik").value;
+  const kategori = document.getElementById("kategori").value;
+
+  if(id){
+    db.collection("anggota").doc(id).update({
+      nama: nama,
+      weyik: weyik,
+      kategori: kategori
+    });
+  } else {
+    db.collection("anggota").add({
+      nama: nama,
+      weyik: weyik,
+      kategori: kategori
+    });
+  }
+
+  document.getElementById("docId").value="";
+  document.getElementById("nama").value="";
+  document.getElementById("weyik").value="";
+}
+
+db.collection("anggota").onSnapshot(snapshot=>{
+  let html="";
+  snapshot.forEach(doc=>{
+    const data = doc.data();
+    html += `
+      <tr>
+        <td>${data.nama}</td>
+        <td>${data.weyik}</td>
+        <td>${data.kategori}</td>
+        <td>
+          <button class="btn btn-warning btn-sm" 
+            onclick="edit('${doc.id}','${data.nama}','${data.weyik}','${data.kategori}')">
+            Edit
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="hapus('${doc.id}')">
+            Hapus
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("dataAnggota").innerHTML = html;
+});
+
+function edit(id,nama,weyik,kategori){
+  document.getElementById("docId").value=id;
+  document.getElementById("nama").value=nama;
+  document.getElementById("weyik").value=weyik;
+  document.getElementById("kategori").value=kategori;
+}
+
+function hapus(id){
+  if(confirm("Yakin hapus?")){
+    db.collection("anggota").doc(id).delete();
+  }
+}
+</script>
+
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

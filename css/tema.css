@@ -1,0 +1,66 @@
+/* Tema warna baru situs publik: navy dalam + biru royal + aksen emas.
+   Dimuat paling akhir, jadi menimpa warna lama tanpa mengubah tata letak. */
+:root{
+  --primary:#2563eb; --primary-light:#8fb0ff; --primary-soft:#e4ecff; --primary-dark:#1e3a8a;
+  --secondary:#4f46e5; --accent:#22d3ee;
+  --dark:#0b1b3a; --gray:#5b6b86; --gray-light:#e3eaf7; --bg-soft:#f3f6ff;
+  --gold:#f59e0b;
+  /* variabel milik publik.css (Dokumentasi & detail artikel) */
+  --primary-600:#1d4ed8; --bg:#f3f6ff; --ink:#0b1b3a; --text:#1e293b; --muted:#5b6b86; --line:#e3eaf7;
+  --grad:linear-gradient(135deg,#2563eb 0%,#4f46e5 100%);
+  --grad-hover:linear-gradient(135deg,#1d4ed8 0%,#4338ca 100%);
+  --hero:radial-gradient(900px 420px at 88% -8%,rgba(129,140,248,.55),transparent 62%),radial-gradient(700px 420px at -5% 108%,rgba(34,211,238,.30),transparent 62%),linear-gradient(135deg,#0b1b3a 0%,#16348a 52%,#2563eb 100%);
+}
+body{background:var(--bg-soft)}
+
+/* ---------- Menu atas ---------- */
+.navbar{border-bottom:1px solid rgba(37,99,235,.08)}
+.navbar .btn-outline-primary:hover{background:var(--grad);border-color:transparent;color:#fff}
+.pub .btn-outline-primary:hover{background:var(--grad);border-color:transparent;color:#fff}
+
+/* ---------- Hero beranda ---------- */
+.hero-section{background:var(--hero)}
+.hero-section h1{text-shadow:none;letter-spacing:-.02em}
+.hero-section .lead{color:#dbe7ff}
+.hero-section .btn-light{background:linear-gradient(135deg,#fcd34d,#f59e0b);color:#3a2600;font-weight:600}
+.hero-section .btn-outline-light{border-color:rgba(255,255,255,.5);backdrop-filter:blur(4px)}
+.hero-section .btn-outline-light:hover{background:#fff;color:#1e3a8a}
+
+/* ---------- Judul bagian ---------- */
+.section-title span,.about-content h2 span{background:linear-gradient(90deg,#2563eb,#6366f1);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.section-title::after{content:"";display:block;width:56px;height:4px;border-radius:4px;margin:.7rem auto 0;background:linear-gradient(90deg,#2563eb,#f59e0b)}
+
+/* ---------- Kartu ---------- */
+.stat-card{border:1px solid var(--gray-light);border-radius:20px;box-shadow:0 14px 30px -22px rgba(30,58,138,.5)}
+.stat-card i{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#e4ecff,#ebe9ff);color:#2563eb;font-size:1.25rem;margin-bottom:.7rem}
+.stat-number{font-size:2rem;font-weight:700;color:var(--dark)}
+.feature-card{border-radius:24px;border:1px solid var(--gray-light);box-shadow:0 18px 36px -28px rgba(30,58,138,.55)}
+.feature-icon{background:linear-gradient(135deg,#e4ecff,#ebe9ff);color:#2563eb;border-radius:22px}
+.feature-card:hover .feature-icon{background:var(--grad);color:#fff}
+.article-card,.renungan-card{border-radius:22px}
+.feature-card .btn,.article-card .btn,.contact-form .btn{background:var(--grad);border:none;color:#fff}
+.feature-card .btn:hover,.article-card .btn:hover,.contact-form .btn:hover{background:var(--grad-hover);color:#fff}
+.about-section{background:linear-gradient(180deg,#fff 0%,#f3f6ff 100%)}
+.kgp-section{background:linear-gradient(180deg,#edf2ff 0%,#f7f9ff 100%)}
+.contact-section{background:linear-gradient(180deg,#f3f6ff 0%,#fff 100%)}
+.contact-form{border-radius:24px;border:1px solid var(--gray-light);box-shadow:0 22px 44px -32px rgba(30,58,138,.55)}
+.contact-form .form-control:focus{border-color:#2563eb;box-shadow:0 0 0 4px rgba(37,99,235,.15)}
+.admin-edit-btn{background:var(--grad)}
+
+/* ---------- Footer ---------- */
+.footer,.pub-footer{background:#0b1b3a radial-gradient(600px 220px at 85% 0,rgba(99,102,241,.24),transparent 70%)}
+.footer-contact i{color:#7aa2ff}
+
+/* ---------- Dokumentasi & detail artikel ---------- */
+.dk-hero{background:var(--hero)}
+.dk-btn{background:var(--grad)}
+.dk-btn:hover{background:var(--grad-hover)}
+.dk-btn.ghost{background:#fff;color:#1d4ed8}
+.dk-btn.ghost:hover{background:var(--primary-soft)}
+.dk-pill.on{background:var(--grad);border-color:transparent}
+.dk-pill:hover{border-color:#2563eb;color:#2563eb}
+
+/* ikon menu (hamburger) di HP: gelap agar terlihat di atas menu putih */
+.navbar .navbar-toggler{border:1px solid #cbd5e1;padding:.35rem .6rem}
+.navbar .navbar-toggler:focus{box-shadow:0 0 0 3px rgba(37,99,235,.25)}
+.navbar .navbar-toggler-icon{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%231e293b' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E")}

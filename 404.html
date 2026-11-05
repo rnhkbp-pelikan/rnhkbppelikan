@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Halaman tidak ditemukan | R-NHKBP Pelikan</title>
+  <style>
+    body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f3f6ff;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#0b1b3a;text-align:center;padding:24px}
+    .box{max-width:460px}
+    h1{font-size:3.4rem;margin:0;background:linear-gradient(90deg,#2563eb,#6366f1);-webkit-background-clip:text;background-clip:text;color:transparent}
+    p{color:#5b6b86;line-height:1.7}
+    a.b{display:inline-block;margin:6px;padding:11px 24px;border-radius:999px;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;text-decoration:none;font-weight:600}
+    a.g{background:#fff;color:#2563eb;border:1.5px solid #bfd0ff}
+  </style>
+</head>
+<body>
+  <div class="box" id="box">
+    <h1>404</h1>
+    <h2>Halaman tidak ditemukan</h2>
+    <p>Alamat yang kamu buka tidak ada atau sudah dipindahkan.</p>
+    <a class="b" id="home" href="/">Ke beranda</a><a class="b g" id="part" href="/">Partitur</a>
+  </div>
+  <script>
+    // Partitur / artikel yang baru ditambahkan: halaman statisnya belum dibuat, jadi arahkan ke halaman dinamisnya.
+    // Contoh: /rnhkbppelikan/lagu/bukit-zaitun-3f9a1c22.html  ->  /rnhkbppelikan/lagu.html?k=3f9a1c22
+    (function () {
+      var m = location.pathname.match(/^(.*\/)(lagu|artikel)\/([^\/]+)\.html$/);
+      if (m) {
+        var k = (m[3].match(/-([a-z0-9]{1,8})$/i) || [])[1];
+        if (k) { location.replace(m[1] + (m[2] === 'lagu' ? 'lagu.html' : 'detail-artikel-publik.html') + '?k=' + encodeURIComponent(k)); return; }
+      }
+      // alamat dasar situs: /nama-repo/ untuk GitHub Pages proyek, atau / bila domain sendiri
+      var seg = location.pathname.split('/')[1], base = (/\.github\.io$/.test(location.hostname) && seg && !/\.html?$/.test(seg)) ? '/' + seg + '/' : '/';
+      document.getElementById('home').href = base + 'index.html';
+      document.getElementById('part').href = base + 'partitur.html';
+    })();
+  </script>
+</body>
+</html>

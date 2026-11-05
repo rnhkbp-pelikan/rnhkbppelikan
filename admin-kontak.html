@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="robots" content="noindex">
+  <title>Info Kontak · Admin RNHKBP Pelikan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/kontak.css">
+  <style>
+    .kt-prev .kt-item{pointer-events:none}
+    .kt-prev h2{font-size:1.25rem}
+    .ktl{display:grid;gap:8px;margin-top:6px}
+    .vars{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 2px}
+    .vars code{background:#eef1f7;border-radius:8px;padding:2px 8px;font-size:.78rem;color:#334155}
+    .steps{margin:12px 0 0;padding-left:20px;color:#334155;font-size:.9rem;line-height:1.7}
+    .steps li{margin-bottom:4px}
+    .callout{display:flex;gap:12px;background:#eef4ff;border:1px solid #cfdcff;border-radius:14px;padding:14px 16px;color:#1e3a8a;font-size:.9rem;margin-bottom:16px}
+    .callout i{margin-top:3px}
+    .copyrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+    .reply-demo{margin-top:6px}
+  </style>
+</head>
+<body data-active="kontak" data-title="Info Kontak">
+<div class="shell" id="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+
+    <div class="page-head">
+      <h1>Info Kontak</h1>
+      <p>Atur alamat, nomor, email, dan balasan otomatis yang tampil di beranda dan footer. Perubahan langsung terlihat di pratinjau kanan.</p>
+    </div>
+
+    <div class="overlay" id="overlay"><span class="spin"></span></div>
+
+    <div class="split">
+      <div>
+        <div class="card">
+          <div class="card-head"><div><h3>Kontak</h3><p class="hint">Dipakai di kartu Hubungi Kami dan footer semua halaman.</p></div></div>
+          <div class="stack-16">
+            <div class="grid2">
+              <div class="field"><label for="whatsapp">WhatsApp</label><input class="input" id="whatsapp" inputmode="tel" placeholder="Contoh: 0813-6085-6654" autocomplete="off"></div>
+              <div class="field"><label for="telepon">Telepon</label><input class="input" id="telepon" inputmode="tel" placeholder="Contoh: 0813-6085-6654" autocomplete="off"></div>
+            </div>
+            <div class="grid2">
+              <div class="field"><label for="email">Email</label><input class="input" id="email" type="email" placeholder="nama@gmail.com" autocomplete="off"></div>
+              <div class="field"><label for="instagram">Instagram <span class="opt">(username atau tautan)</span></label><input class="input" id="instagram" placeholder="nhkbppelikanrealaccount" autocomplete="off"></div>
+            </div>
+            <div class="field"><label for="alamat">Alamat</label><textarea class="textarea" id="alamat" style="min-height:76px" placeholder="Alamat lengkap"></textarea></div>
+            <div class="field"><label for="mapsUrl">Tautan Google Maps</label><input class="input" id="mapsUrl" type="url" placeholder="https://maps.app.goo.gl/..." autocomplete="off">
+              <div><button type="button" class="btn btn-ghost btn-sm" id="ujiMaps"><i class="fas fa-arrow-up-right-from-square"></i> Uji tautan di tab baru</button></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Jam layanan admin</h3><p class="hint">Dipakai untuk status “Admin online” dan balasan otomatis di luar jam layanan (waktu WIB).</p></div></div>
+          <div class="grid2">
+            <div class="field"><label for="jamBuka">Buka</label><input class="input" id="jamBuka" type="time"></div>
+            <div class="field"><label for="jamTutup">Tutup</label><input class="input" id="jamTutup" type="time"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Pesan &amp; balasan otomatis di website</h3><p class="hint">Muncul saat pengunjung menekan tombol WhatsApp atau mengirim pesan dari formulir.</p></div></div>
+          <div class="vars"><span class="cnt" style="margin-right:4px">Kata yang otomatis terisi:</span><code>{sapaan}</code><code>{nama}</code><code>{jam}</code></div>
+          <div class="stack-16" style="margin-top:12px">
+            <div class="field"><label for="pesanAwal">Teks awal saat tombol WhatsApp ditekan</label><textarea class="textarea" id="pesanAwal" style="min-height:84px"></textarea></div>
+            <div class="field"><label for="balasan">Balasan otomatis setelah pesan dikirim</label><textarea class="textarea" id="balasan" style="min-height:120px"></textarea></div>
+            <div class="field"><label for="balasanLuar">Tambahan balasan di luar jam layanan</label><textarea class="textarea" id="balasanLuar" style="min-height:84px"></textarea></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><h3>Balasan otomatis di WhatsApp</h3><p class="hint">Dikirim langsung oleh WhatsApp saat ada yang chat ke nomor admin.</p></div></div>
+          <div class="callout"><i class="fas fa-circle-info"></i><div>Website <b>tidak bisa membalas langsung di dalam WhatsApp</b>. Untuk itu gunakan fitur gratis <b>WhatsApp Business</b>: tempel teks di bawah ke menu <i>Pesan sambutan</i> dan <i>Pesan ketidakhadiran</i>.</div></div>
+          <div class="stack-16">
+            <div class="field"><div class="copyrow"><label for="waSambutan">Pesan sambutan</label><button type="button" class="btn btn-ghost btn-sm" data-copy="waSambutan"><i class="fas fa-copy"></i> Salin</button></div><textarea class="textarea" id="waSambutan" style="min-height:96px"></textarea></div>
+            <div class="field"><div class="copyrow"><label for="waAway">Pesan ketidakhadiran</label><button type="button" class="btn btn-ghost btn-sm" data-copy="waAway"><i class="fas fa-copy"></i> Salin</button></div><textarea class="textarea" id="waAway" style="min-height:96px"></textarea></div>
+          </div>
+          <ol class="steps">
+            <li>Pasang aplikasi <b>WhatsApp Business</b> dan masuk dengan nomor admin.</li>
+            <li>Buka <b>Pengaturan → Alat bisnis → Pesan sambutan</b>, aktifkan, tempel teks sambutan, lalu pilih penerima.</li>
+            <li>Buka <b>Pengaturan → Alat bisnis → Pesan ketidakhadiran</b>, aktifkan, tempel teks di atas, lalu pilih <b>Jadwal khusus</b> sesuai jam layanan.</li>
+          </ol>
+          <p class="hint" style="margin:10px 0 0">Nama menu bisa sedikit berbeda tergantung versi aplikasi. Kata <code>{jam}</code> otomatis diganti saat disalin.</p>
+        </div>
+      </div>
+
+      <aside class="sticky">
+        <div class="card kt-prev" style="padding:0;border:0;background:none;margin-bottom:16px">
+          <div class="kt-wrap contact-info">
+            <h2>Hubungi Kami</h2>
+            <div class="kt-list" id="pvList"></div>
+            <div class="kt-jam" id="pvJam"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Pratinjau balasan</h3></div>
+            <select class="select" id="pvMode" style="width:auto;min-width:150px;padding:8px 36px 8px 12px;font-size:.84rem"><option value="auto">Sesuai jam sekarang</option><option value="dalam">Dalam jam layanan</option><option value="luar">Di luar jam layanan</option></select></div>
+          <div class="kt-reply reply-demo" style="margin-top:0">
+            <div class="kt-reply-head"><img src="logo.png" alt=""><div><b>Balasan otomatis</b><span id="pvWaktu"></span></div></div>
+            <div class="kt-bubble" id="pvBubble"></div>
+            <div class="kt-bubble" id="pvBubble2"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="savebar" id="savebar">
+      <span id="saveState">Memuat…</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" id="btnDefault" type="button"><i class="fas fa-rotate-left"></i> Kembalikan bawaan</button>
+        <button class="btn btn-sm" id="btnSimpan" type="button"><i class="fas fa-floppy-disk"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="js/admin-common.js"></script>
+<script src="js/kontak-data.js"></script>
+<script>
+const { db, esc, toast, confirmBox, requireAuth, auth } = AdminApp;
+const $ = (id) => document.getElementById(id);
+const K = window.KONTAK, DEF = window.KONTAK_DEFAULT;
+const DOC = db.collection("pengurus").doc("kontak");
+const FIELDS = Object.keys(DEF);
+let dirty = false;
+
+function setDirty(v) {
+  dirty = v; $('savebar').classList.toggle('dirty', v);
+  $('saveState').textContent = v ? 'Ada perubahan yang belum disimpan.' : 'Semua perubahan sudah tersimpan.';
+}
+const mentah = () => { const o = {}; FIELDS.forEach((f) => { o[f] = $(f).value; }); return o; };
+
+function preview() {
+  const d = K.gabung(mentah());
+  $('pvList').innerHTML = K.itemsHTML(d);
+  $('pvJam').innerHTML = K.jamHTML(d);
+  const mode = $('pvMode').value;
+  const luar = mode === 'luar' || (mode === 'auto' && !K.dalamJam(d));
+  const v = { sapaan: K.sapaan(), nama: 'Budi', jam: K.jamTeks(d) };
+  $('pvWaktu').textContent = ' · ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  $('pvBubble').textContent = K.isi(d.balasan, v);
+  $('pvBubble2').textContent = luar ? K.isi(d.balasanLuar, v) : '';
+  $('pvBubble2').style.display = luar ? '' : 'none';
+}
+document.querySelectorAll('.split input, .split textarea').forEach((el) => el.addEventListener('input', () => { preview(); setDirty(true); }));
+$('pvMode').addEventListener('change', preview);
+$('ujiMaps').addEventListener('click', () => { const u = $('mapsUrl').value.trim(); if (/^https?:\/\//i.test(u)) window.open(u, '_blank', 'noopener'); else toast('Isi tautan Google Maps yang diawali https://', 'warn'); });
+
+// salin teks WhatsApp Business ({jam} diganti)
+document.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
+  const d = K.gabung(mentah());
+  const teks = K.isi($(b.dataset.copy).value, { jam: K.jamTeks(d) });
+  try { await navigator.clipboard.writeText(teks); }
+  catch (e) { const t = document.createElement('textarea'); t.value = teks; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+  toast('Teks disalin. Tempel di WhatsApp Business.', 'success');
+}));
+
+function isi(d) { FIELDS.forEach((f) => { $(f).value = d[f] != null ? d[f] : DEF[f]; }); }
+async function muat() {
+  $('overlay').classList.add('show');
+  try {
+    const snap = await DOC.get();
+    isi(snap.exists ? snap.data() : DEF);
+    setDirty(false);
+    $('saveState').textContent = snap.exists ? 'Data terbaru sudah dimuat.' : 'Belum pernah disimpan, yang tampil adalah data bawaan.';
+  } catch (err) {
+    isi(DEF);
+    toast(err.code === 'permission-denied' ? 'Firestore menolak membaca pengurus/kontak. Periksa Rules.' : 'Gagal memuat: ' + err.message, 'error');
+  }
+  preview();
+  $('overlay').classList.remove('show');
+}
+
+function cek(v) {
+  if (!v.alamat.trim()) return ['alamat', 'Alamat tidak boleh kosong.'];
+  if (!/^https?:\/\//i.test(v.mapsUrl.trim())) return ['mapsUrl', 'Tautan Google Maps harus diawali https://'];
+  if (K.waNomor(v.whatsapp).length < 9) return ['whatsapp', 'Nomor WhatsApp belum benar.'];
+  if (K.waNomor(v.telepon).length < 7) return ['telepon', 'Nomor telepon belum benar.'];
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email.trim())) return ['email', 'Format email belum benar.'];
+  if (!/^\d{2}:\d{2}$/.test(v.jamBuka) || !/^\d{2}:\d{2}$/.test(v.jamTutup)) return ['jamBuka', 'Isi jam buka dan jam tutup.'];
+  return null;
+}
+async function simpan() {
+  const v = mentah(), salah = cek(v);
+  if (salah) { toast(salah[1], 'warn'); $(salah[0]).focus(); return; }
+  const btn = $('btnSimpan'); btn.disabled = true; $('overlay').classList.add('show');
+  try {
+    const data = { updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: auth.currentUser ? auth.currentUser.email : '' };
+    FIELDS.forEach((f) => { data[f] = v[f].trim(); });
+    await DOC.set(data, { merge: true });
+    setDirty(false); toast('Info kontak disimpan.', 'success');
+  } catch (err) {
+    console.error(err);
+    toast(err.code === 'permission-denied' ? 'Firestore menolak penyimpanan. Izinkan admin menulis ke dokumen pengurus/kontak.' : 'Gagal menyimpan: ' + err.message, 'error');
+  }
+  btn.disabled = false; $('overlay').classList.remove('show');
+}
+$('btnSimpan').addEventListener('click', simpan);
+$('btnDefault').addEventListener('click', async () => {
+  if (!(await confirmBox({ title: 'Kembalikan data bawaan?', text: 'Semua isian diganti nilai bawaan. Baru berlaku di situs setelah kamu menekan Simpan.', ok: 'Kembalikan', danger: true }))) return;
+  isi(DEF); preview(); setDirty(true);
+});
+window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+requireAuth(muat);
+</script>
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

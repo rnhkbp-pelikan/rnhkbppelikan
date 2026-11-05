@@ -1,0 +1,121 @@
+/* Tema warna modern untuk halaman dengan tata letak klasik (Bootstrap):
+   absensi.html, anggota.html, admin-kepengurusan.html.
+   Hanya warna, bentuk, dan huruf yang diubah — susunan halaman tetap seperti awal. */
+:root{
+  --ink:#0e1a33; --ink-2:#1a2a4d; --blue:#2563eb; --blue-dark:#1d4ed8; --blue-soft:#e8efff;
+  --paper:#f4f6fb; --line:#e2e8f3; --text:#17223b; --muted:#64708a;
+  --bs-primary:#2563eb; --bs-primary-rgb:37,99,235;
+  --bs-body-font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --bs-body-color:#17223b; --bs-body-bg:#f4f6fb; --bs-border-color:#e2e8f3;
+  /* variabel milik admin-kepengurusan */
+  --primary:#2563eb; --primary-light:#93b4ff; --primary-soft:#e8efff; --primary-dark:#1d4ed8;
+  --success:#16a34a; --warning:#f4b942; --danger:#dc2626; --dark:#17223b; --gray:#64708a; --gray-light:#e2e8f3;
+}
+body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif!important;background:var(--paper)!important;color:var(--text);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid #93b4ff;outline-offset:2px}
+
+/* ---- Bar atas (absensi, anggota) ---- */
+.navbar.bg-dark,.navbar-dark.bg-dark{background:linear-gradient(135deg,#0e1a33 0%,#1a2a4d 100%)!important;padding:.9rem 0;box-shadow:0 10px 30px -18px #0e1a33}
+.navbar-brand{font-weight:800!important;letter-spacing:-.01em}
+.navbar .btn-light{background:#ffffff1f;color:#fff;border:1px solid #ffffff3d;border-radius:999px;font-weight:600;padding:.45rem 1.1rem}
+.navbar .btn-light:hover{background:#fff;color:var(--ink)}
+.navbar .btn-danger{border-radius:999px}
+
+/* ---- Kartu ---- */
+.card{border:1px solid var(--line)!important;border-radius:18px!important;background:#fff;box-shadow:0 1px 2px #0e1a3310!important}
+.card.shadow{box-shadow:0 14px 30px -22px #0e1a3359!important}
+.card h5,.card h6{font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.container.mt-4{max-width:1040px;padding-bottom:3rem}
+
+/* ---- Tombol ---- */
+.btn{border-radius:12px!important;font-weight:600;transition:background-color .15s,transform .1s,box-shadow .15s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--blue)!important;border-color:var(--blue)!important}
+.btn-primary:hover{background:var(--blue-dark)!important;border-color:var(--blue-dark)!important}
+.btn-success{background:#16a34a!important;border-color:#16a34a!important}
+.btn-success:hover{background:#15803d!important;border-color:#15803d!important}
+.btn-warning{background:#fff0d3!important;border-color:#fff0d3!important;color:#8a5a00!important}
+.btn-warning:hover{background:#ffe3a8!important;border-color:#ffe3a8!important}
+.btn-danger{background:#fde8e8!important;border-color:#fde8e8!important;color:#b91c1c!important}
+.btn-danger:hover{background:#dc2626!important;border-color:#dc2626!important;color:#fff!important}
+.btn-secondary{background:#eef1f7!important;border-color:#eef1f7!important;color:#475569!important}
+.btn-secondary:hover{background:#dfe5f1!important}
+.navbar .btn-danger{background:#dc2626!important;color:#fff!important}
+
+/* ---- Form ---- */
+.form-control,.form-select{border:1px solid var(--line);border-radius:12px;padding:.62rem .95rem;font-size:.93rem;background-color:#fff}
+.form-control:focus,.form-select:focus{border-color:var(--blue);box-shadow:0 0 0 4px #2563eb1f}
+.form-control[readonly]{background:#f4f6fb;color:var(--muted)}
+.form-control::placeholder{color:#9aa6bd}
+.form-label,label.fw-bold{font-weight:700!important;font-size:.84rem;color:var(--ink)}
+
+/* ---- Tabel ---- */
+.table{--bs-table-bg:transparent;--bs-table-hover-bg:#f6f9ff;font-size:.9rem}
+.table>:not(caption)>*>*{padding:.85rem .9rem;border-bottom-color:var(--line)}
+.table-bordered>:not(caption)>*{border-width:0 0 1px}
+.table-bordered>:not(caption)>*>*{border-width:0 0 1px}
+.table-dark,.table-dark>tr>*,thead.table-dark th{--bs-table-bg:#f7f9fd;--bs-table-color:#64708a;--bs-table-border-color:var(--line);background:#f7f9fd!important;color:#64708a!important;font-size:.78rem;font-weight:700;border-bottom:1px solid var(--line)!important}
+.table-warning{--bs-table-bg:#fffbea!important}
+.table-responsive{border:1px solid var(--line);border-radius:14px}
+.card .table:not(.table-bordered){margin-bottom:0}
+
+/* ---- Lencana ---- */
+.badge{font-weight:700;border-radius:999px;padding:.4em .85em;font-size:.76rem}
+.badge.bg-success{background:#e3f6ea!important;color:#15803d!important}
+.badge.bg-primary{background:#e4edff!important;color:#1d4ed8!important}
+.badge.bg-info{background:#def0fb!important;color:#0369a1!important}
+.badge.bg-warning{background:#fff0d3!important;color:#b45309!important}
+.badge.bg-danger{background:#fde8e8!important;color:#b91c1c!important}
+.badge.bg-secondary{background:#eef1f6!important;color:#475569!important}
+.badge-mini.naposo{background:#e4edff!important;color:#1d4ed8!important}
+.badge-mini.parguru{background:#def5f1!important;color:#0f766e!important}
+.badge-naposobulung{background:#e4edff!important;color:#1d4ed8!important}
+.badge-parguru{background:#def5f1!important;color:#0f766e!important}
+
+/* ---- Notifikasi ---- */
+.alert{border-radius:14px;border:1px solid transparent}
+.alert-success{background:#e6f7ec;color:#14532d;border-color:#c5ebd2}
+.alert-danger{background:#fdecec;color:#7f1d1d;border-color:#f5c2c2}
+.alert-warning{background:#fff4d6;color:#7a4b00;border-color:#f4d98a}
+.alert-info{background:var(--blue-soft);color:#1e3a8a;border-color:#c7d7fb}
+
+/* ---- Modal & daftar pilihan ---- */
+.modal-content{border:0;border-radius:20px;box-shadow:0 30px 70px -20px #0e1a33aa}
+.modal-header,.modal-footer{border-color:var(--line)}
+.modal-title{font-weight:800;color:var(--ink)}
+#anggotaDropdown{border:1px solid var(--line)!important;border-radius:14px!important;box-shadow:0 18px 40px -18px #0e1a3366!important;padding:6px;margin-top:2px!important;background:#fff}
+#anggotaDropdown .list-group-item{border:0;border-radius:10px;padding:.65rem .8rem}
+#anggotaDropdown .list-group-item:hover{background:var(--blue-soft)}
+#anggotaDropdown .list-group-item-success{background:#e6f7ec;color:#15803d}
+
+/* ---- Absensi: bagian unduh & rekap ---- */
+.filter-section{background:#fff!important;border-radius:18px!important;padding:1rem!important}
+.stats-card{background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 55%,#60a5fa 100%)!important;border-radius:16px!important;padding:18px 20px!important;box-shadow:0 16px 30px -20px #2563eb;color:#fff}
+.col-md-6:first-child .stats-card{background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 55%,#60a5fa 100%)!important}
+.col-md-6:last-child .stats-card{background:linear-gradient(135deg,#0f766e 0%,#14b8a6 100%)!important;box-shadow:0 16px 30px -20px #0f766e}
+.stats-card h6,.stats-card h4,.stats-card .small{color:#fff!important}
+.stats-card h4{font-weight:800}
+
+/* ---- Kepengurusan: sidebar & isi ---- */
+.sidebar{background:var(--ink)!important;box-shadow:none!important;color:#fff}
+.sidebar h4{color:#fff!important;border-bottom:1px solid #ffffff1f!important;font-weight:800!important;font-size:1.1rem}
+.sidebar h4 i{color:#93b4ff!important}
+.sidebar-menu a{color:#c9d4ee!important;border-radius:12px!important;font-size:.92rem;font-weight:500}
+.sidebar-menu a i{color:#8fa0c4}
+.sidebar-menu a:hover{background:var(--ink-2)!important;color:#fff!important}
+.sidebar-menu a.active{background:var(--blue)!important;color:#fff!important}
+.sidebar-menu a.active i,.sidebar-menu a:hover i{color:#fff}
+.navbar-admin{border:1px solid var(--line);border-radius:16px!important;box-shadow:none!important}
+.navbar-admin h5{font-weight:800!important;color:var(--ink)!important}
+.btn-logout{background:#fff!important;color:#b91c1c!important;border:1px solid #f5c2c2!important;border-radius:999px!important}
+.btn-logout:hover{background:#dc2626!important;color:#fff!important;border-color:#dc2626!important;box-shadow:none!important}
+.section-card{border:1px solid var(--line);border-radius:18px!important;box-shadow:none!important}
+.section-title{font-weight:800!important;font-size:1.1rem!important;color:var(--ink)!important;border-bottom:1px solid var(--line)!important;padding-bottom:.8rem!important}
+.section-title i{color:var(--blue)!important}
+.form-label{color:var(--ink)}
+.btn-outline-primary{border:1px solid #c7d7fb!important;color:var(--blue-dark)!important;background:#fff!important;border-radius:12px!important}
+.btn-outline-primary:hover{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}
+.preview-table th{background:#f7f9fd!important;color:#64708a!important;font-size:.78rem!important}
+.preview-table tr:hover{background:#f6f9ff!important}
+.preview-table td{border-bottom-color:var(--line)!important}
+.spinner{border-color:#dbe4f6!important;border-top-color:var(--blue)!important}

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="robots" content="noindex">
+
+  <title>Dashboard Admin · RNHKBP Pelikan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="shell" id="shell">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar" id="sidebar" aria-label="Menu admin">
+    <div class="side-brand">
+      <img src="logo.png" alt="">
+      <div><b>R-NHKBP Pelikan</b><small>Panel admin</small></div>
+    </div>
+
+    <a class="side-link" href="dashboard.html" aria-current="page"><i class="fas fa-house"></i> Dashboard</a>
+
+    <div class="side-group">Kelola</div>
+    <a class="side-link" href="absensi.html"><i class="fas fa-clipboard-check"></i> Absensi</a>
+    <a class="side-link" href="admin-artikel.html"><i class="fas fa-newspaper"></i> Artikel &amp; Dokumentasi</a>
+    <a class="side-link" href="admin-renungan.html"><i class="fas fa-book-bible"></i> Renungan</a>
+    <a class="side-link" href="admin-kegiatan.html"><i class="fas fa-calendar-check"></i> Kegiatan</a>
+    <a class="side-link" href="anggota.html"><i class="fas fa-users"></i> Anggota</a>
+    <a class="side-link" href="admin-kepengurusan.html"><i class="fas fa-user-tie"></i> Kepengurusan</a>
+
+    <div class="side-group">Tampilan situs</div>
+    <a class="side-link" href="admin-tentang.html"><i class="fas fa-image"></i> Foto Tentang Kami</a>
+    <a class="side-link" href="admin-kontak.html"><i class="fas fa-address-book"></i> Info Kontak</a>
+    <a class="side-link" href="admin-pengaturan.html"><i class="fas fa-palette"></i> Tema &amp; Pengumuman</a>
+    <a class="side-link" href="admin-partitur.html"><i class="fas fa-music"></i> Partitur</a>
+
+    <div class="side-foot">
+      <a class="side-link" href="index.html" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Lihat website</a>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- ===== Konten ===== -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="Buka menu"><i class="fas fa-bars"></i></button>
+        <span class="crumb">Dashboard</span>
+      </div>
+      <div class="who">
+        <div class="who-chip"><span class="av" id="avatar">A</span><span class="em" id="adminEmail"></span></div>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="logout()"><i class="fas fa-right-from-bracket"></i> Keluar</button>
+      </div>
+    </header>
+
+    <section class="greet">
+      <div>
+        <h1 id="greeting">Selamat datang, Admin</h1>
+        <p id="today"></p>
+      </div>
+      <div class="greet-actions">
+        <a class="btn" href="admin-artikel.html"><i class="fas fa-pen"></i> Tulis artikel</a>
+        <a class="btn btn-ghost" href="absensi.html"><i class="fas fa-clipboard-check"></i> Input absensi</a>
+      </div>
+    </section>
+
+    <!-- Ringkasan -->
+    <section class="strip" aria-label="Ringkasan data">
+      <div><div class="n" id="totalAnggota">–</div><div class="l">Anggota</div></div>
+      <div><div class="n" id="totalAbsensi">–</div><div class="l">Catatan absensi</div></div>
+      <div><div class="n" id="totalArtikel">–</div><div class="l">Artikel</div></div>
+      <div><div class="n" id="totalRenungan">–</div><div class="l">Renungan</div></div>
+    </section>
+
+    <!-- Menu utama -->
+    <section class="section">
+      <div class="sec-head"><h2>Kelola konten</h2><span>Pilih yang mau dikerjakan</span></div>
+      <div class="tiles">
+        <a class="tile t-absensi" href="absensi.html">
+          <div class="ic"><i class="fas fa-clipboard-check"></i></div>
+          <h3>Absensi</h3>
+          <p>Catat kehadiran kegiatan dan lihat rekap Hadir, Izin, Sakit, dan Alpha.</p>
+          <div class="meta"><span id="tAbsensi">Memuat…</span><i class="fas fa-chevron-right"></i></div>
+        </a>
+        <a class="tile t-artikel" href="admin-artikel.html">
+          <div class="ic"><i class="fas fa-newspaper"></i></div>
+          <h3>Artikel &amp; Dokumentasi</h3>
+          <p>Tulis artikel, unggah foto kegiatan, dan atur yang tampil di halaman Dokumentasi.</p>
+          <div class="meta"><span id="tArtikel">Memuat…</span><i class="fas fa-chevron-right"></i></div>
+        </a>
+        <a class="tile t-renungan" href="admin-renungan.html">
+          <div class="ic"><i class="fas fa-book-bible"></i></div>
+          <h3>Renungan</h3>
+          <p>Tambah renungan harian lengkap dengan ayat Alkitab untuk beranda situs.</p>
+          <div class="meta"><span id="tRenungan">Memuat…</span><i class="fas fa-chevron-right"></i></div>
+        </a>
+        <a class="tile t-anggota" href="anggota.html">
+          <div class="ic"><i class="fas fa-users"></i></div>
+          <h3>Anggota</h3>
+          <p>Kelola data anggota Naposobulung dan Parguru Malua beserta weyiknya.</p>
+          <div class="meta"><span id="tAnggota">Memuat…</span><i class="fas fa-chevron-right"></i></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Menu lain -->
+    <section class="section">
+      <div class="sec-head"><h2>Tampilan situs</h2><span>Yang dilihat pengunjung</span></div>
+      <div class="rows">
+        <a class="row-link r-tentang" href="admin-tentang.html">
+          <span class="ic"><i class="fas fa-image"></i></span>
+          <span><b>Foto Tentang Kami</b><small>Ganti gambar di bagian Tentang</small></span>
+        </a>
+        <a class="row-link r-pengurus" href="admin-kepengurusan.html">
+          <span class="ic"><i class="fas fa-user-tie"></i></span>
+          <span><b>Kepengurusan</b><small>Ketua, sekretaris, seksi, dan kontak</small></span>
+        </a>
+        <a class="row-link r-partitur" href="admin-partitur.html">
+          <span class="ic"><i class="fas fa-music"></i></span>
+          <span><b>Partitur</b><small>Upload dan atur PDF partitur lagu</small></span>
+        </a>
+        <a class="row-link r-tema" href="admin-pengaturan.html">
+          <span class="ic"><i class="fas fa-palette"></i></span>
+          <span><b>Tema &amp; Pengumuman</b><small>Tema Natal dan teks berjalan</small></span>
+        </a>
+        <a class="row-link r-keg" href="admin-kegiatan.html">
+          <span class="ic"><i class="fas fa-calendar-check"></i></span>
+          <span><b>Kegiatan</b><small>Latihan, Parta, Retreat, Evangelisasi, dll</small></span>
+        </a>
+        <a class="row-link r-kontak" href="admin-kontak.html">
+          <span class="ic"><i class="fas fa-address-book"></i></span>
+          <span><b>Info Kontak</b><small>Alamat, WhatsApp, email, balasan otomatis</small></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Grafik + terbaru -->
+    <section class="two">
+      <div class="panel">
+        <h3>Anggota dan kehadiran</h3>
+        <div class="chart-pair">
+          <div class="chart-box"><canvas id="anggotaChart" aria-label="Grafik anggota per kategori" role="img"></canvas></div>
+          <div class="chart-box"><canvas id="statusChart" aria-label="Grafik status absensi" role="img"></canvas></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Terbaru</h3>
+        <div class="feed-sub">Artikel</div>
+        <ul class="feed" id="feedArtikel"><li class="feed-empty">Memuat…</li></ul>
+        <div class="feed-sub">Renungan</div>
+        <ul class="feed" id="feedRenungan"><li class="feed-empty">Memuat…</li></ul>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCwQGsFPBIs_gk0Xc1hscpG-7n6M16gqWc",
+  authDomain: "rnhkbp-pelikan.firebaseapp.com",
+  projectId: "rnhkbp-pelikan",
+  storageBucket: "rnhkbp-pelikan.firebasestorage.app",
+  messagingSenderId: "202813062166",
+  appId: "1:202813062166:web:eb3d963d5965a5e6f48937"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const $ = (id) => document.getElementById(id);
+
+/* ---------- Menu samping di HP ---------- */
+const shell = $('shell');
+$('menuBtn').addEventListener('click', () => shell.classList.toggle('open'));
+$('scrim').addEventListener('click', () => shell.classList.remove('open'));
+
+/* ---------- Sapaan ---------- */
+(function greet() {
+  const h = new Date().getHours();
+  const part = h < 11 ? 'pagi' : h < 15 ? 'siang' : h < 18 ? 'sore' : 'malam';
+  $('greeting').textContent = `Selamat ${part}, Admin`;
+  $('today').textContent = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+})();
+
+/* ---------- Login ---------- */
+auth.onAuthStateChanged(user => {
+  if (!user) { window.location.href = "login.html"; return; }
+  $('adminEmail').textContent = user.email;
+  $('avatar').textContent = (user.email || 'A').charAt(0).toUpperCase();
+  loadData();
+});
+
+window.logout = function () {
+  auth.signOut()
+    .then(() => { window.location.href = "login.html"; })
+    .catch(error => alert("Gagal keluar: " + error.message));
+};
+
+/* ---------- Bantuan ---------- */
+const fmtDate = (v) => {
+  let d = null;
+  if (v && typeof v.toDate === 'function') d = v.toDate();
+  else if (v) d = new Date(v);
+  return d && !isNaN(d) ? d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+};
+function feed(listId, docs, icon, cls, titleOf, subOf, emptyText) {
+  const ul = $(listId);
+  ul.innerHTML = '';
+  if (!docs.length) {
+    const li = document.createElement('li'); li.className = 'feed-empty'; li.textContent = emptyText; ul.appendChild(li); return;
+  }
+  docs.forEach(doc => {
+    const d = doc.data();
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="dot ${cls}"><i class="fas ${icon}"></i></span><div class="t"><b></b><small></small></div>`;
+    li.querySelector('b').textContent = titleOf(d);
+    li.querySelector('small').textContent = subOf(d);
+    ul.appendChild(li);
+  });
+}
+
+/* ---------- Data ---------- */
+async function loadData() {
+  Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
+  Chart.defaults.color = '#64708a';
+
+  try {
+    const [anggota, absensi, artikel, renungan] = await Promise.all([
+      db.collection("anggota").get(),
+      db.collection("absensi").get(),
+      db.collection("artikel").get(),
+      db.collection("renungan").get()
+    ]);
+
+    $('totalAnggota').textContent = anggota.size;
+    $('totalAbsensi').textContent = absensi.size;
+    $('totalArtikel').textContent = artikel.size;
+    $('totalRenungan').textContent = renungan.size;
+
+    let like = 0;
+    artikel.forEach(d => { like += d.data().like || 0; });
+    $('tAnggota').textContent = `${anggota.size} anggota`;
+    $('tAbsensi').textContent = `${absensi.size} catatan`;
+    $('tArtikel').textContent = `${artikel.size} artikel · ${like} suka`;
+    $('tRenungan').textContent = `${renungan.size} renungan`;
+
+    let naposo = 0, parguru = 0;
+    anggota.forEach(d => {
+      const k = d.data().kategori;
+      if (k === "Naposobulung") naposo++; else if (k === "Parguru Malua") parguru++;
+    });
+    new Chart($('anggotaChart'), {
+      type: 'bar',
+      data: { labels: ['Naposobulung', 'Parguru Malua'], datasets: [{ data: [naposo, parguru], backgroundColor: ['#2563eb', '#f4b942'], borderRadius: 10, maxBarThickness: 56 }] },
+      options: {
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, title: { display: true, text: 'Anggota per kategori', align: 'start', color: '#17223b', font: { weight: '700', size: 13 } } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#eef1f7' }, border: { display: false } }, x: { grid: { display: false }, border: { display: false } } }
+      }
+    });
+
+    let hadir = 0, izin = 0, sakit = 0, alpha = 0;
+    absensi.forEach(d => {
+      const s = d.data().status;
+      if (s === "Hadir") hadir++; else if (s === "Izin") izin++; else if (s === "Sakit") sakit++; else if (s === "Alpha") alpha++;
+    });
+    new Chart($('statusChart'), {
+      type: 'doughnut',
+      data: { labels: ['Hadir', 'Izin', 'Sakit', 'Alpha'], datasets: [{ data: [hadir, izin, sakit, alpha], backgroundColor: ['#16a34a', '#f4b942', '#38bdf8', '#dc2626'], borderWidth: 3, borderColor: '#fff' }] },
+      options: {
+        maintainAspectRatio: false, cutout: '64%',
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true } }, title: { display: true, text: 'Status absensi', align: 'start', color: '#17223b', font: { weight: '700', size: 13 } } }
+      }
+    });
+  } catch (error) {
+    console.error("Gagal memuat data:", error);
+    ['tAnggota', 'tAbsensi', 'tArtikel', 'tRenungan'].forEach(id => $(id).textContent = 'Gagal memuat');
+  }
+
+  // Terbaru
+  try {
+    const a = await db.collection("artikel").orderBy("tanggal", "desc").limit(4).get();
+    feed('feedArtikel', a.docs, 'fa-newspaper', 'a', d => d.judul || 'Tanpa judul', d => [d.kategori, fmtDate(d.tanggal)].filter(Boolean).join(' · '), 'Belum ada artikel.');
+  } catch (e) { feed('feedArtikel', [], '', 'a', null, null, 'Tidak bisa memuat artikel.'); }
+  try {
+    const r = await db.collection("renungan").orderBy("tanggal", "desc").limit(3).get();
+    feed('feedRenungan', r.docs, 'fa-book-bible', 'r', d => d.ayat || 'Renungan', d => [d.kategori, fmtDate(d.tanggal)].filter(Boolean).join(' · '), 'Belum ada renungan.');
+  } catch (e) { feed('feedRenungan', [], '', 'r', null, null, 'Tidak bisa memuat renungan.'); }
+}
+</script>
+
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

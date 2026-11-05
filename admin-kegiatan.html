@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="robots" content="noindex">
+  <title>Kegiatan · Admin RNHKBP Pelikan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-active="kegiatan" data-title="Kegiatan">
+<div class="shell" id="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+
+    <div class="page-head">
+      <h1>Kegiatan</h1>
+      <p>Atur kegiatan yang tampil di beranda, misalnya Latihan Koor, Partangiangan, Retreat, Kunjungan Koor, dan Evangelisasi. Tersedia 7 slot. Slot yang namanya dikosongkan tidak ditampilkan.</p>
+    </div>
+
+    <div class="overlay" id="overlay"><span class="spin"></span></div>
+
+    <div class="kg-sum">
+      <b id="sumCount">–</b>
+      <span>kegiatan terisi dari 7 slot.<br>Angka ini yang tampil sebagai “Total Kegiatan” di beranda.</span>
+      <div class="sp"></div>
+      <a class="btn btn-ghost btn-sm" href="index.html#kegiatan" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Lihat di beranda</a>
+    </div>
+
+    <div class="kg-grid" id="slots"></div>
+
+    <div class="savebar" id="savebar">
+      <span id="saveState">Memuat…</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" id="btnDefault" type="button"><i class="fas fa-rotate-left"></i> Kembalikan bawaan</button>
+        <button class="btn btn-sm" id="btnSimpan" type="button"><i class="fas fa-floppy-disk"></i> Simpan semua</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="js/admin-common.js"></script>
+<script src="js/kegiatan-data.js"></script>
+<script>
+const { db, esc, toast, confirmBox, requireAuth, auth } = AdminApp;
+const $ = (id) => document.getElementById(id);
+const MAKS = window.KEGIATAN_MAKS, IKON = window.KEGIATAN_IKON, WARNA = window.KEGIATAN_WARNA;
+const DOC = db.collection("pengurus").doc("kegiatan");
+const CLOUD = "dnyrxwl1g", PRESET = "rnhkbp-pelikan";   // sama seperti foto artikel
+const thumb = (u) => (u && u.includes('res.cloudinary.com') && u.includes('/upload/') && !/\/upload\/[a-z]_/.test(u)) ? u.replace('/upload/', '/upload/c_fill,w_200,h_140,f_auto,q_auto/') : u;
+
+let state = [], dirty = false;
+const kosong = () => ({ nama: '', ikon: 'fa-star', deskripsi: '', jadwal: '', lokasi: '', foto: '', file: null, previewUrl: '', hapusFoto: false });
+const dariItem = (k) => ({ ...kosong(), nama: k.nama || '', ikon: k.ikon || 'fa-star', deskripsi: k.deskripsi || '', jadwal: k.jadwal || '', lokasi: k.lokasi || '', foto: k.foto || '' });
+const isi = (list) => { const s = list.slice(0, MAKS).map(dariItem); while (s.length < MAKS) s.push(kosong()); return s; };
+
+function setDirty(v) {
+  dirty = v; $('savebar').classList.toggle('dirty', v);
+  $('saveState').textContent = v ? 'Ada perubahan yang belum disimpan.' : 'Semua perubahan sudah tersimpan.';
+}
+function ringkas() { $('sumCount').textContent = state.filter((s) => s.nama.trim()).length; }
+
+function slotHTML(s, i) {
+  const [c1, c2] = WARNA[i % WARNA.length];
+  const fotoSrc = s.previewUrl || (!s.hapusFoto && s.foto) || '';
+  return `<div class="card kg-slot${s.nama.trim() ? '' : ' empty'}" data-i="${i}">
+    <div class="kg-top">
+      <span class="kg-no">${i + 1}</span>
+      <div class="kg-prev">
+        <span class="kg-ic" style="background:linear-gradient(135deg,${c1},${c2})"><i class="fas ${esc(s.ikon)}"></i></span>
+        <div class="kg-pt"><b data-v="nama">${esc(s.nama) || 'Slot kosong'}</b><small data-v="jadwal">${esc(s.jadwal) || 'Jadwal belum diisi'}</small></div>
+      </div>
+      <div class="kg-ctl">
+        <button type="button" class="icon-btn" data-act="up" ${i === 0 ? 'disabled' : ''} title="Naikkan" aria-label="Naikkan kegiatan ${i + 1}"><i class="fas fa-arrow-up"></i></button>
+        <button type="button" class="icon-btn" data-act="down" ${i === MAKS - 1 ? 'disabled' : ''} title="Turunkan" aria-label="Turunkan kegiatan ${i + 1}"><i class="fas fa-arrow-down"></i></button>
+        <button type="button" class="icon-btn del" data-act="clear" title="Kosongkan slot" aria-label="Kosongkan kegiatan ${i + 1}"><i class="fas fa-eraser"></i></button>
+      </div>
+    </div>
+    <div class="stack-16">
+      <div class="grid2">
+        <div class="field"><label for="kg-nama-${i}">Nama kegiatan</label><input class="input" id="kg-nama-${i}" data-f="nama" maxlength="40" placeholder="Contoh: Latihan Koor" value="${esc(s.nama)}" autocomplete="off"></div>
+        <div class="field"><label for="kg-ikon-${i}">Ikon</label><select class="select" id="kg-ikon-${i}" data-f="ikon">${IKON.map(([v, l]) => `<option value="${v}"${v === s.ikon ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="kg-jadwal-${i}">Jadwal <span class="opt">(opsional)</span></label><input class="input" id="kg-jadwal-${i}" data-f="jadwal" maxlength="40" placeholder="Contoh: Setiap Jumat, 19.00" value="${esc(s.jadwal)}" autocomplete="off"></div>
+        <div class="field"><label for="kg-lokasi-${i}">Lokasi <span class="opt">(opsional)</span></label><input class="input" id="kg-lokasi-${i}" data-f="lokasi" maxlength="50" placeholder="Contoh: Gereja / rumah anggota" value="${esc(s.lokasi)}" autocomplete="off"></div>
+      </div>
+      <div class="field"><label for="kg-desk-${i}">Deskripsi singkat <span class="opt" data-v="cnt">${s.deskripsi.length}/140</span></label><textarea class="textarea" id="kg-desk-${i}" data-f="deskripsi" maxlength="140" style="min-height:84px" placeholder="Satu atau dua kalimat tentang kegiatan ini">${esc(s.deskripsi)}</textarea></div>
+      <div class="kg-foto">
+        <div class="kg-thumb">${fotoSrc ? `<img src="${esc(s.previewUrl || thumb(fotoSrc))}" alt="">` : '<i class="far fa-image"></i>'}</div>
+        <div class="kg-fbtns">
+          <label class="btn btn-ghost btn-sm" for="kg-file-${i}"><i class="fas fa-camera"></i> ${fotoSrc ? 'Ganti foto' : 'Tambah foto (opsional)'}</label>
+          <input type="file" id="kg-file-${i}" data-file accept="image/*" hidden>
+          ${fotoSrc ? '<button type="button" class="btn btn-danger-ghost btn-sm" data-act="rmfoto"><i class="fas fa-trash"></i> Hapus foto</button>' : ''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function render() { $('slots').innerHTML = state.map(slotHTML).join(''); ringkas(); }
+
+/* ---- isian ---- */
+$('slots').addEventListener('input', (e) => {
+  const f = e.target.dataset.f; if (!f) return;
+  const slot = e.target.closest('.kg-slot'), i = +slot.dataset.i;
+  state[i][f] = e.target.value;
+  if (f === 'nama') { slot.querySelector('[data-v="nama"]').textContent = e.target.value.trim() || 'Slot kosong'; slot.classList.toggle('empty', !e.target.value.trim()); }
+  if (f === 'jadwal') slot.querySelector('[data-v="jadwal"]').textContent = e.target.value.trim() || 'Jadwal belum diisi';
+  if (f === 'deskripsi') slot.querySelector('[data-v="cnt"]').textContent = e.target.value.length + '/140';
+  ringkas(); setDirty(true);
+});
+$('slots').addEventListener('change', (e) => {
+  const slot = e.target.closest('.kg-slot'); if (!slot) return;
+  const i = +slot.dataset.i;
+  if (e.target.dataset.f === 'ikon') { state[i].ikon = e.target.value; slot.querySelector('.kg-ic i').className = 'fas ' + e.target.value; setDirty(true); }
+  if (e.target.dataset.file !== undefined) pilihFoto(i, e.target.files[0]);
+});
+function pilihFoto(i, file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('File harus berupa gambar.', 'warn'); render(); return; }
+  if (file.size > 5 * 1024 * 1024) { toast('Ukuran foto maksimal 5 MB.', 'warn'); render(); return; }
+  const r = new FileReader();
+  r.onload = (ev) => { state[i].file = file; state[i].previewUrl = ev.target.result; state[i].hapusFoto = false; setDirty(true); render(); };
+  r.readAsDataURL(file);
+}
+$('slots').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const i = +b.closest('.kg-slot').dataset.i, act = b.dataset.act;
+  if (act === 'up' || act === 'down') {
+    const j = act === 'up' ? i - 1 : i + 1; if (j < 0 || j >= MAKS) return;
+    [state[i], state[j]] = [state[j], state[i]]; render(); setDirty(true);
+  } else if (act === 'clear') {
+    if (state[i].nama.trim() && !(await confirmBox({ title: 'Kosongkan slot ' + (i + 1) + '?', text: `“${state[i].nama}” tidak akan tampil di beranda setelah disimpan.`, ok: 'Kosongkan', danger: true }))) return;
+    state[i] = kosong(); render(); setDirty(true);
+  } else if (act === 'rmfoto') {
+    state[i].file = null; state[i].previewUrl = ''; state[i].hapusFoto = true; render(); setDirty(true);
+  }
+});
+
+/* ---- muat & simpan ---- */
+function explain(err) {
+  console.error(err);
+  if (err && err.code === 'permission-denied') return 'Firestore menolak penyimpanan. Izinkan admin menulis ke dokumen pengurus/kegiatan di Firebase → Firestore → Rules.';
+  return 'Gagal: ' + (err && err.message ? err.message : err);
+}
+async function muat() {
+  $('overlay').classList.add('show');
+  try {
+    const snap = await DOC.get();
+    const items = (snap.exists && Array.isArray(snap.data().items)) ? snap.data().items : window.KEGIATAN_DEFAULT;
+    state = isi(items);
+    setDirty(false);
+    $('saveState').textContent = (snap.exists && Array.isArray(snap.data().items)) ? 'Data terbaru sudah dimuat.' : 'Belum pernah disimpan, yang tampil adalah kegiatan bawaan.';
+  } catch (err) { state = isi(window.KEGIATAN_DEFAULT); toast(explain(err), 'error'); }
+  render();
+  $('overlay').classList.remove('show');
+}
+async function unggah(file) {
+  const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', PRESET);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, { method: 'POST', body: fd });
+  if (!res.ok) throw new Error('Upload foto gagal (' + res.status + ').');
+  return (await res.json()).secure_url;
+}
+async function simpan() {
+  const terisi = state.filter((s) => s.nama.trim());
+  if (!terisi.length && !(await confirmBox({ title: 'Semua slot kosong', text: 'Bagian Kegiatan di beranda akan disembunyikan dan Total Kegiatan menjadi 0. Lanjutkan?', ok: 'Lanjutkan', danger: true }))) return;
+  const btn = $('btnSimpan'); btn.disabled = true; $('overlay').classList.add('show');
+  try {
+    const items = [];
+    for (const s of terisi) {
+      let foto = s.hapusFoto ? '' : s.foto;
+      if (s.file) foto = await unggah(s.file);
+      items.push({ nama: s.nama.trim(), ikon: s.ikon, deskripsi: s.deskripsi.trim(), jadwal: s.jadwal.trim(), lokasi: s.lokasi.trim(), foto });
+    }
+    await DOC.set({ items, updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: auth.currentUser ? auth.currentUser.email : '' }, { merge: true });
+    state = isi(items); render(); setDirty(false);
+    toast(`${items.length} kegiatan disimpan.`, 'success');
+  } catch (err) { toast(explain(err), 'error'); }
+  btn.disabled = false; $('overlay').classList.remove('show');
+}
+$('btnSimpan').addEventListener('click', simpan);
+$('btnDefault').addEventListener('click', async () => {
+  if (!(await confirmBox({ title: 'Kembalikan kegiatan bawaan?', text: 'Isian saat ini diganti 7 kegiatan bawaan. Baru berlaku di beranda setelah kamu menekan Simpan semua.', ok: 'Kembalikan', danger: true }))) return;
+  state = isi(window.KEGIATAN_DEFAULT); render(); setDirty(true);
+});
+window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+requireAuth(muat);
+</script>
+<script src="js/pwa-init.js"></script>
+</body>
+</html>
