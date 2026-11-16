@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -46,7 +46,7 @@
     }
     
     .login-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
       color: white;
       padding: 40px;
       text-align: center;
@@ -70,12 +70,12 @@
     }
     
     .form-control:focus {
-      border-color: #667eea;
+      border-color: #0ea5e9;
       box-shadow: none;
     }
     
     .btn-login {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
       color: white;
       border: none;
       border-radius: 30px;
@@ -90,7 +90,7 @@
     }
     
     .back-link {
-      color: #667eea;
+      color: #0ea5e9;
       text-decoration: none;
       font-weight: 500;
     }
@@ -116,7 +116,7 @@
             <p class="mb-0">Admin Login</p>
           </div>
           <div class="login-body">
-            <div id="alertMessage" class="alert alert-danger d-none" role="alert">
+            <div id="alertMessage" class="alert alert-danger d-none" role="alert" aria-live="polite">
               <i class="fas fa-exclamation-circle me-2"></i>
               <span id="alertText"></span>
             </div>
@@ -128,7 +128,7 @@
                   <span class="input-group-text bg-light border-0">
                     <i class="fas fa-envelope text-primary"></i>
                   </span>
-                  <input type="email" id="email" class="form-control" placeholder="admin@rnhkbp.org" required>
+                  <input type="email" id="email" class="form-control" placeholder="admin@rnhkbp.org" required autocomplete="username">
                 </div>
               </div>
               
@@ -138,10 +138,12 @@
                   <span class="input-group-text bg-light border-0">
                     <i class="fas fa-lock text-primary"></i>
                   </span>
-                  <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                  <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                  <button type="button" class="btn btn-light border-0" id="togglePw" aria-label="Tampilkan password"><i class="fas fa-eye"></i></button>
                 </div>
               </div>
               
+              <div class="text-end mb-3" style="margin-top:-.5rem"><a href="#" id="lupaLink" class="back-link" style="font-size:.9rem">Lupa password?</a></div>
               <button type="submit" class="btn btn-login w-100 mb-3" id="btnLogin">
                 <i class="fas fa-sign-in-alt me-2"></i>Login
               </button>
@@ -156,7 +158,7 @@
         </div>
         
         <div class="text-center mt-3 text-white">
-          <small>© 2024 RNHKBP Pelikan. All rights reserved.</small>
+          <small>© 2026 RNHKBP Pelikan. All rights reserved.</small>
         </div>
       </div>
     </div>
@@ -186,53 +188,68 @@
       }
     });
 
+    function tampilPesan(teks, jenis) {
+      const box = document.getElementById('alertMessage');
+      document.getElementById('alertText').textContent = teks;
+      box.classList.remove('alert-danger', 'alert-success', 'd-none');
+      box.classList.add(jenis === 'ok' ? 'alert-success' : 'alert-danger');
+      clearTimeout(window.__pesanTimer);
+      window.__pesanTimer = setTimeout(() => box.classList.add('d-none'), 8000);
+    }
+
+    function pesanError(error) {
+      switch (error.code) {
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential':
+        case 'auth/invalid-login-credentials':
+          return 'Email atau password salah';
+        case 'auth/invalid-email': return 'Format email tidak valid';
+        case 'auth/user-disabled': return 'Akun ini dinonaktifkan';
+        case 'auth/too-many-requests': return 'Terlalu banyak percobaan. Coba lagi beberapa menit lagi atau gunakan "Lupa password?"';
+        case 'auth/network-request-failed': return 'Tidak ada koneksi internet. Coba lagi';
+        default: return 'Gagal: ' + error.message;
+      }
+    }
+
     function handleLogin(event) {
       event.preventDefault();
-      
-      const email = document.getElementById('email').value;
+      const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       const btnLogin = document.getElementById('btnLogin');
-      const alertMessage = document.getElementById('alertMessage');
-      const alertText = document.getElementById('alertText');
-      
-      // Tampilkan loading
       btnLogin.disabled = true;
       btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
-      
       auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          window.location.href = "dashboard.html";
-        })
+        .then(() => { window.location.href = "dashboard.html"; })
         .catch(error => {
-          // Sembunyikan loading
           btnLogin.disabled = false;
           btnLogin.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Login';
-          
-          // Tampilkan pesan error
-          let errorMessage = '';
-          switch(error.code) {
-            case 'auth/user-not-found':
-              errorMessage = 'Email tidak terdaftar';
-              break;
-            case 'auth/wrong-password':
-              errorMessage = 'Password salah';
-              break;
-            case 'auth/invalid-email':
-              errorMessage = 'Format email tidak valid';
-              break;
-            default:
-              errorMessage = 'Login gagal: ' + error.message;
-          }
-          
-          alertText.textContent = errorMessage;
-          alertMessage.classList.remove('d-none');
-          
-          // Hilangkan alert setelah 5 detik
-          setTimeout(() => {
-            alertMessage.classList.add('d-none');
-          }, 5000);
+          tampilPesan(pesanError(error), 'err');
         });
     }
+
+    // Lupa password: kirim tautan atur ulang ke email yang diisi
+    document.getElementById('lupaLink').addEventListener('click', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if (!email) { tampilPesan('Isi email admin dulu di kolom Email, lalu klik "Lupa password?"', 'err'); document.getElementById('email').focus(); return; }
+      auth.languageCode = 'id';
+      auth.sendPasswordResetEmail(email)
+        .then(() => tampilPesan('Jika email terdaftar, tautan atur ulang password sudah dikirim ke ' + email + '. Cek juga folder Spam.', 'ok'))
+        .catch(error => {
+          if (error.code === 'auth/user-not-found') tampilPesan('Jika email terdaftar, tautan atur ulang password sudah dikirim ke ' + email + '. Cek juga folder Spam.', 'ok');
+          else tampilPesan(pesanError(error), 'err');
+        });
+    });
+
+    // Tampilkan / sembunyikan password
+    document.getElementById('togglePw').addEventListener('click', function () {
+      const inp = document.getElementById('password');
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      this.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+      this.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password');
+    });
   </script>
 <script src="js/pwa-init.js"></script>
 </body>

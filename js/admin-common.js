@@ -97,7 +97,7 @@
     const top = document.getElementById('topbar');
     if (top) {
       top.innerHTML = `<div class="topbar-left"><button class="menu-btn" id="menuBtn" type="button" aria-label="Buka menu"><i class="fas fa-bars"></i></button><span class="crumb">${esc(title)}</span></div>` +
-        `<div class="who"><div class="who-chip"><span class="av" id="avatar">A</span><span class="em" id="adminEmail"></span></div><button class="btn btn-ghost btn-sm" type="button" id="logoutBtn"><i class="fas fa-right-from-bracket"></i> Keluar</button></div>`;
+        `<div class="who"><div class="who-chip"><span class="av" id="avatar">A</span><span class="em" id="adminEmail"></span></div><button class="btn btn-ghost btn-sm" type="button" id="pwBtn" title="Kirim tautan ganti password ke email Anda"><i class="fas fa-key"></i> Ganti password</button><button class="btn btn-ghost btn-sm" type="button" id="logoutBtn"><i class="fas fa-right-from-bracket"></i> Keluar</button></div>`;
     }
     const shell = document.getElementById('shell');
     const mb = document.getElementById('menuBtn');
@@ -106,6 +106,19 @@
     if (sc && shell) sc.addEventListener('click', () => shell.classList.remove('open'));
     const lb = document.getElementById('logoutBtn');
     if (lb) lb.addEventListener('click', logout);
+    const pb = document.getElementById('pwBtn');
+    if (pb) pb.addEventListener('click', gantiPassword);
+  }
+
+  /* Kirim tautan ganti password ke email admin yang sedang login */
+  function gantiPassword() {
+    const u = auth.currentUser;
+    if (!u || !u.email) { toast('Belum login', 'error'); return; }
+    if (!confirm('Kirim tautan ganti password ke ' + u.email + '?')) return;
+    auth.languageCode = 'id';
+    auth.sendPasswordResetEmail(u.email)
+      .then(() => toast('Tautan ganti password dikirim ke ' + u.email + '. Cek juga folder Spam.', 'success'))
+      .catch((e) => toast('Gagal mengirim: ' + e.message, 'error'));
   }
 
   function logout() {
