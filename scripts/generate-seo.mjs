@@ -115,7 +115,13 @@ const laguR = await sbLagu();
 log(`kontak:${kontakR.ok ? 'ok' : kontakR.reason} | kepengurusan:${pengR.ok ? 'ok' : pengR.reason} | artikel:${artR.ok ? artR.data.length : 'gagal'} | lagu:${laguR.ok ? laguR.data.length : 'gagal'}`);
 
 const items = pengR.ok ? SEO.pengurusItems(pengR.data, globalThis.PENGURUS_GROUPS) : [];
-const sitemap = [{ loc: SITE, pri: '1.0' }, { loc: SITE + 'kepengurusan.html', pri: '0.9' }, { loc: SITE + 'dokumentasi-publik.html', pri: '0.9' }, { loc: SITE + 'partitur.html', pri: '0.9' }];
+const pengurusLastMod = pengR.ok ? dateOnly(pengR.data.lastUpdated) : '';
+const sitemap = [
+  { loc: SITE, pri: '1.0', last: pengurusLastMod },
+  { loc: SITE + 'kepengurusan.html', pri: '0.9', last: pengurusLastMod },
+  { loc: SITE + 'dokumentasi-publik.html', pri: '0.9' },
+  { loc: SITE + 'partitur.html', pri: '0.9' }
+];
 
 // ================= 2. KEPENGURUSAN =================
 {
