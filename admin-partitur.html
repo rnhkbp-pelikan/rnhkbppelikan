@@ -109,8 +109,12 @@
       </section>
 
       <section id="tab-admins" class="hidden">
-        <div class="admin-card">
-          <h3>Tambah pengguna / admin</h3>
+        <div class="admin-card hidden" id="ownerNote">
+          <h3>Kelola admin</h3>
+          <p class="muted">Hanya <b>owner</b> yang bisa menambah atau mencabut admin. Kamu bisa melihat daftar admin di bawah.</p>
+        </div>
+        <div class="admin-card" id="ownerCard">
+          <h3>Tambah pengguna / admin <span class="muted">(khusus owner)</span></h3>
           <p class="muted">Buat akun baru lengkap dengan kata sandi. Beri tahu orangnya email dan kata sandi ini; ia bisa menggantinya sendiri lewat “Lupa kata sandi”.</p>
           <form id="userForm" class="form-grid">
             <label>Email<input id="newEmail" type="email" required autocomplete="off" /></label>

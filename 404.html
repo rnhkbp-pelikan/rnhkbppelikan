@@ -22,6 +22,15 @@
     <a class="b" id="home" href="/">Ke beranda</a><a class="b g" id="part" href="/">Partitur</a>
   </div>
   <script>
+    // Tautan reset kata sandi (Supabase) yang salah mendarat di 404: teruskan ke halaman admin partitur beserta tokennya.
+    (function () {
+      if (/(type=recovery|access_token=|error_code=)/.test(location.hash)) {
+        var seg = location.pathname.split('/')[1], b = (/\.github\.io$/.test(location.hostname) && seg && !/\.html?$/.test(seg)) ? '/' + seg + '/' : '/';
+        location.replace(b + 'admin-partitur.html' + location.hash);
+      }
+    })();
+  </script>
+  <script>
     // Partitur / artikel yang baru ditambahkan: halaman statisnya belum dibuat, jadi arahkan ke halaman dinamisnya.
     // Contoh: /rnhkbppelikan/lagu/bukit-zaitun-3f9a1c22.html  ->  /rnhkbppelikan/lagu.html?k=3f9a1c22
     (function () {

@@ -1,7 +1,7 @@
 import { sb, createClient, SUPABASE_URL, SUPABASE_KEY, APPS_SCRIPT_URL, $, escapeHtml, getDriveFileId, driveViewUrl } from './common.js';
 import { PDFDocument } from 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm';
 
-let me = null, isAdmin = false, recovery = false, forgot = false;
+let me = null, isAdmin = false, isOwner = false, recovery = false, forgot = false;
 let songs = [], editingId = null, photos = [];
 
 const show = (id, on) => $(id).classList.toggle('hidden', !on);
@@ -17,15 +17,16 @@ function render() {
   show('denyBox', !recovery && !!me && !isAdmin);
   show('logoutBtn', !!me && !recovery);
   if (me && !isAdmin) $('denyText').textContent = `Akun ${me.email} belum terdaftar sebagai admin. Minta admin lain menambahkannya.`;
+  show('ownerCard', isOwner); show('ownerNote', !isOwner);
   if (!gate) { $('whoami').textContent = `Masuk sebagai ${me.email}`; loadSongs(); loadAdmins(); }
 }
 
 async function applySession(session) {
   me = (session && session.user) || null;
-  isAdmin = false;
+  isAdmin = false; isOwner = false;
   if (me) {
-    const { data } = await sb.from('admins').select('user_id').eq('user_id', me.id).maybeSingle();
-    isAdmin = Boolean(data);
+    const { data } = await sb.from('admins').select('user_id,is_owner').eq('user_id', me.id).maybeSingle();
+    isAdmin = Boolean(data); isOwner = Boolean(data && data.is_owner);
   }
   render();
 }
@@ -61,7 +62,7 @@ $('backLogin').addEventListener('click', () => { forgot = false; render(); });
 $('forgotForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   $('forgotBtn').disabled = true; say('forgotMsg', 'Mengirim…');
-  const redirectTo = new URL('admin-partitur.html', location.href).href;
+  const redirectTo = location.origin + location.pathname.replace(/[^/]*$/, '') + 'admin-partitur.html';
   const { error } = await sb.auth.resetPasswordForEmail($('forgotEmail').value.trim(), { redirectTo });
   $('forgotBtn').disabled = false;
   say('forgotMsg', error
@@ -248,16 +249,17 @@ async function loadAdmins() {
   const { data, error } = await sb.rpc('list_admins');
   if (error) { $('adminList').innerHTML = `<li class="muted">Gagal memuat: ${escapeHtml(error.message)}. Pastikan setup.sql sudah dijalankan.</li>`; return; }
   $('adminList').innerHTML = data.map(a => `
-    <li class="row"><div><strong>${escapeHtml(a.email)}</strong>${a.user_id === me.id ? '<span class="muted">Ini kamu</span>' : ''}</div>
-    <div class="row-actions">${a.user_id === me.id ? '' : `<button class="button button-danger" type="button" data-rm="${a.user_id}">Cabut akses admin</button>`}</div></li>`).join('');
+    <li class="row"><div><strong>${escapeHtml(a.email)}</strong>${a.is_owner ? '<span class="muted">Owner</span>' : ''}${a.user_id === me.id ? '<span class="muted">Ini kamu</span>' : ''}</div>
+    <div class="row-actions">${isOwner && a.user_id !== me.id && !a.is_owner ? `<button class="button button-danger" type="button" data-rm="${a.user_id}">Cabut akses admin</button>` : ''}</div></li>`).join('');
 }
 $('adminList').addEventListener('click', async (e) => {
-  const b = e.target.closest('[data-rm]'); if (!b || !confirm('Cabut akses admin akun ini? Akunnya tetap ada.')) return;
+  const b = e.target.closest('[data-rm]'); if (!b || !isOwner || !confirm('Cabut akses admin akun ini? Akunnya tetap ada.')) return;
   const { error } = await sb.rpc('remove_admin', { p_user_id: b.dataset.rm });
   if (error) alert(`Gagal: ${error.message}`); else loadAdmins();
 });
 $('userForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (!isOwner) { say('userMsg', 'Hanya owner yang boleh menambah admin.'); return; }
   const email = $('newEmail').value.trim(), password = $('newPass').value;
   $('userBtn').disabled = true; say('userMsg', 'Membuat akun…');
   try {
