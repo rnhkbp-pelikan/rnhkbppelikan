@@ -123,6 +123,19 @@ const sitemap = [
   { loc: SITE + 'partitur.html', pri: '0.9' }
 ];
 
+// ---------- pengaman: jangan sampai sitemap/halaman lama hilang karena data gagal terbaca ----------
+function entriLama(prefix) {
+  const f = path.join(ROOT, 'sitemap.xml');
+  if (!fs.existsSync(f)) return [];
+  const out = [];
+  for (const m of fs.readFileSync(f, 'utf8').matchAll(/<url><loc>([^<]+)<\/loc>(?:<lastmod>([^<]*)<\/lastmod>)?<priority>([^<]*)<\/priority><\/url>/g)) {
+    const loc = m[1].replace(/&amp;/g, '&');
+    if (loc.startsWith(SITE + prefix + '/')) out.push({ loc, pri: m[3], last: m[2] || '' });
+  }
+  return out;
+}
+const jumlahBerkas = (dir) => { const d = path.join(ROOT, dir); return fs.existsSync(d) ? fs.readdirSync(d).filter((f) => f.endsWith('.html')).length : 0; };
+
 // ================= 2. KEPENGURUSAN =================
 {
   let h = rd('kepengurusan.html');
@@ -149,7 +162,9 @@ const sitemap = [
 
 // ================= 4. ARTIKEL / DOKUMENTASI =================
 let artikel = [];
-if (artR.ok) {
+const artikelAda = artR.ok ? artR.data.filter((a) => a.judul).length : 0;
+const artikelAman = artR.ok && !(artikelAda === 0 && jumlahBerkas('artikel') > 0);   // data kosong mendadak = dicurigai, jangan hapus apa pun
+if (artikelAman) {
   artikel = artR.data.filter((a) => a.judul);
   artikel.sort((a, b) => String(b.tanggal || '').localeCompare(String(a.tanggal || '')));
   const tpl = rd('detail-artikel-publik.html');
@@ -190,10 +205,15 @@ if (artR.ok) {
     { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Dokumentasi Kegiatan Naposobulung HKBP Pelikan', url: SITE + 'dokumentasi-publik.html', inLanguage: 'id',
       mainEntity: { '@type': 'ItemList', itemListElement: artikel.slice(0, 50).map((a, i) => ({ '@type': 'ListItem', position: i + 1, url: SEO.urlArtikel(a, true), name: a.judul })) } }]));
   wr('dokumentasi-publik.html', d);
-} else warn('Artikel tidak dapat dibaca; halaman artikel dibiarkan seperti sebelumnya.');
+} else {
+  warn(artR.ok ? 'Daftar artikel kosong padahal sebelumnya ada; halaman & sitemap artikel dipertahankan (tidak ada yang dihapus).' : 'Artikel tidak dapat dibaca; halaman artikel dibiarkan seperti sebelumnya.');
+  sitemap.push(...entriLama('artikel'));
+}
 
 // ================= 5. PARTITUR (per lagu) =================
-if (laguR.ok) {
+const laguAda = laguR.ok ? laguR.data.filter((l) => l.judul && SEO.driveId(l.pdf_url)).length : 0;
+const laguAman = laguR.ok && !(laguAda === 0 && jumlahBerkas('lagu') > 0);
+if (laguAman) {
   const lagu = laguR.data.filter((l) => l.judul && SEO.driveId(l.pdf_url)).sort((a, b) => String(a.judul).localeCompare(String(b.judul), 'id'));
   const tpl = rd('lagu.html'), keep = new Set();
   for (const l of lagu) {
@@ -220,7 +240,18 @@ if (laguR.ok) {
     { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Koleksi Partitur Lagu R-NHKBP Pelikan', url: SITE + 'partitur.html', inLanguage: 'id',
       mainEntity: { '@type': 'ItemList', itemListElement: lagu.slice(0, 200).map((l, i) => ({ '@type': 'ListItem', position: i + 1, url: SEO.urlLagu(l, true), name: 'Partitur ' + l.judul })) } }]));
   wr('partitur.html', p);
-} else warn('Daftar lagu (Supabase) tidak dapat dibaca; halaman partitur dibiarkan seperti sebelumnya.');
+} else {
+  warn(laguR.ok ? 'Daftar lagu kosong padahal sebelumnya ada; halaman & sitemap lagu dipertahankan (tidak ada yang dihapus).' : 'Daftar lagu (Supabase) tidak dapat dibaca; halaman partitur dibiarkan seperti sebelumnya.');
+  sitemap.push(...entriLama('lagu'));
+}
+
+// tanggal terbaru untuk halaman daftar (supaya Google tahu kapan isinya berubah)
+{
+  const terbaru = (prefix) => entriTerbaru(prefix);
+  function entriTerbaru(prefix) { return sitemap.filter((u) => u.loc.startsWith(SITE + prefix + '/') && u.last).map((u) => u.last).sort().pop() || ''; }
+  const dk = sitemap.find((u) => u.loc === SITE + 'dokumentasi-publik.html'); if (dk) dk.last = terbaru('artikel') || dk.last;
+  const pt = sitemap.find((u) => u.loc === SITE + 'partitur.html'); if (pt) pt.last = terbaru('lagu') || pt.last;
+}
 
 // ================= 6. SITEMAP =================
 const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
