@@ -876,10 +876,13 @@
   <link rel="stylesheet" href="css/kontak.css">
   <link rel="stylesheet" href="css/tema.css">
   <link rel="stylesheet" href="css/pengaturan.css">
+  <link rel="stylesheet" href="css/sorotan.css">
+  <link rel="stylesheet" href="css/musik.css">
   <script src="js/pengaturan.js"></script>
   <script src="js/kontak-data.js"></script>
   <script src="js/pengurus-data.js"></script>
   <script src="js/kegiatan-data.js"></script>
+  <script src="js/sorotan.js"></script>
 </head>
 <body>
 
@@ -1043,6 +1046,15 @@
 </div>
 
 <!-- RENUNGAN HARIAN SECTION -->
+<!-- ===== SOROTAN ===== -->
+<section id="sorotan" class="sr-section" style="display:none">
+  <div class="container">
+    <h2 class="section-title">Sorotan <span>Kami</span></h2>
+    <p class="sr-sub">Pengumuman, acara, dan kabar pilihan dari R-NHKBP Pelikan.</p>
+    <div class="sr-list" id="sorotanList"></div>
+  </div>
+</section>
+
 <!-- ===== KEGIATAN KAMI ===== -->
 <section id="kegiatan" class="kgp-section">
   <div class="container">
@@ -1640,9 +1652,11 @@ document.addEventListener('DOMContentLoaded', () => {
   loadKepengurusan();
   loadTentangFoto();
   loadKegiatan();
+  window.SOROTAN.muat(db).then((c) => window.SOROTAN.tampil(c));
 });
 </script>
 
+<script src="js/musik.js"></script>
 <script src="js/pwa-init.js"></script>
 </body>
 </html>

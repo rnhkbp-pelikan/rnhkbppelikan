@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="robots" content="noindex">
+  <title>Sorotan · Admin RNHKBP Pelikan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-active="sorotan" data-title="Sorotan">
+<div class="shell" id="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+
+    <div class="page-head">
+      <h1>Sorotan</h1>
+      <p>Pilih pengumuman, acara, atau kabar penting yang ditonjolkan di beranda. Tersedia 6 slot. Slot yang judulnya dikosongkan tidak ditampilkan. Kartu pertama tampil paling besar.</p>
+    </div>
+
+    <div class="overlay" id="overlay"><span class="spin"></span></div>
+
+    <div class="kg-sum">
+      <label class="sw"><input type="checkbox" id="aktif" checked><span class="tr"></span><span>Tampilkan bagian Sorotan di beranda</span></label>
+      <div class="sp"></div>
+      <b id="sumCount">–</b><span>sorotan terisi dari 6 slot</span>
+      <a class="btn btn-ghost btn-sm" href="index.html#sorotan" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Lihat di beranda</a>
+    </div>
+
+    <div class="kg-grid" id="slots"></div>
+
+    <div class="savebar" id="savebar">
+      <span id="saveState">Memuat…</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-sm" id="btnSimpan" type="button"><i class="fas fa-floppy-disk"></i> Simpan semua</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="js/admin-common.js"></script>
+<script src="js/sorotan.js"></script>
+<script>
+const { db, esc, toast, confirmBox, requireAuth, auth } = AdminApp;
+const $ = (id) => document.getElementById(id);
+const S = window.SOROTAN, MAKS = S.MAKS;
+const DOC = db.collection("pengurus").doc("sorotan");
+const CLOUD = "dnyrxwl1g", PRESET = "rnhkbp-pelikan";   // sama seperti foto kegiatan & artikel
+
+let state = [], dirty = false;
+const kosong = () => ({ label: 'Pengumuman', judul: '', deskripsi: '', tanggal: '', tautan: '', teksTombol: '', foto: '', file: null, previewUrl: '', hapusFoto: false });
+const dariItem = (k) => ({ ...kosong(), label: k.label || '', judul: k.judul || '', deskripsi: k.deskripsi || '', tanggal: k.tanggal || '', tautan: k.tautan || '', teksTombol: k.teksTombol || '', foto: k.foto || '' });
+const isi = (list) => { const s = list.slice(0, MAKS).map(dariItem); while (s.length < MAKS) s.push(kosong()); return s; };
+const thumb = (u) => S.foto(u, 200);
+
+function setDirty(v) { dirty = v; $('savebar').classList.toggle('dirty', v); $('saveState').textContent = v ? 'Ada perubahan yang belum disimpan.' : 'Semua perubahan sudah tersimpan.'; }
+function ringkas() { $('sumCount').textContent = state.filter((s) => s.judul.trim()).length; }
+
+function slotHTML(s, i) {
+  const [c1, c2] = S.WARNA[i % S.WARNA.length];
+  const fotoSrc = s.previewUrl || (!s.hapusFoto && s.foto) || '';
+  const opsiLabel = S.LABEL.concat(s.label && S.LABEL.indexOf(s.label) < 0 ? [s.label] : []);
+  const tautanBuruk = s.tautan.trim() && !S.tautanAman(s.tautan);
+  return `<div class="card kg-slot${s.judul.trim() ? '' : ' empty'}" data-i="${i}">
+    <div class="kg-top">
+      <span class="kg-no">${i + 1}</span>
+      <div class="kg-prev">
+        <span class="kg-ic" style="background:linear-gradient(135deg,${c1},${c2})"><i class="fas fa-star"></i></span>
+        <div class="kg-pt"><b data-v="judul">${esc(s.judul) || 'Slot kosong'}</b><small data-v="label">${esc(s.label) || 'Tanpa label'}</small></div>
+      </div>
+      <div class="kg-ctl">
+        <button type="button" class="icon-btn" data-act="up" ${i === 0 ? 'disabled' : ''} title="Naikkan" aria-label="Naikkan sorotan ${i + 1}"><i class="fas fa-arrow-up"></i></button>
+        <button type="button" class="icon-btn" data-act="down" ${i === MAKS - 1 ? 'disabled' : ''} title="Turunkan" aria-label="Turunkan sorotan ${i + 1}"><i class="fas fa-arrow-down"></i></button>
+        <button type="button" class="icon-btn del" data-act="clear" title="Kosongkan slot" aria-label="Kosongkan sorotan ${i + 1}"><i class="fas fa-eraser"></i></button>
+      </div>
+    </div>
+    <div class="stack-16">
+      <div class="grid2">
+        <div class="field"><label for="sr-judul-${i}">Judul</label><input class="input" id="sr-judul-${i}" data-f="judul" maxlength="70" placeholder="Contoh: Ibadah Natal Naposobulung" value="${esc(s.judul)}" autocomplete="off"></div>
+        <div class="field"><label for="sr-label-${i}">Label</label><select class="select" id="sr-label-${i}" data-f="label"><option value="">(tanpa label)</option>${opsiLabel.map((l) => `<option${l === s.label ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select></div>
+      </div>
+      <div class="field"><label for="sr-desk-${i}">Keterangan singkat <span class="opt" data-v="cnt">${s.deskripsi.length}/200</span></label><textarea class="textarea" id="sr-desk-${i}" data-f="deskripsi" maxlength="200" style="min-height:84px" placeholder="Satu atau dua kalimat">${esc(s.deskripsi)}</textarea></div>
+      <div class="grid2">
+        <div class="field"><label for="sr-tgl-${i}">Tanggal / waktu <span class="opt">(opsional)</span></label><input class="input" id="sr-tgl-${i}" data-f="tanggal" maxlength="30" placeholder="Contoh: 25 Des 2026, 17.00" value="${esc(s.tanggal)}" autocomplete="off"></div>
+        <div class="field"><label for="sr-btn-${i}">Teks tombol <span class="opt">(opsional)</span></label><input class="input" id="sr-btn-${i}" data-f="teksTombol" maxlength="24" placeholder="Selengkapnya" value="${esc(s.teksTombol)}" autocomplete="off"></div>
+      </div>
+      <div class="field"><label for="sr-url-${i}">Tautan <span class="opt">(opsional)</span></label><input class="input" id="sr-url-${i}" data-f="tautan" maxlength="300" inputmode="url" placeholder="https://… atau dokumentasi-publik.html" value="${esc(s.tautan)}" autocomplete="off">${tautanBuruk ? '<small style="color:var(--danger)" data-v="urlerr">Tautan tidak valid, harus diawali https:// atau nama halaman .html.</small>' : '<small data-v="urlerr" style="color:var(--danger)"></small>'}</div>
+      <div class="kg-foto">
+        <div class="kg-thumb">${fotoSrc ? `<img src="${esc(s.previewUrl || thumb(fotoSrc))}" alt="">` : '<i class="far fa-image"></i>'}</div>
+        <div class="kg-fbtns">
+          <label class="btn btn-ghost btn-sm" for="sr-file-${i}"><i class="fas fa-camera"></i> ${fotoSrc ? 'Ganti foto' : 'Tambah foto (opsional)'}</label>
+          <input type="file" id="sr-file-${i}" data-file accept="image/*" hidden>
+          ${fotoSrc ? '<button type="button" class="btn btn-danger-ghost btn-sm" data-act="rmfoto"><i class="fas fa-trash"></i> Hapus foto</button>' : ''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function render() { $('slots').innerHTML = state.map(slotHTML).join(''); ringkas(); }
+
+$('aktif').addEventListener('change', () => setDirty(true));
+$('slots').addEventListener('input', (e) => {
+  const f = e.target.dataset.f; if (!f) return;
+  const slot = e.target.closest('.kg-slot'), i = +slot.dataset.i;
+  state[i][f] = e.target.value;
+  if (f === 'judul') { slot.querySelector('[data-v="judul"]').textContent = e.target.value.trim() || 'Slot kosong'; slot.classList.toggle('empty', !e.target.value.trim()); }
+  if (f === 'deskripsi') slot.querySelector('[data-v="cnt"]').textContent = e.target.value.length + '/200';
+  if (f === 'tautan') slot.querySelector('[data-v="urlerr"]').textContent = (e.target.value.trim() && !S.tautanAman(e.target.value)) ? 'Tautan tidak valid, harus diawali https:// atau nama halaman .html.' : '';
+  ringkas(); setDirty(true);
+});
+$('slots').addEventListener('change', (e) => {
+  const slot = e.target.closest('.kg-slot'); if (!slot) return;
+  const i = +slot.dataset.i;
+  if (e.target.dataset.f === 'label') { state[i].label = e.target.value; slot.querySelector('[data-v="label"]').textContent = e.target.value || 'Tanpa label'; setDirty(true); }
+  if (e.target.dataset.file !== undefined) pilihFoto(i, e.target.files[0]);
+});
+function pilihFoto(i, file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('File harus berupa gambar.', 'warn'); render(); return; }
+  if (file.size > 5 * 1024 * 1024) { toast('Ukuran foto maksimal 5 MB.', 'warn'); render(); return; }
+  const r = new FileReader();
+  r.onload = (ev) => { state[i].file = file; state[i].previewUrl = ev.target.result; state[i].hapusFoto = false; setDirty(true); render(); };
+  r.readAsDataURL(file);
+}
+$('slots').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const i = +b.closest('.kg-slot').dataset.i, act = b.dataset.act;
+  if (act === 'up' || act === 'down') {
+    const j = act === 'up' ? i - 1 : i + 1; if (j < 0 || j >= MAKS) return;
+    [state[i], state[j]] = [state[j], state[i]]; render(); setDirty(true);
+  } else if (act === 'clear') {
+    if (state[i].judul.trim() && !(await confirmBox({ title: 'Kosongkan slot ' + (i + 1) + '?', text: `“${state[i].judul}” tidak akan tampil di beranda setelah disimpan.`, ok: 'Kosongkan', danger: true }))) return;
+    state[i] = kosong(); render(); setDirty(true);
+  } else if (act === 'rmfoto') { state[i].file = null; state[i].previewUrl = ''; state[i].hapusFoto = true; render(); setDirty(true); }
+});
+
+function explain(err) {
+  console.error(err);
+  if (err && err.code === 'permission-denied') return 'Firestore menolak penyimpanan. Izinkan admin menulis ke dokumen pengurus/sorotan di Firebase → Firestore → Rules (lihat FIRESTORE-RULES.md).';
+  return 'Gagal: ' + (err && err.message ? err.message : err);
+}
+async function muat() {
+  $('overlay').classList.add('show');
+  try {
+    const snap = await DOC.get(), d = snap.exists ? snap.data() : {};
+    state = isi(Array.isArray(d.items) ? d.items : []);
+    $('aktif').checked = d.aktif !== false;
+    setDirty(false);
+    $('saveState').textContent = snap.exists ? 'Data terbaru sudah dimuat.' : 'Belum ada sorotan. Isi slot lalu tekan Simpan semua.';
+  } catch (err) { state = isi([]); toast(explain(err), 'error'); }
+  render(); $('overlay').classList.remove('show');
+}
+async function unggah(file) {
+  const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', PRESET);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, { method: 'POST', body: fd });
+  if (!res.ok) throw new Error('Upload foto gagal (' + res.status + ').');
+  return (await res.json()).secure_url;
+}
+async function simpan() {
+  const terisi = state.filter((s) => s.judul.trim());
+  const buruk = terisi.find((s) => s.tautan.trim() && !S.tautanAman(s.tautan));
+  if (buruk) { toast(`Tautan pada “${buruk.judul}” tidak valid.`, 'warn'); return; }
+  const btn = $('btnSimpan'); btn.disabled = true; $('overlay').classList.add('show');
+  try {
+    const items = [];
+    for (const s of terisi) {
+      let foto = s.hapusFoto ? '' : s.foto;
+      if (s.file) foto = await unggah(s.file);
+      items.push({ label: s.label, judul: s.judul.trim(), deskripsi: s.deskripsi.trim(), tanggal: s.tanggal.trim(), tautan: s.tautan.trim(), teksTombol: s.teksTombol.trim(), foto });
+    }
+    await DOC.set({ aktif: $('aktif').checked, items, updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: auth.currentUser ? auth.currentUser.email : '' }, { merge: true });
+    state = isi(items); render(); setDirty(false);
+    toast(`${items.length} sorotan disimpan.`, 'success');
+  } catch (err) { toast(explain(err), 'error'); }
+  btn.disabled = false; $('overlay').classList.remove('show');
+}
+$('btnSimpan').addEventListener('click', simpan);
+window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+requireAuth(muat);
+</script>
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

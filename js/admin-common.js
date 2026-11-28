@@ -26,6 +26,8 @@
     { href: 'admin-tentang.html', key: 'tentang', icon: 'fa-image', label: 'Foto Tentang Kami' },
     { href: 'admin-kontak.html', key: 'kontak', icon: 'fa-address-book', label: 'Info Kontak' },
     { href: 'admin-pengaturan.html', key: 'pengaturan', icon: 'fa-palette', label: 'Tema & Pengumuman' },
+    { href: 'admin-sorotan.html', key: 'sorotan', icon: 'fa-star', label: 'Sorotan' },
+    { href: 'admin-musik.html', key: 'musik', icon: 'fa-headphones', label: 'Musik Latar' },
     { href: 'admin-partitur.html', key: 'partitur', icon: 'fa-music', label: 'Partitur' }
   ];
 

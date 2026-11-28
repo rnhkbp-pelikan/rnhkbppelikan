@@ -50,6 +50,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Beranda","item":"https://rnhkbp-pelikan.github.io/rnhkbppelikan/"},{"@type":"ListItem","position":2,"name":"Kepengurusan","item":"https://rnhkbp-pelikan.github.io/rnhkbppelikan/kepengurusan.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Siapa Ketua Naposobulung HKBP Pelikan?","acceptedAnswer":{"@type":"Answer","text":"Ketua Naposobulung R-NHKBP Pelikan (Naposobulung HKBP Ressort Pelikan Raya) adalah Samuel Sitanggang."}},{"@type":"Question","name":"Siapa Sekretaris Naposobulung HKBP Pelikan?","acceptedAnswer":{"@type":"Answer","text":"Sekretaris R-NHKBP Pelikan (Naposobulung HKBP Ressort Pelikan Raya) adalah Dian Silaban."}},{"@type":"Question","name":"Siapa Bendahara Naposobulung HKBP Pelikan?","acceptedAnswer":{"@type":"Answer","text":"Bendahara R-NHKBP Pelikan (Naposobulung HKBP Ressort Pelikan Raya) adalah Intan Ambarita."}},{"@type":"Question","name":"Siapa Pelatih Koor R-NHKBP PELIKAN?","acceptedAnswer":{"@type":"Answer","text":"Pelatih Koor R-NHKBP PELIKAN adalah Sally Adella Tobing."}},{"@type":"Question","name":"Siapa Paniroi Naposobulung HKBP Pelikan?","acceptedAnswer":{"@type":"Answer","text":"Paniroi Naposobulung R-NHKBP Pelikan (Naposobulung HKBP Ressort Pelikan Raya) adalah Inang St. P.U Br Manik."}},{"@type":"Question","name":"Siapa saja pengurus seksi Naposobulung HKBP Pelikan?","acceptedAnswer":{"@type":"Answer","text":"Seksi 1 SEKSI KOOR: Kael Batubara."}}]}</script>
   <!--/SEO:LD-->
+  <link rel="stylesheet" href="css/musik.css">
 </head>
 <body class="pub">
 <nav class="navbar navbar-expand-lg fixed-top">
@@ -162,6 +163,7 @@ db.collection('pengurus').doc('kepengurusan').get().then((s) => {
 window.KONTAK.muat(db).then((d) => { const f = document.getElementById('footKontak'); if (f) f.innerHTML = window.KONTAK.footerHTML(d); });
 window.PENG.mulai(db);
 </script>
+<script src="js/musik.js"></script>
 <script src="js/pwa-init.js"></script>
 </body>
 </html>

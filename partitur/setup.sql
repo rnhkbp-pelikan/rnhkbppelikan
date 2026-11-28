@@ -76,7 +76,14 @@ end $$;
 revoke all on function public.is_admin(), public.is_owner(), public.list_admins(), public.add_admin_by_email(text), public.remove_admin(uuid) from public, anon;
 grant execute on function public.is_admin(), public.is_owner(), public.list_admins(), public.add_admin_by_email(text), public.remove_admin(uuid) to authenticated;
 
--- Jika belum ada owner, admin yang paling awal dibuat otomatis jadi owner (supaya tidak terkunci).
+-- OWNER: kaelbatubara@gmail.com (akunnya harus sudah dibuat di Authentication → Users)
+insert into public.admins (user_id)
+  select id from auth.users where lower(email) = 'kaelbatubara@gmail.com'
+  on conflict do nothing;
+update public.admins set is_owner = (user_id = (select id from auth.users where lower(email) = 'kaelbatubara@gmail.com'))
+  where exists (select 1 from auth.users where lower(email) = 'kaelbatubara@gmail.com');
+
+-- Cadangan: jika akun di atas belum ada dan belum ada owner sama sekali, admin paling awal jadi owner (supaya tidak terkunci).
 update public.admins set is_owner = true
 where user_id = (select a.user_id from public.admins a join auth.users u on u.id = a.user_id order by u.created_at limit 1)
   and not exists (select 1 from public.admins where is_owner);
@@ -92,4 +99,4 @@ end $$;
 
 -- MENETAPKAN / MEMINDAHKAN OWNER (ganti email; jalankan di SQL Editor):
 -- update public.admins set is_owner = false;
--- update public.admins set is_owner = true where user_id = (select id from auth.users where email = 'owner@gmail.com');
+-- update public.admins set is_owner = true where user_id = (select id from auth.users where email = 'kaelbatubara@gmail.com');

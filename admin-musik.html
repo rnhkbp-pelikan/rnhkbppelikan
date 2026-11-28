@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0e1a33">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RNHKBP Pelikan">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="robots" content="noindex">
+  <title>Musik · Admin RNHKBP Pelikan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-active="musik" data-title="Musik Latar">
+<div class="shell" id="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar" id="topbar"></header>
+
+    <div class="page-head">
+      <h1>Musik Latar</h1>
+      <p>Pilih lagu dari YouTube yang diputar otomatis di beranda, kepengurusan, dan dokumentasi. Tempel link video, atur urutannya, lalu simpan. Maksimal 10 lagu.</p>
+    </div>
+
+    <div class="overlay" id="overlay"><span class="spin"></span></div>
+
+    <div class="card">
+      <div class="opts">
+        <label class="sw"><input type="checkbox" id="aktif"><span class="tr"></span><span>Putar musik otomatis di situs</span></label>
+        <label class="sw"><input type="checkbox" id="acak"><span class="tr"></span><span>Acak urutan lagu</span></label>
+        <div class="vol-row"><i class="fas fa-volume-low" aria-hidden="true"></i><input type="range" id="volume" min="0" max="100" step="5" value="40" aria-label="Volume awal"><b id="volTxt">40%</b></div>
+      </div>
+      <div class="hint" style="margin-top:18px"><b>Perlu diketahui:</b> browser tidak mengizinkan suara otomatis sebelum pengunjung menyentuh halaman. Karena itu musik mulai jalan bisu dan suaranya menyala saat pengunjung mengetuk, mengeklik, atau menekan tombol pertama kali. Pengunjung juga bisa menjeda lewat tombol musik di pojok kiri bawah, dan pilihannya diingat 7 hari. Pakai lagu yang boleh diputar di situs (video yang melarang penyematan akan dilewati otomatis).</div>
+    </div>
+
+    <div class="kg-sum">
+      <b id="sumCount">–</b><span>lagu dalam daftar.</span>
+      <div class="sp"></div>
+      <a class="btn btn-ghost btn-sm" href="index.html" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Coba di beranda</a>
+    </div>
+
+    <div id="list"></div>
+    <button class="btn btn-ghost" id="btnTambah" type="button"><i class="fas fa-plus"></i> Tambah lagu</button>
+
+    <div class="savebar" id="savebar" style="margin-top:20px">
+      <span id="saveState">Memuat…</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-sm" id="btnSimpan" type="button"><i class="fas fa-floppy-disk"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="js/admin-common.js"></script>
+<script>
+const { db, esc, toast, confirmBox, requireAuth, auth } = AdminApp;
+const $ = (id) => document.getElementById(id);
+const MAKS = 10, DOC = db.collection("pengurus").doc("musik");
+let items = [], dirty = false;
+
+/* Ambil ID video dari berbagai bentuk link YouTube */
+function ambilId(input) {
+  const v = String(input || '').trim();
+  if (!v) return { id: '' };
+  if (/^[\w-]{11}$/.test(v)) return { id: v };
+  let u; try { u = new URL(/^https?:\/\//i.test(v) ? v : 'https://' + v); } catch (e) { return { id: '', err: 'Link tidak dikenali.' }; }
+  const h = u.hostname.replace(/^www\.|^m\.|^music\./, '');
+  let id = '';
+  if (h === 'youtu.be') id = u.pathname.split('/')[1] || '';
+  else if (h === 'youtube.com' || h === 'youtube-nocookie.com') {
+    if (u.pathname === '/watch') id = u.searchParams.get('v') || '';
+    else { const m = u.pathname.match(/^\/(?:embed|shorts|live|v)\/([\w-]{11})/); if (m) id = m[1]; }
+    if (!id && u.searchParams.get('list') && u.pathname.indexOf('/playlist') === 0) return { id: '', err: 'Link playlist belum didukung. Tempel link satu video.' };
+  } else return { id: '', err: 'Hanya link YouTube yang didukung.' };
+  return /^[\w-]{11}$/.test(id) ? { id } : { id: '', err: 'ID video tidak ditemukan di link ini.' };
+}
+const kosong = () => ({ url: '', id: '', judul: '', judulManual: false, status: '', statusKelas: '', tes: false, err: '' });
+
+function setDirty(v) { dirty = v; $('savebar').classList.toggle('dirty', v); $('saveState').textContent = v ? 'Ada perubahan yang belum disimpan.' : 'Semua perubahan sudah tersimpan.'; }
+function ringkas() { $('sumCount').textContent = items.filter((x) => x.id).length; }
+
+function itemHTML(it, i) {
+  return `<div class="mz-item${it.statusKelas === 'err' ? ' bad' : ''}" data-i="${i}">
+    <span class="no">${i + 1}</span>
+    <div class="th" data-v="th">${it.id ? `<img src="https://i.ytimg.com/vi/${it.id}/mqdefault.jpg" alt="">` : '<i class="fab fa-youtube"></i>'}</div>
+    <div class="stack-8">
+      <input class="input" data-f="url" inputmode="url" placeholder="Tempel link YouTube, misalnya https://youtu.be/…" value="${esc(it.url)}" aria-label="Link YouTube lagu ${i + 1}" autocomplete="off">
+      <input class="input" data-f="judul" maxlength="90" placeholder="Judul lagu (terisi otomatis)" value="${esc(it.judul)}" aria-label="Judul lagu ${i + 1}" autocomplete="off">
+      <span class="st ${esc(it.statusKelas)}" data-v="st">${esc(it.err || it.status)}</span>
+    </div>
+    <div class="mz-ctl2">
+      <button type="button" class="icon-btn" data-act="tes" title="Tes putar" aria-label="Tes putar lagu ${i + 1}" ${it.id ? '' : 'disabled'}><i class="fas fa-play"></i></button>
+      <button type="button" class="icon-btn" data-act="up" title="Naikkan" aria-label="Naikkan lagu ${i + 1}" ${i === 0 ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
+      <button type="button" class="icon-btn" data-act="down" title="Turunkan" aria-label="Turunkan lagu ${i + 1}" ${i === items.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
+      <button type="button" class="icon-btn del" data-act="rm" title="Hapus" aria-label="Hapus lagu ${i + 1}"><i class="fas fa-trash"></i></button>
+    </div>
+    ${it.tes && it.id ? `<div class="mz-prev"><iframe src="https://www.youtube-nocookie.com/embed/${it.id}?autoplay=1&rel=0" allow="autoplay; encrypted-media" title="Tes putar lagu ${i + 1}"></iframe></div>` : ''}
+  </div>`;
+}
+function render() {
+  $('list').innerHTML = items.length ? items.map(itemHTML).join('') : '<div class="card" style="text-align:center;color:var(--muted)">Belum ada lagu. Tekan “Tambah lagu” lalu tempel link YouTube.</div>';
+  $('btnTambah').disabled = items.length >= MAKS; ringkas();
+}
+function setStatus(i, teks, kelas) {
+  const it = items[i]; it.status = teks; it.statusKelas = kelas || ''; it.err = '';
+  const row = document.querySelector(`.mz-item[data-i="${i}"]`); if (!row) return;
+  const st = row.querySelector('[data-v="st"]'); st.textContent = teks; st.className = 'st ' + (kelas || '');
+  row.classList.toggle('bad', kelas === 'err');
+}
+
+/* Cek lewat oEmbed YouTube: judul + apakah boleh disematkan */
+const timers = {};
+function periksa(i) {
+  clearTimeout(timers[i]);
+  const it = items[i], r = ambilId(it.url);
+  it.id = r.id; it.err = r.err || '';
+  const row = document.querySelector(`.mz-item[data-i="${i}"]`);
+  if (row) {
+    row.querySelector('[data-v="th"]').innerHTML = r.id ? `<img src="https://i.ytimg.com/vi/${r.id}/mqdefault.jpg" alt="">` : '<i class="fab fa-youtube"></i>';
+    const tes = row.querySelector('[data-act="tes"]'); if (tes) tes.disabled = !r.id;
+  }
+  if (!r.id) { setStatus(i, '', ''); if (row) { const st = row.querySelector('[data-v="st"]'); st.textContent = r.err || ''; st.className = 'st' + (r.err ? ' err' : ''); } ringkas(); return; }
+  setStatus(i, 'Memeriksa video…', '');
+  const id = r.id;
+  timers[i] = setTimeout(async () => {
+    try {
+      const res = await fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
+      if (items[i] === it && it.id !== id) return;
+      if (res.ok) {
+        const d = await res.json();
+        if (!it.judulManual || !it.judul) { it.judul = d.title || it.judul; it.judulManual = false; const inp = document.querySelector(`.mz-item[data-i="${i}"] [data-f="judul"]`); if (inp) inp.value = it.judul; }
+        setStatus(i, 'Video bisa diputar di situs.', 'ok');
+      } else if (res.status === 401 || res.status === 403) setStatus(i, 'Pemilik video melarang diputar di situs lain. Pilih video lain.', 'err');
+      else if (res.status === 404) setStatus(i, 'Video tidak ditemukan atau privat.', 'err');
+      else setStatus(i, 'Belum bisa dipastikan (tetap boleh disimpan).', '');
+    } catch (e) { setStatus(i, 'Tidak bisa memeriksa video saat ini (tetap boleh disimpan).', ''); }
+  }, 450);
+  ringkas();
+}
+
+$('list').addEventListener('input', (e) => {
+  const f = e.target.dataset.f; if (!f) return;
+  const i = +e.target.closest('.mz-item').dataset.i;
+  if (f === 'url') { items[i].url = e.target.value; items[i].tes = false; const pv = e.target.closest('.mz-item').querySelector('.mz-prev'); if (pv) pv.remove(); periksa(i); }
+  if (f === 'judul') { items[i].judul = e.target.value; items[i].judulManual = true; }
+  setDirty(true);
+});
+$('list').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  const i = +b.closest('.mz-item').dataset.i, act = b.dataset.act;
+  if (act === 'tes') { items[i].tes = !items[i].tes; render(); }
+  else if (act === 'up' || act === 'down') { const j = act === 'up' ? i - 1 : i + 1; if (j < 0 || j >= items.length) return; [items[i], items[j]] = [items[j], items[i]]; render(); setDirty(true); }
+  else if (act === 'rm') {
+    if ((items[i].id || items[i].judul) && !(await confirmBox({ title: 'Hapus lagu ini?', text: items[i].judul || items[i].url, ok: 'Hapus', danger: true }))) return;
+    items.splice(i, 1); render(); setDirty(true);
+  }
+});
+$('btnTambah').addEventListener('click', () => {
+  if (items.length >= MAKS) return;
+  items.push(kosong()); render(); setDirty(true);
+  const inp = document.querySelector(`.mz-item[data-i="${items.length - 1}"] [data-f="url"]`); if (inp) inp.focus();
+});
+['aktif', 'acak'].forEach((k) => $(k).addEventListener('change', () => setDirty(true)));
+$('volume').addEventListener('input', () => { $('volTxt').textContent = $('volume').value + '%'; setDirty(true); });
+
+function explain(err) {
+  console.error(err);
+  if (err && err.code === 'permission-denied') return 'Firestore menolak penyimpanan. Izinkan admin menulis ke dokumen pengurus/musik di Firebase → Firestore → Rules (lihat FIRESTORE-RULES.md).';
+  return 'Gagal: ' + (err && err.message ? err.message : err);
+}
+async function muat() {
+  $('overlay').classList.add('show');
+  try {
+    const snap = await DOC.get(), d = snap.exists ? snap.data() : {};
+    items = (Array.isArray(d.items) ? d.items : []).slice(0, MAKS).map((x) => ({ ...kosong(), url: x.url || ('https://youtu.be/' + x.id), id: x.id || '', judul: x.judul || '', judulManual: true, status: '', statusKelas: '' }));
+    $('aktif').checked = d.aktif === true; $('acak').checked = d.acak === true;
+    const v = Number(d.volume); $('volume').value = (v >= 0 && v <= 100) ? v : 40; $('volTxt').textContent = $('volume').value + '%';
+    setDirty(false);
+    $('saveState').textContent = snap.exists ? 'Data terbaru sudah dimuat.' : 'Belum ada musik. Tambahkan lagu lalu aktifkan dan simpan.';
+  } catch (err) { items = []; toast(explain(err), 'error'); }
+  render(); $('overlay').classList.remove('show');
+}
+async function simpan() {
+  const isiList = items.filter((x) => x.url.trim());
+  for (const x of isiList) { const r = ambilId(x.url); if (!r.id) { toast(r.err || 'Ada link yang tidak valid.', 'warn'); return; } x.id = r.id; }
+  const dobel = isiList.length - new Set(isiList.map((x) => x.id)).size;
+  if (dobel) { toast('Ada lagu yang sama dimasukkan dua kali.', 'warn'); return; }
+  if ($('aktif').checked && !isiList.length) { toast('Tambahkan minimal satu lagu, atau matikan musik otomatis.', 'warn'); return; }
+  const bad = isiList.filter((x) => x.statusKelas === 'err').length;
+  if (bad && !(await confirmBox({ title: bad + ' video tidak bisa diputar', text: 'Video yang melarang penyematan akan dilewati di situs. Tetap simpan?', ok: 'Tetap simpan' }))) return;
+  const btn = $('btnSimpan'); btn.disabled = true; $('overlay').classList.add('show');
+  try {
+    const out = isiList.map((x) => ({ id: x.id, url: 'https://youtu.be/' + x.id, judul: (x.judul || '').trim().slice(0, 90) }));
+    await DOC.set({ aktif: $('aktif').checked, acak: $('acak').checked, volume: Number($('volume').value), items: out, updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: auth.currentUser ? auth.currentUser.email : '' }, { merge: true });
+    items = out.map((x) => ({ ...kosong(), url: x.url, id: x.id, judul: x.judul, judulManual: true })); render(); setDirty(false);
+    toast(`${out.length} lagu disimpan.`, 'success');
+  } catch (err) { toast(explain(err), 'error'); }
+  btn.disabled = false; $('overlay').classList.remove('show');
+}
+$('btnSimpan').addEventListener('click', simpan);
+window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+requireAuth(muat);
+</script>
+<script src="js/pwa-init.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+/* Pemutar musik latar (kiri bawah) */
+.mz{position:fixed;left:16px;bottom:16px;z-index:1070;font-family:'Poppins',system-ui,sans-serif;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.mz[hidden]{display:none}
+.mz-fab{position:relative;width:52px;height:52px;border:0;border-radius:50%;color:#fff;font-size:1.15rem;display:grid;place-items:center;cursor:pointer;
+  background:linear-gradient(135deg,#2563eb,#6366f1);box-shadow:0 10px 26px -8px rgba(37,99,235,.65);transition:transform .2s,box-shadow .2s}
+.mz-fab:hover{transform:translateY(-2px) scale(1.04)}
+.mz-fab:focus-visible,.mz-ctl button:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+.mz.playing .mz-fab{animation:mzPulse 2.4s ease-in-out infinite}
+.mz.muted .mz-fab i::after{content:""}
+@keyframes mzPulse{0%,100%{box-shadow:0 10px 26px -8px rgba(37,99,235,.65),0 0 0 0 rgba(99,102,241,.45)}50%{box-shadow:0 10px 26px -8px rgba(37,99,235,.65),0 0 0 11px rgba(99,102,241,0)}}
+.mz-dot{position:absolute;right:2px;top:2px;width:13px;height:13px;border-radius:50%;background:#f59e0b;border:2px solid #fff}
+.mz-panel{width:min(300px,calc(100vw - 32px));background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border:1px solid #dbe7ff;border-radius:20px;padding:16px;
+  box-shadow:0 24px 50px -22px rgba(15,31,61,.5);animation:mzIn .22s ease both}
+.mz-panel[hidden]{display:none}
+@keyframes mzIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+.mz-now{display:flex;align-items:center;gap:12px;min-width:0}
+.mz-now small{display:block;color:#64748b;font-size:.7rem;letter-spacing:.3px}
+.mz-now b{display:block;color:#0f1f3d;font-size:.88rem;font-weight:600;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.mz-eq{display:flex;align-items:flex-end;gap:3px;height:22px;flex:none}
+.mz-eq i{width:4px;height:6px;border-radius:2px;background:linear-gradient(#6366f1,#2563eb)}
+.mz.playing .mz-eq i{animation:mzBar 1s ease-in-out infinite}
+.mz.playing .mz-eq i:nth-child(2){animation-delay:.2s}.mz.playing .mz-eq i:nth-child(3){animation-delay:.4s}
+@keyframes mzBar{0%,100%{height:5px}50%{height:22px}}
+.mz-ctl{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 10px}
+.mz-ctl button{width:40px;height:40px;border:0;border-radius:50%;background:#eef4ff;color:#1e40af;cursor:pointer;font-size:.95rem;transition:background .15s,transform .1s}
+.mz-ctl button:hover{background:#dbe7ff}.mz-ctl button:active{transform:scale(.94)}
+.mz-ctl .mz-main{width:48px;height:48px;background:linear-gradient(135deg,#2563eb,#6366f1);color:#fff;font-size:1.05rem}
+.mz-ctl .mz-main:hover{background:linear-gradient(135deg,#1d4ed8,#4f46e5)}
+.mz-vol{display:flex;align-items:center;gap:10px;color:#64748b;font-size:.85rem}
+.mz-vol input{flex:1;accent-color:#2563eb;height:4px}
+.mz-tip{margin-top:12px;background:#fff7e0;color:#92400e;border-radius:12px;padding:8px 12px;font-size:.76rem;line-height:1.45}
+.mz-tip[hidden]{display:none}
+/* iframe YouTube dipertahankan berukuran 200x113 tetapi disembunyikan dari layar */
+.mz-yt{position:absolute;left:-9999px;top:0;width:200px;height:113px;overflow:hidden}
+@media (max-width:640px){.mz{left:12px;bottom:12px}.mz-fab{width:48px;height:48px}}
+@media (prefers-reduced-motion:reduce){.mz *,.mz{animation:none!important;transition:none!important}}
+html[data-tema="natal"] .mz-fab{background:linear-gradient(135deg,#c62828,#15803d)}
+html[data-tema="natal"] .mz-ctl .mz-main{background:linear-gradient(135deg,#c62828,#15803d)}

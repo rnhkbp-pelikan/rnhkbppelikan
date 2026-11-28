@@ -1,0 +1,33 @@
+/* Bagian "Sorotan" di beranda */
+.sr-section{position:relative;padding:56px 0 64px;background:linear-gradient(180deg,#fff 0%,#f4f8ff 100%)}
+.sr-sub{max-width:560px;margin:-1rem auto 2.4rem;text-align:center;color:var(--gray,#64748b);font-size:.98rem}
+.sr-list{display:grid;gap:22px;grid-template-columns:repeat(3,1fr)}
+.sr-list.n1{grid-template-columns:minmax(0,640px);justify-content:center}
+.sr-list.n2{grid-template-columns:repeat(2,1fr)}
+.sr-list.n4{grid-template-columns:repeat(2,1fr)}
+.sr-card{--c1:#2563eb;--c2:#60a5fa;position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid rgba(59,130,246,.14);border-radius:24px;overflow:hidden;
+  box-shadow:0 10px 30px -20px rgba(37,99,235,.5);transition:transform .3s,box-shadow .3s,border-color .3s;animation:srIn .55s ease both}
+.sr-card::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;z-index:2;background:linear-gradient(90deg,var(--c1),var(--c2))}
+.sr-card:hover{transform:translateY(-6px);box-shadow:0 30px 46px -28px var(--c1);border-color:var(--c2)}
+@keyframes srIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.sr-photo{aspect-ratio:16/9;overflow:hidden;background:#dbeafe}
+.sr-nophoto{display:grid;place-items:center;color:#fff;font-size:2.4rem;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.sr-card:hover .sr-photo .ph-main{transform:scale(1.03)}
+.sr-body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.sr-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.sr-chip{display:inline-block;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;border-radius:999px;padding:4px 13px;font-size:.72rem;font-weight:600;letter-spacing:.3px}
+.sr-date{color:#64748b;font-size:.78rem;display:inline-flex;align-items:center;gap:6px}
+.sr-card h3{font-size:1.1rem;font-weight:600;color:#0f1f3d;margin:2px 0 0;line-height:1.35}
+.sr-card p{font-size:.88rem;color:#64748b;margin:0;line-height:1.65;flex:1}
+.sr-btn{align-self:flex-start;margin-top:6px;display:inline-flex;align-items:center;gap:8px;color:var(--c1);font-weight:600;font-size:.86rem;text-decoration:none;border-bottom:2px solid transparent;transition:gap .2s,border-color .2s}
+.sr-btn:hover{gap:12px;border-color:var(--c2);color:var(--c1)}
+/* kartu pertama dibuat besar bila ada 3 sorotan atau lebih */
+.sr-big{grid-column:span 2;flex-direction:row}
+.sr-big .sr-photo{flex:1.15;aspect-ratio:auto;min-height:260px}
+.sr-big .sr-body{flex:1;justify-content:center;padding:28px}
+.sr-big h3{font-size:1.4rem}
+.sr-list.n3 .sr-big,.sr-list.n4 .sr-big{grid-column:1/-1}
+@media (max-width:991px){.sr-list,.sr-list.n2,.sr-list.n4{grid-template-columns:repeat(2,1fr)}.sr-big{grid-column:1/-1}}
+@media (max-width:640px){.sr-section{padding:44px 0 48px}.sr-list,.sr-list.n2,.sr-list.n4{grid-template-columns:1fr}.sr-big{flex-direction:column}.sr-big .sr-photo{min-height:0;aspect-ratio:16/9}.sr-big .sr-body{padding:20px 22px 22px}.sr-big h3{font-size:1.15rem}}
+@media (prefers-reduced-motion:reduce){.sr-card{animation:none}.sr-card:hover{transform:none}}
+html[data-tema="natal"] .sr-section{background:linear-gradient(180deg,#fff 0%,#fff3ee 100%)}
